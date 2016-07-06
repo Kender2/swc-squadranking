@@ -15,23 +15,42 @@ Route::get('/', function () {
     return view('test');
 });
 
-if (!function_exists('getallheaders'))  {
-    function getallheaders()
-    {
-        if (!is_array($_SERVER)) {
-            return array();
-        }
+Route::get('/test', 'TestController@test');
 
-        $headers = array();
-        foreach ($_SERVER as $name => $value) {
-            if (strpos($name, 'HTTP_') === 0) {
-                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-            }
+Route::post('/j/batch/json', function () {
+//    return '{
+//  "protocolVersion": 46,
+//  "data": [
+//    {
+//      "requestId": 2,
+//      "messages": {},
+//      "status": 0,
+//      "result": "B4cN_uoqi3pMbQzh3nB3hN_1y8krzo-9SFPxtjMU3sg.eyJ1c2VySWQiOiI5YjNkMTg4My0yYjE4LTExZTUtOGZmMy0wNjg3ODYwMDRmMTIiLCJleHBpcmVzIjoiMTQ2NjE4NzIyMiJ9"
+//    }
+//  ],
+//  "serverTime": "2016-06-17T18:13:42Z",
+//  "serverTimestamp": 1466187222
+//}';
+    $headers = array();
+    foreach ($_SERVER as $name => $value) {
+        if (strpos($name, 'HTTP_') === 0) {
+            $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+
         }
-        return $headers;
     }
-}
-
-Route::get('/endpointdebug', function () {
-    dd(getallheaders());
+    $request = '<pre>';
+    $request .= $_SERVER['REQUEST_METHOD'];
+    $request .= ' https://';
+    $request .= $_SERVER['HTTP_HOST'];
+    $request .= $_SERVER['REQUEST_URI'];
+    $request .= ' ' . $_SERVER['SERVER_PROTOCOL'] . "\r\n";
+    foreach ($headers as $key => $value) {
+        $request .= $key . ': ' . $value . "\r\n";
+    }
+    $request .= "\r\n";
+    foreach ($_POST as $key => $value) {
+        $request .= $key . '=' . $value . "\r\n";
+    }
+    $request .= '</pre>';
+    return $request;
 });
