@@ -5,6 +5,7 @@ namespace App;
 
 use App\Commands\Auth\GetAuthTokenCommand;
 use App\Commands\Guild\GetCommand;
+use App\Commands\Guild\GetPublicCommand;
 use App\Commands\Player\LoginCommand;
 use Illuminate\Support\Facades\Log;
 
@@ -73,5 +74,15 @@ class GameClient
         Log::debug(__FUNCTION__ . ' ' . $response);
         return $response;
     }
+
+    public function guildGetPublic($guildId)
+    {
+        $request = new GameRequest($this->authKey, $this->lastLoginTime, $this->time);
+        $request->addCommand(new GetPublicCommand($guildId), $this->requestId++);
+
+        $response = $this->executeRequest($request);
+        Log::debug(__FUNCTION__ . ' ' . $response);
+        return $response;
+    }    
 
 }
