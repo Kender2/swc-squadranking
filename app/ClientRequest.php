@@ -2,6 +2,7 @@
 namespace App;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class ClientRequest
 {
@@ -17,17 +18,19 @@ class ClientRequest
         ]);
     }
 
-    public function makeRequest(RequestBody $body)
+    public function makeRequest(GameRequest $body)
     {
+        $jsonBody = \GuzzleHttp\json_encode($body);
+        Log::debug('Making request: ' . json_encode($body, JSON_PRETTY_PRINT));
         $response = $this->client->request('POST', '/j/batch/json', [
             'headers' => $this->defaultHeaders(),
-            'body' => 'batch=' . urlencode(\GuzzleHttp\json_encode($body)),
+            'body' => 'batch=' . urlencode($jsonBody),
         ]);
         $responseBody = $response->getBody();
-        $responseJson = json_decode($responseBody);
-        $data = $responseJson->data;
+        $responseObject = json_decode($responseBody);
+        Log::debug('Received response: ' . json_encode($responseObject, JSON_PRETTY_PRINT));
 
-        return $data;
+        return $responseObject;
     }
 
     private function defaultHeaders()
@@ -44,7 +47,7 @@ class ClientRequest
             'DGVersion' => 'OpenGL ES 2.0',
             'DGMemory' => '208 MB',
             'DGShaderLevel' => '30',
-            'CAppVersion' => '4.0.0.7738',
+            'CAppVersion' => '4.1.0.8149',
             'X-Unity-Version' => '5.1.4p1',
             'User-Agent' => 'Dalvik/1.6.0 (Linux; U; Android 4.2.2; SM-T110 Build/JDQ39)',
             'Content-Type' => 'application/x-www-form-urlencoded',

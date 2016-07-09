@@ -17,7 +17,12 @@ abstract class Command
         $this->token = static::generateToken();
     }
 
-    public static function generateToken() {
+    public function handleResponse($responseData)
+    {
+    }
+
+    public static function generateToken()
+    {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
             mt_rand(0, 0xffff), mt_rand(0, 0xffff),
             mt_rand(0, 0xffff),

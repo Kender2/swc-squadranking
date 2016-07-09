@@ -1,7 +1,7 @@
 <?php
 namespace App\Commands\Auth;
 
-use App\Args;
+use App\Commands\Args;
 
 class GetAuthTokenArgs extends Args
 {

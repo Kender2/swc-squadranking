@@ -1,7 +1,7 @@
 <?php
 namespace App\Commands\Guild;
 
-use App\Args;
+use App\Commands\Args;
 use App\Commands\Command;
 
 class GetCommand extends Command

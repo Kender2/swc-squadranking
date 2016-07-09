@@ -15,4 +15,10 @@ class GetAuthTokenCommand extends Command
         $this->action = 'auth.getAuthToken';
         $this->args = new GetAuthTokenArgs();
     }
+
+    public function handleResponse($responseData)
+    {
+        return $responseData->result;
+    }
+
 }

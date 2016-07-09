@@ -3,16 +3,13 @@ namespace App\Commands\Player;
 
 use App\Commands\Args;
 
-class LoginArgs extends Args
+class DeviceRegisterArgs extends Args
 {
-
-    public $locale = 'en_US';
     public $deviceToken;
     public $deviceType = 'a';
-    public $timeZoneOffset = 2;
-    
+
     /**
-     * LoginArgs constructor.
+     * DeviceRegisterArgs constructor.
      */
     public function __construct()
     {
