@@ -151,6 +151,11 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
+         * Third party providers.
+         */
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        
+        /*
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,

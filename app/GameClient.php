@@ -2,16 +2,16 @@
 
 namespace App;
 
-
 use App\Commands\Auth\GetAuthTokenCommand;
 use App\Commands\Guild\GetCommand;
 use App\Commands\Guild\GetPublicCommand;
 use App\Commands\Player\LoginCommand;
-use Illuminate\Support\Facades\Log;
+use app\Exceptions\CommandException;
+use Cache;
+use Log;
 
 class GameClient
 {
-
     protected $client;
     protected $time = 0;
     protected $lastLoginTime;
@@ -25,20 +25,14 @@ class GameClient
     public function __construct(ClientRequest $client)
     {
         $this->client = $client;
-
-        $request = new GameRequest();
-        $request->addCommand(new GetAuthTokenCommand(), $this->requestId++);
-        $this->authKey = $this->executeRequest($request)->result;
-
-        $request = new GameRequest($this->authKey);
-        $request->addCommand(new LoginCommand(), $this->requestId++);
-        $this->executeRequest($request);
-        $this->lastLoginTime = $this->time;
+        $this->getAuthToken();
+        $this->login();
     }
 
     /**
      * @param GameRequest $request
      * @return array
+     * @throws CommandException
      */
     protected function executeMultipleRequest(GameRequest $request)
     {
@@ -48,7 +42,11 @@ class GameClient
 
         $result = [];
         foreach ($response->data as $responseData) {
-            $result[$responseData->requestId] = new CommandResponse($responseData);
+            $commandResponse = new CommandResponse($responseData);
+            if ($commandResponse->status !== 0) {
+                throw new CommandException($request, $commandResponse);
+            }
+            $result[$responseData->requestId] = $commandResponse;
         }
 
         return $result;
@@ -71,7 +69,6 @@ class GameClient
         $request->addCommand(new GetCommand(), $this->requestId++);
 
         $response = $this->executeRequest($request);
-        Log::debug(__FUNCTION__ . ' ' . $response);
         return $response;
     }
 
@@ -81,8 +78,41 @@ class GameClient
         $request->addCommand(new GetPublicCommand($guildId), $this->requestId++);
 
         $response = $this->executeRequest($request);
-        Log::debug(__FUNCTION__ . ' ' . $response);
-        return $response;
-    }    
+        return $response->result;
+    }
+
+    /**
+     * @return GameClient
+     */
+    protected function getAuthToken()
+    {
+        $authKey = Cache::get('auth_token');
+        if ($authKey === null) {
+            $request = new GameRequest();
+            $request->addCommand(new GetAuthTokenCommand(), $this->requestId++);
+            $authKey = $this->executeRequest($request)->result;
+            Cache::put('auth_token', $authKey, 60);
+        }
+        $this->authKey = $authKey;
+        return $this;
+    }
+
+    /**
+     * @return GameClient
+     */
+    protected function login()
+    {
+        $lastLoginTime = Cache::get('last_login');
+        if ($lastLoginTime === null) {
+            $request = new GameRequest($this->authKey);
+            $request->addCommand(new LoginCommand(), $this->requestId++);
+            $this->executeRequest($request);
+            $lastLoginTime = $this->time;
+            Cache::put('last_login', $lastLoginTime, 60);
+        }
+        $this->lastLoginTime = $lastLoginTime;
+
+        return $this;
+    }
 
 }

@@ -2,7 +2,7 @@
 namespace App;
 
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
+use Log;
 
 class ClientRequest
 {
@@ -28,7 +28,7 @@ class ClientRequest
         ]);
         $responseBody = $response->getBody();
         $responseObject = json_decode($responseBody);
-        Log::debug('Received response: ' . json_encode($responseObject, JSON_PRETTY_PRINT));
+        Log::debug('Received response: ' . $responseBody);
 
         return $responseObject;
     }
