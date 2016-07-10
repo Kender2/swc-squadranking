@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "87aa42ac58e71aacaf23637c02f694fb",
-    "content-hash": "19aeba1388467332e8564ade1fc07f87",
+    "hash": "75d03551a64d1e4a4684107a2ece72ea",
+    "content-hash": "2fb67c7fc177f7659ea678f1aa94ab17",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -1071,6 +1071,56 @@
                 "random"
             ],
             "time": "2016-03-18 20:34:03"
+        },
+        {
+            "name": "phpskills/phpskills",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/moserware/PHPSkills.git",
+                "reference": "a99a73e02c1c19e157b0bfe4d5c99f90dd0111c9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/moserware/PHPSkills/zipball/a99a73e02c1c19e157b0bfe4d5c99f90dd0111c9",
+                "reference": "a99a73e02c1c19e157b0bfe4d5c99f90dd0111c9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Moserware\\Skills\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Jeff Moser",
+                    "email": "jeff@moserware.com",
+                    "role": "Creator"
+                },
+                {
+                    "name": "Alexander Liljengård",
+                    "email": "alexander@paxxmedia.se",
+                    "role": "Contributor"
+                }
+            ],
+            "description": "Implementation of Microsoft's TrueSkill matchmaking system for PHP",
+            "homepage": "https://github.com/moserware/PHPSkills",
+            "keywords": [
+                "elo",
+                "matchmaking",
+                "ranking",
+                "skill",
+                "trueskill"
+            ],
+            "time": "2016-06-01 07:49:07"
         },
         {
             "name": "psr/http-message",

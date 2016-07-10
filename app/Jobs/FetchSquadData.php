@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Battle;
 use App\GameClient;
 use App\Squad;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,32 +39,58 @@ class FetchSquadData extends Job implements ShouldQueue
      */
     public function handle(GameClient $client)
     {
-        if ($this->refresh || !Squad::where('id', $this->guildId)->exists()) {
+        $squad = Squad::firstOrNew(['id' => $this->guildId]);
+        if ($this->refresh || $squad->name === null) {
             $data = $client->guildGetPublic($this->guildId);
-            $squad = Squad::firstOrNew(['id' => $this->guildId]);
             $squad->name = $data->name;
             $squad->faction = $data->membershipRestrictions->faction;
-            $wins = $losses = $draws = $uplinks_captured = $uplinks_saved = 0;
+            $scoring = [
+                'wins' => 0,
+                'losses' => 0,
+                'draws' => 0,
+                'uplinks_captured' => 0,
+                'uplinks_saved' => 0,
+            ];
+
             foreach ($data->warHistory as $war) {
-                // Add previously unseen squad to the queue.
-                if ($war->opponentGuildId !== null && !Squad::where('id', $war->opponentGuildId)->exists()) {
-                    $this->dispatch(new FetchSquadData($war->opponentGuildId));
+                if ($war->opponentGuildId !== null) {
+
+                    $battle = Battle::firstOrNew(['id' => $war->warId]);
+                    if (!$battle->exists) {
+                        $battle->end_date = $war->endDate;
+                        if ($squad->faction === 'rebel') {
+                            $battle->rebel_id = $this->guildId;
+                            $battle->empire_id = $war->opponentGuildId;
+                            $battle->rebel_score = $war->score;
+                            $battle->empire_score = $war->opponentScore;
+                        } else {
+                            $battle->rebel_id = $war->opponentGuildId;
+                            $battle->empire_id = $this->guildId;
+                            $battle->rebel_score = $war->opponentScore;
+                            $battle->empire_score = $war->score;
+                        }
+                        $battle->save();
+                        // @TODO: send battle to ranking modifying code.
+                    }
+
+                    $opponent = Squad::firstOrNew(['id' => $war->opponentGuildId]);
+
+                    if ($opponent->name === null) {
+                        // Add previously unseen squad to the queue.
+                        $this->dispatch(new FetchSquadData($war->opponentGuildId));
+                    }
                 }
                 if ($war->score > $war->opponentScore) {
-                    $wins++;
+                    $scoring['wins']++;
                 } elseif ($war->score < $war->opponentScore) {
-                    $losses++;
+                    $scoring['losses']++;
                 } else {
-                    $draws++;
+                    $scoring['draws']++;
                 }
-                $uplinks_captured += $war->score;
-                $uplinks_saved += 45 - $war->opponentScore;
+                $scoring['uplinks_captured'] += $war->score;
+                $scoring['uplinks_saved'] += 45 - $war->opponentScore;
             }
-            $squad->wins = $wins;
-            $squad->losses = $losses;
-            $squad->draws = $draws;
-            $squad->uplinks_captured = $uplinks_captured;
-            $squad->uplinks_saved = $uplinks_saved;
+            $squad->fill($scoring);
             $squad->save();
             sleep(mt_rand(1, 8));
         }

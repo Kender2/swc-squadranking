@@ -14,14 +14,15 @@ class CreateSquadsTable extends Migration
     {
         Schema::create('squads', function (Blueprint $table) {
             $table->uuid('id')->unique();
-            $table->string('name');
-            $table->integer('rating')->default(1000);
+            $table->string('name')->nullable();
+            $table->double('mu')->default(25.0);
+            $table->double('sigma')->default(25/3);
             $table->integer('wins')->unsigned();
             $table->integer('draws')->unsigned();
             $table->integer('losses')->unsigned();
             $table->integer('uplinks_captured')->unsigned();
             $table->integer('uplinks_saved')->unsigned();
-            $table->string('faction');
+            $table->string('faction')->nullable();
             $table->timestamps();
         });
     }

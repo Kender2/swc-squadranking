@@ -9,7 +9,8 @@
         "laravel/framework": "5.2.*",
         "guzzlehttp/guzzle": "^6.2",
         "symfony/psr-http-message-bridge": "^0.2.0",
-        "barryvdh/laravel-ide-helper": "^2.2"
+        "barryvdh/laravel-ide-helper": "^2.2",
+        "phpskills/PHPSkills": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
