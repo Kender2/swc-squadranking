@@ -21,14 +21,14 @@ class ClientRequest
     public function makeRequest(GameRequest $body)
     {
         $jsonBody = \GuzzleHttp\json_encode($body);
-        Log::debug('Making request: ' . json_encode($body, JSON_PRETTY_PRINT));
+//        Log::debug('Making request: ' . json_encode($body, JSON_PRETTY_PRINT));
         $response = $this->client->request('POST', '/j/batch/json', [
             'headers' => $this->defaultHeaders(),
             'body' => 'batch=' . urlencode($jsonBody),
         ]);
         $responseBody = $response->getBody();
         $responseObject = json_decode($responseBody);
-        Log::debug('Received response: ' . $responseBody);
+//        Log::debug('Received response: ' . $responseBody);
 
         return $responseObject;
     }

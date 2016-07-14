@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Battle;
 use App\GameClient;
 use App\Squad;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Queue\InteractsWithQueue;
@@ -44,20 +45,19 @@ class FetchSquadData extends Job implements ShouldQueue
             $data = $client->guildGetPublic($this->guildId);
             $squad->name = $data->name;
             $squad->faction = $data->membershipRestrictions->faction;
-            $scoring = [
-                'wins' => 0,
-                'losses' => 0,
-                'draws' => 0,
-                'uplinks_captured' => 0,
-                'uplinks_saved' => 0,
-            ];
+
+            $squad->wins = 0;
+            $squad->losses = 0;
+            $squad->draws = 0;
+            $squad->uplinks_captured = 0;
+            $squad->uplinks_saved = 0;
 
             foreach ($data->warHistory as $war) {
                 if ($war->opponentGuildId !== null) {
 
                     $battle = Battle::firstOrNew(['id' => $war->warId]);
                     if (!$battle->exists) {
-                        $battle->end_date = $war->endDate;
+                        $battle->end_date = Carbon::createFromTimestampUTC($war->endDate);
                         if ($squad->faction === 'rebel') {
                             $battle->rebel_id = $this->guildId;
                             $battle->empire_id = $war->opponentGuildId;
@@ -81,18 +81,18 @@ class FetchSquadData extends Job implements ShouldQueue
                     }
                 }
                 if ($war->score > $war->opponentScore) {
-                    $scoring['wins']++;
+                    $squad->wins++;
                 } elseif ($war->score < $war->opponentScore) {
-                    $scoring['losses']++;
+                    $squad->losses++;
                 } else {
-                    $scoring['draws']++;
+                    $squad->draws++;
                 }
-                $scoring['uplinks_captured'] += $war->score;
-                $scoring['uplinks_saved'] += 45 - $war->opponentScore;
+                $squad->uplinks_captured += $war->score;
+                $squad->uplinks_saved += 45 - $war->opponentScore;
             }
-            $squad->fill($scoring);
+
             $squad->save();
-            sleep(mt_rand(1, 8));
+            sleep(mt_rand(1, 3));
         }
     }
 }
