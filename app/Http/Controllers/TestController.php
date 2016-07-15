@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\ClientRequest;
 use App\GameClient;
 use App\Jobs\FetchSquadData;
-use App\Squad;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class TestController extends Controller
@@ -22,9 +21,12 @@ class TestController extends Controller
 
         foreach ($warHistory as $war) {
             if ($war->opponentGuildId !== null) {
-                if (!Squad::where('id', $war->opponentGuildId)->exists()) {
-                    $this->dispatch(new FetchSquadData($war->opponentGuildId));
+//                if (!Squad::where('id', $war->opponentGuildId)->exists()) {
+                try {
+                    $this->dispatch(new FetchSquadData($war->opponentGuildId, true));
+                } catch (\Exception $e) {
                 }
+//                }
             }
         }
 

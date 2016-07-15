@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Exceptions;
+namespace App\Exceptions;
 
 use App\CommandResponse;
 use App\GameRequest;
@@ -16,6 +16,22 @@ class CommandException extends Exception
      * @var CommandResponse
      */
     private $commandResponse;
+
+    /**
+     * @return GameRequest
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @return CommandResponse
+     */
+    public function getCommandResponse()
+    {
+        return $this->commandResponse;
+    }
 
     /**
      * CommandException constructor.

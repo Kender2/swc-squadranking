@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Exceptions\ResponseException;
 use GuzzleHttp\Client;
 use Log;
 
@@ -21,14 +22,18 @@ class ClientRequest
     public function makeRequest(GameRequest $body)
     {
         $jsonBody = \GuzzleHttp\json_encode($body);
-//        Log::debug('Making request: ' . json_encode($body, JSON_PRETTY_PRINT));
+        Log::debug('Making request: ' . $body->getActions());
+
         $response = $this->client->request('POST', '/j/batch/json', [
             'headers' => $this->defaultHeaders(),
             'body' => 'batch=' . urlencode($jsonBody),
         ]);
         $responseBody = $response->getBody();
-        $responseObject = json_decode($responseBody);
-//        Log::debug('Received response: ' . $responseBody);
+        $responseObject = new GameResponse($responseBody);
+        if (!$responseObject) {
+            throw new ResponseException($response);
+        }
+        Log::debug('Received response: ' . $responseObject->getStatus());
 
         return $responseObject;
     }

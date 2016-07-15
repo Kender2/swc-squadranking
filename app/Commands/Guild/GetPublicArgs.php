@@ -1,7 +1,6 @@
 <?php
 namespace App\Commands\Guild;
 
-
 use App\Commands\Args;
 
 class GetPublicArgs extends Args

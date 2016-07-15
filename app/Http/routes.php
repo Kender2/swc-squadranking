@@ -15,7 +15,8 @@ Route::get('/', function () {
     return view('test');
 });
 
-Route::get('/test', 'TestController@test');
+Route::get('/squadview', 'SquadController@viewSquad');
+Route::any('/squadsearch', 'SquadController@squadSearch');
 
 Route::post('/j/batch/json', function () {
 //    return '{

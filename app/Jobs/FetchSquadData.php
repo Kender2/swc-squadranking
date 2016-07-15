@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Log;
 
 class FetchSquadData extends Job implements ShouldQueue
 {
@@ -19,7 +20,7 @@ class FetchSquadData extends Job implements ShouldQueue
     /**
      * @var bool
      */
-    private $refresh;
+    private $refresh = false;
 
     /**
      * Create a new job instance.
@@ -41,7 +42,8 @@ class FetchSquadData extends Job implements ShouldQueue
     public function handle(GameClient $client)
     {
         $squad = Squad::firstOrNew(['id' => $this->guildId]);
-        if ($this->refresh || $squad->name === null) {
+        if ($this->refresh || $squad->needsFetching()) {
+            Log::debug('Fetching squad' . ($this->refresh ? ' due to refresh.' : '.'));
             $data = $client->guildGetPublic($this->guildId);
             $squad->name = $data->name;
             $squad->faction = $data->membershipRestrictions->faction;
@@ -69,15 +71,21 @@ class FetchSquadData extends Job implements ShouldQueue
                             $battle->rebel_score = $war->opponentScore;
                             $battle->empire_score = $war->score;
                         }
+                        Log::debug('Adding new battle');
                         $battle->save();
                         // @TODO: send battle to ranking modifying code.
                     }
+                    else {
+                        Log::debug('Already seen this battle');
+                    }
 
                     $opponent = Squad::firstOrNew(['id' => $war->opponentGuildId]);
-
-                    if ($opponent->name === null) {
-                        // Add previously unseen squad to the queue.
-                        $this->dispatch(new FetchSquadData($war->opponentGuildId));
+                    if ($opponent->needsFetching()) {
+                        Log::debug('Adding squad to queue.');
+                        try {
+                            $this->dispatch(new FetchSquadData($war->opponentGuildId));
+                        }
+                        catch (\Exception $e) {}
                     }
                 }
                 if ($war->score > $war->opponentScore) {
@@ -93,6 +101,9 @@ class FetchSquadData extends Job implements ShouldQueue
 
             $squad->save();
             sleep(mt_rand(1, 3));
+        }
+        else {
+            Log::debug('No need to fetch squad.');
         }
     }
 }

@@ -5,8 +5,9 @@ namespace App;
 use App\Commands\Auth\GetAuthTokenCommand;
 use App\Commands\Guild\GetCommand;
 use App\Commands\Guild\GetPublicCommand;
+use App\Commands\Guild\SearchByNameCommand;
 use App\Commands\Player\LoginCommand;
-use app\Exceptions\CommandException;
+use App\Exceptions\CommandException;
 use Cache;
 use Log;
 
@@ -38,10 +39,10 @@ class GameClient
     {
         $response = $this->client->makeRequest($request);
 
-        $this->time = $response->serverTimestamp;
+        $this->time = $response->getServerTimestamp();
 
         $result = [];
-        foreach ($response->data as $responseData) {
+        foreach ($response->getData() as $responseData) {
             $commandResponse = new CommandResponse($responseData);
             if ($commandResponse->status !== 0) {
                 throw new CommandException($request, $commandResponse);
@@ -78,6 +79,29 @@ class GameClient
         $request->addCommand(new GetPublicCommand($guildId), $this->requestId++);
 
         $response = $this->executeRequest($request);
+        
+        // Exception if requesting data for own squad.
+        if ($response->result === null) {
+            return $this->guildGet()->result;
+        }
+
+        return $response->result;
+    }
+
+    /**
+     * Search for squads.
+     *
+     * @param string $searchTerm
+     *
+     * @return array
+     */
+    public function guildSearchByName($searchTerm)
+    {
+        $request = new GameRequest($this->authKey, $this->lastLoginTime, $this->time);
+        $request->addCommand(new SearchByNameCommand($searchTerm), $this->requestId++);
+
+        $response = $this->executeRequest($request);
+
         return $response->result;
     }
 

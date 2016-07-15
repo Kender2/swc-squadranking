@@ -34,4 +34,13 @@ class GameRequest
         $command->requestId = $requestId;
         $this->commands[] = $command;
     }
+
+    public function getActions()
+    {
+        $actions = [];
+        foreach ($this->commands as $command) {
+            $actions[] = $command->requestId . ': ' . $command->action;
+        }
+        return implode(',', $actions);
+    }
 }
