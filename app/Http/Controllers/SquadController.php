@@ -41,9 +41,10 @@ class SquadController extends Controller
                     $row['opponentScore'] = $battle->opponentScore;
                     $row['opponent'] = empty($battle->opponentName) ? '<i>Unknown</i>' : urldecode($battle->opponentName);
                     $row['opponentId'] = $battle->opponentGuildId;
-                    $warRecord[] = $row;
+                    $warRecord[$battle->endDate] = $row;
                 }
             }
+            ksort($warRecord);
             $squadName = urldecode($squad->name);
             $squad = \GuzzleHttp\json_encode($squad, JSON_PRETTY_PRINT);
             return view('squad', compact('squadName', 'squad', 'warRecord'));
