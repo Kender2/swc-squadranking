@@ -2,6 +2,7 @@
 namespace App\Commands\Guild;
 
 use App\Commands\Args;
+use App\Player;
 
 class GetPublicArgs extends Args
 {
@@ -9,11 +10,12 @@ class GetPublicArgs extends Args
 
     /**
      * GetPublicArgs constructor.
+     * @param Player $player
      * @param $guildId
      */
-    public function __construct($guildId)
+    public function __construct(Player $player, $guildId)
     {
-        parent::__construct();
+        parent::__construct($player);
         $this->guildId = $guildId;
     }
 }

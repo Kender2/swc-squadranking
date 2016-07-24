@@ -49,6 +49,7 @@ class SquadController extends Controller
             $squad = \GuzzleHttp\json_encode($squad, JSON_PRETTY_PRINT);
             return view('squad', compact('squadName', 'squad', 'warRecord'));
         }
+        return redirect('/');
     }
 
     public function squadSearch(Request $request)

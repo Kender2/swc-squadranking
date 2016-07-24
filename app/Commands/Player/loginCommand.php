@@ -7,12 +7,11 @@ class LoginCommand extends Command
 {
 
     /**
-     * GetCommand constructor.
+     * LoginCommand constructor.
+     * @param LoginArgs $args
      */
-    public function __construct()
+    public function __construct(LoginArgs $args)
     {
-        parent::__construct();
-        $this->action = 'player.login';
-        $this->args = new LoginArgs();
+        parent::__construct('player.login', $args);
     }
 }

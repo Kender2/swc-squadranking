@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('CACHE_DRIVER', 'file'),
+    'default' => env('CACHE_DRIVER', 'database'),
 
     /*
     |--------------------------------------------------------------------------
@@ -78,6 +78,6 @@ return [
     |
     */
 
-    'prefix' => 'laravel',
+    'prefix' => '',
 
 ];

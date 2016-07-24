@@ -2,6 +2,7 @@
 namespace App\Commands\Auth;
 
 use App\Commands\Args;
+use App\Player;
 
 class GetAuthTokenArgs extends Args
 {
@@ -10,11 +11,12 @@ class GetAuthTokenArgs extends Args
 
     /**
      * GetAuthTokenArgs constructor.
+     * @param Player $player
      */
-    public function __construct()
+    public function __construct(Player $player)
     {
-        parent::__construct();
-        $this->requestToken = static::generateRequestToken(config('sod.secret'), config('sod.player_id'));
+        parent::__construct($player);
+        $this->requestToken = static::generateRequestToken($player->getSecret(), $player->getPlayerId());
     }
 
     private static function generateRequestToken($secret, $playerId)
@@ -22,7 +24,6 @@ class GetAuthTokenArgs extends Args
         $timestamp = round(microtime(true) * 1000);
         $string = '{"userId":"' . $playerId . '","expires":' . $timestamp . '}';
         $hex = strtoupper(hash_hmac('sha256', $string, $secret));
-        $result = base64_encode($hex . '.' . $string);
-        return $result;
+        return base64_encode($hex . '.' . $string);
     }
 }

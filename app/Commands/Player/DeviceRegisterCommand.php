@@ -8,11 +8,10 @@ class DeviceRegisterCommand extends Command
 
     /**
      * DeviceRegisterCommand constructor.
+     * @param DeviceRegisterArgs $args
      */
-    public function __construct()
+    public function __construct(DeviceRegisterArgs $args)
     {
-        parent::__construct();
-        $this->action = 'player.device.register';
-        $this->args = new DeviceRegisterArgs();
+        parent::__construct('player.device.register', $args);
     }
 }

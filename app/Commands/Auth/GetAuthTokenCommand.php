@@ -8,17 +8,11 @@ class GetAuthTokenCommand extends Command
 
     /**
      * GetAuthTokenCommand constructor.
+     * @param GetAuthTokenArgs $args
      */
-    public function __construct()
+    public function __construct(GetAuthTokenArgs $args)
     {
-        parent::__construct();
-        $this->action = 'auth.getAuthToken';
-        $this->args = new GetAuthTokenArgs();
-    }
-
-    public function handleResponse($responseData)
-    {
-        return $responseData->result;
+        parent::__construct('auth.getAuthToken', $args);
     }
 
 }

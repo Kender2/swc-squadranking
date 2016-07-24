@@ -11,7 +11,8 @@
         "symfony/psr-http-message-bridge": "^0.2.0",
         "barryvdh/laravel-ide-helper": "^2.2",
         "phpskills/PHPSkills": "^1.0",
-        "barryvdh/laravel-debugbar": "^2.2"
+        "barryvdh/laravel-debugbar": "^2.2",
+        "ramsey/uuid": "^3.4"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

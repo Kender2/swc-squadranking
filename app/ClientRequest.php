@@ -3,6 +3,7 @@ namespace App;
 
 use App\Exceptions\ResponseException;
 use GuzzleHttp\Client;
+use Illuminate\Support\Str;
 use Log;
 
 class ClientRequest
@@ -22,7 +23,8 @@ class ClientRequest
     public function makeRequest(GameRequest $body)
     {
         $jsonBody = \GuzzleHttp\json_encode($body);
-        Log::debug('Making request: ' . $body->getActions());
+        Log::info('Making request: ' . $body->getActions());
+        Log::debug('RAW req: ' . $jsonBody);
 
         $response = $this->client->request('POST', '/j/batch/json', [
             'headers' => $this->defaultHeaders(),
@@ -33,7 +35,8 @@ class ClientRequest
         if (!$responseObject) {
             throw new ResponseException($response);
         }
-        Log::debug('Received response: ' . $responseObject->getStatus());
+        Log::info('Received response: ' . $responseObject->getStatus());
+        Log::debug('RAW res: ' . Str::limit($responseBody, 200));
 
         return $responseObject;
     }

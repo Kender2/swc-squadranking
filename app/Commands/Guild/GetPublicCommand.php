@@ -8,12 +8,10 @@ class GetPublicCommand extends Command
 
     /**
      * GetCommand constructor.
-     * @param string $guildId
+     * @param GetPublicArgs $args
      */
-    public function __construct($guildId)
+    public function __construct(GetPublicArgs $args)
     {
-        parent::__construct();
-        $this->action = 'guild.get.public';
-        $this->args = new GetPublicArgs($guildId);
+        parent::__construct('guild.get.public', $args);
     }
 }

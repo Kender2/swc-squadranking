@@ -2,51 +2,71 @@
 
 namespace App;
 
+use App\Commands\Args;
+use App\Commands\Auth\GetAuthTokenArgs;
 use App\Commands\Auth\GetAuthTokenCommand;
+use App\Commands\Auth\PreAuth\GeneratePlayerArgs;
+use App\Commands\Auth\PreAuth\GeneratePlayerCommand;
 use App\Commands\Guild\GetCommand;
+use App\Commands\Guild\GetPublicArgs;
 use App\Commands\Guild\GetPublicCommand;
+use App\Commands\Guild\SearchByNameArgs;
 use App\Commands\Guild\SearchByNameCommand;
+use App\Commands\Player\LoginArgs;
 use App\Commands\Player\LoginCommand;
 use App\Exceptions\CommandException;
-use Cache;
-use Log;
+use App\Exceptions\PlayerBannedException;
 
 class GameClient
 {
     protected $client;
     protected $time = 0;
-    protected $lastLoginTime;
     protected $authKey;
     protected $requestId = 2;
+    protected $player;
+
+    const DESYNC_BANNED = 1999;
 
     /**
      * GameClient constructor.
      * @param ClientRequest $client
+     * @param Player $player
      */
-    public function __construct(ClientRequest $client)
+    public function __construct(ClientRequest $client, Player $player)
     {
         $this->client = $client;
+        $this->player = $player;
+
+        if ($this->player->getPlayerId() === null) {
+            $this->createNewPlayer();
+        }
         $this->getAuthToken();
-        $this->login();
+        try {
+            $this->login();
+        } catch (PlayerBannedException $e) {
+            $this->createNewPlayer();
+            $this->login();
+        }
     }
 
     /**
      * @param GameRequest $request
+     *
      * @return array
+     *
      * @throws CommandException
      */
     protected function executeMultipleRequest(GameRequest $request)
     {
         $response = $this->client->makeRequest($request);
 
+        // @TODO: refactor side-effect usage.
         $this->time = $response->getServerTimestamp();
 
         $result = [];
         foreach ($response->getData() as $responseData) {
             $commandResponse = new CommandResponse($responseData);
-            if ($commandResponse->status !== 0) {
-                throw new CommandException($request, $commandResponse);
-            }
+            $this->checkResponse($request, $commandResponse);
             $result[$responseData->requestId] = $commandResponse;
         }
 
@@ -55,7 +75,10 @@ class GameClient
 
     /**
      * @param GameRequest $request
+     *
      * @return CommandResponse
+     *
+     * @throws \App\Exceptions\CommandException
      */
     protected function executeRequest(GameRequest $request)
     {
@@ -66,20 +89,17 @@ class GameClient
 
     public function guildGet()
     {
-        $request = new GameRequest($this->authKey, $this->lastLoginTime, $this->time);
-        $request->addCommand(new GetCommand(), $this->requestId++);
-
-        $response = $this->executeRequest($request);
-        return $response;
+        $args = new Args($this->player);
+        $command = new GetCommand($args);
+        return $this->runCommand($command);
     }
 
     public function guildGetPublic($guildId)
     {
-        $request = new GameRequest($this->authKey, $this->lastLoginTime, $this->time);
-        $request->addCommand(new GetPublicCommand($guildId), $this->requestId++);
+        $args = new GetPublicArgs($this->player, $guildId);
+        $command = new GetPublicCommand($args);
+        $response = $this->runCommand($command);
 
-        $response = $this->executeRequest($request);
-        
         // Exception if requesting data for own squad.
         if ($response->result === null) {
             return $this->guildGet()->result;
@@ -97,12 +117,9 @@ class GameClient
      */
     public function guildSearchByName($searchTerm)
     {
-        $request = new GameRequest($this->authKey, $this->lastLoginTime, $this->time);
-        $request->addCommand(new SearchByNameCommand($searchTerm), $this->requestId++);
-
-        $response = $this->executeRequest($request);
-
-        return $response->result;
+        $args = new SearchByNameArgs($this->player, $searchTerm);
+        $command = new SearchByNameCommand($args);
+        return $this->runCommand($command)->result;
     }
 
     /**
@@ -110,14 +127,12 @@ class GameClient
      */
     protected function getAuthToken()
     {
-        $authKey = Cache::get('auth_token');
-        if ($authKey === null) {
-            $request = new GameRequest();
-            $request->addCommand(new GetAuthTokenCommand(), $this->requestId++);
-            $authKey = $this->executeRequest($request)->result;
-            Cache::put('auth_token', $authKey, 60);
+        if ($this->player->getAuthKey() === '') {
+            $args = new GetAuthTokenArgs($this->player);
+            $command = new GetAuthTokenCommand($args);
+            $authKey = $this->runCommand($command)->result;
+            $this->player->setAuthKey($authKey);
         }
-        $this->authKey = $authKey;
         return $this;
     }
 
@@ -126,17 +141,53 @@ class GameClient
      */
     protected function login()
     {
-        $lastLoginTime = Cache::get('last_login');
-        if ($lastLoginTime === null) {
-            $request = new GameRequest($this->authKey);
-            $request->addCommand(new LoginCommand(), $this->requestId++);
-            $this->executeRequest($request);
-            $lastLoginTime = $this->time;
-            Cache::put('last_login', $lastLoginTime, 60);
+        if ($this->player->getLastLogin() === 0) {
+            $args = new LoginArgs($this->player);
+            $command = new LoginCommand($args);
+            $messages = $this->runCommand($command)->getMessages();
+            $time = current($messages->login)->message->loginTime;
+            $this->player->setLastLogin($time);
         }
-        $this->lastLoginTime = $lastLoginTime;
 
         return $this;
     }
+
+    /**
+     * @param GameRequest $request
+     * @param CommandResponse $commandResponse
+     * @throws CommandException
+     */
+    protected function checkResponse(GameRequest $request, CommandResponse $commandResponse)
+    {
+        switch ($commandResponse->status) {
+            case 0:
+                return;
+            case 1999:
+                throw new PlayerBannedException($request, $commandResponse);
+                break;
+            default:
+                throw new CommandException($request, $commandResponse);
+
+        }
+    }
+
+    protected function createNewPlayer()
+    {
+        $command = new GeneratePlayerCommand(new GeneratePlayerArgs());
+        $result = $this->runCommand($command)->getResult();
+        $this->player->createNew($result->playerId, $result->secret);
+    }
+
+    /**
+     * @param $command
+     * @return CommandResponse
+     */
+    protected function runCommand($command)
+    {
+        $request = new GameRequest($this->player);
+        $request->addCommand($command, $this->requestId++);
+        return $this->executeRequest($request);
+    }
+
 
 }

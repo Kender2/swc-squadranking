@@ -9,11 +9,10 @@ class GetCommand extends Command
 
     /**
      * GetCommand constructor.
+     * @param Args $args
      */
-    public function __construct()
+    public function __construct(Args $args)
     {
-        parent::__construct();
-        $this->action = 'guild.get';
-        $this->args = new Args();
+        parent::__construct('guild.get', $args);
     }
 }

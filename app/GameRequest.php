@@ -16,14 +16,14 @@ class GameRequest
 
     /**
      * GameRequest constructor.
-     * @param string $authKey
-     * @param int $lastLoginTime
+     * @param Player $player
+     * @param int $time
      * @param bool $pickupMessages
      */
-    public function __construct($authKey = '', $lastLoginTime = 0, $time = 0, $pickupMessages = true)
+    public function __construct(Player $player, $time = 0, $pickupMessages = true)
     {
-        $this->authKey = $authKey;
-        $this->lastLoginTime = $lastLoginTime;
+        $this->authKey = $player->getAuthKey();
+        $this->lastLoginTime = $player->getLastLogin();
         $this->time = $time;
         $this->pickupMessages = $pickupMessages;
     }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\ClientRequest;
 use App\GameClient;
 use App\Jobs\FetchSquadData;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -11,10 +10,8 @@ class TestController extends Controller
 {
     use DispatchesJobs;
 
-    public function test()
+    public function test(GameClient $client)
     {
-        $client = new GameClient(new ClientRequest());
-
         $guild = $client->guildGet()->result;
 
         $warHistory = $guild->warHistory;

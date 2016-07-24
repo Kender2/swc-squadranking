@@ -5,6 +5,7 @@ namespace App;
 class GameResponse
 {
     protected $protocolVersion;
+    /** @var  array */
     protected $data;
     protected $serverTimestamp;
     protected $serverTime;

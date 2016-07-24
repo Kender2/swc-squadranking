@@ -1,7 +1,7 @@
 <?php
 namespace App\Commands;
 
-abstract class Command
+class Command
 {
     public $action;
     public $args;
@@ -11,10 +11,14 @@ abstract class Command
 
     /**
      * Command constructor.
+     * @param string $action
+     * @param ArgsInterface $args
      */
-    public function __construct()
+    public function __construct($action, ArgsInterface $args)
     {
         $this->token = static::generateToken();
+        $this->action = $action;
+        $this->args = $args;
     }
 
     public static function generateToken()

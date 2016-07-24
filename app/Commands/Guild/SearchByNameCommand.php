@@ -7,12 +7,10 @@ class SearchByNameCommand extends Command
 {
     /**
      * SearchByNameCommand constructor.
-     * @param string $searchTerm
+     * @param SearchByNameArgs $args
      */
-    public function __construct($searchTerm)
+    public function __construct(SearchByNameArgs $args)
     {
-        parent::__construct();
-        $this->action = 'guild.search.byName';
-        $this->args = new SearchByNameArgs($searchTerm);
+        parent::__construct('guild.search.byName', $args);
     }
 }

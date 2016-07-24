@@ -1,17 +1,19 @@
 <?php
 namespace App\Commands;
 
+use App\Player;
 
-class Args
+class Args implements ArgsInterface
 {
     public $playerId;
 
     /**
      * Args constructor.
+     * @param Player $player
      */
-    public function __construct()
+    public function __construct(Player $player)
     {
-        $this->playerId = config('sod.player_id');
+        $this->playerId = $player->getPlayerId();
     }
 
 

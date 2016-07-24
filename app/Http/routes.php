@@ -15,6 +15,8 @@ Route::get('/', function () {
     return redirect('http://sonsofdeathswc.wix.com/sons');
 });
 
+Route::get('/test', 'TestController@test');
+
 Route::get('/squadview', 'SquadController@viewSquad');
 Route::any('/squadsearch', 'SquadController@squadSearch');
 
