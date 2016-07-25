@@ -12,7 +12,7 @@ class TestController extends Controller
 
     public function test(GameClient $client)
     {
-        $guild = $client->guildGet()->result;
+        $guild = $client->guildSearchByName('Darkness')->result;
 
         $warHistory = $guild->warHistory;
 

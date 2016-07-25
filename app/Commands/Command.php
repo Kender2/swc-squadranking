@@ -1,7 +1,7 @@
 <?php
 namespace App\Commands;
 
-class Command
+class Command implements CommandInterface
 {
     public $action;
     public $args;

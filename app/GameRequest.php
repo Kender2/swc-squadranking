@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Commands\Command;
+use App\Commands\CommandInterface;
 
 class GameRequest
 {
@@ -28,7 +28,7 @@ class GameRequest
         $this->pickupMessages = $pickupMessages;
     }
 
-    public function addCommand(Command $command, $requestId)
+    public function addCommand(CommandInterface $command, $requestId)
     {
         $command->time = $this->time;
         $command->requestId = $requestId;

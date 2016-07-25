@@ -32,9 +32,9 @@ class Player
         $this->secret = $secret;
         $this->deviceToken = Uuid::uuid4()->toString();
 
-        Cache::put('playerId', $this->playerId);
-        Cache::put('secret', $this->secret);
-        Cache::put('deviceToken', $this->deviceToken);
+        Cache::forever('playerId', $this->playerId);
+        Cache::forever('secret', $this->secret);
+        Cache::forever('deviceToken', $this->deviceToken);
 
         $this->setLastLogin(0);
         $this->setAuthKey();

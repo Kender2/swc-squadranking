@@ -4,6 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Battle
+ *
+ * @mixin \Eloquent
+ */
 class Battle extends Model
 {
     public $incrementing = false;

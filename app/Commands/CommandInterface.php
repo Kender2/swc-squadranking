@@ -2,7 +2,7 @@
 namespace App\Commands;
 
 
-interface ArgsInterface
+interface CommandInterface
 {
 
 }

@@ -5,6 +5,11 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Squad
+ *
+ * @mixin \Eloquent
+ */
 class Squad extends Model
 {
     public $incrementing = false;
@@ -17,7 +22,7 @@ class Squad extends Model
             return true;
         }
         $twoDaysAgo = Carbon::now()->subDays(2);
-        $recentlyFetched = $this->updated_at->lt($twoDaysAgo);
+        $recentlyFetched = $this->updated_at->gt($twoDaysAgo);
 
         return !$recentlyFetched;
     }

@@ -1,8 +1,9 @@
 <?php
 namespace App\Commands\Auth\PreAuth;
 
+use App\Commands\ArgsInterface;
 
-class GeneratePlayerArgs
+class GeneratePlayerArgs implements ArgsInterface
 {
     public $locale = 'en_US';
 
@@ -14,6 +15,5 @@ class GeneratePlayerArgs
     {
         $this->locale = $locale;
     }
-
 
 }

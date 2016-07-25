@@ -7,6 +7,7 @@ use App\Commands\Auth\GetAuthTokenArgs;
 use App\Commands\Auth\GetAuthTokenCommand;
 use App\Commands\Auth\PreAuth\GeneratePlayerArgs;
 use App\Commands\Auth\PreAuth\GeneratePlayerCommand;
+use App\Commands\CommandInterface;
 use App\Commands\Guild\GetCommand;
 use App\Commands\Guild\GetPublicArgs;
 use App\Commands\Guild\GetPublicCommand;
@@ -25,6 +26,8 @@ class GameClient
     protected $requestId = 2;
     protected $player;
 
+    private $initialized = false;
+
     const DESYNC_BANNED = 1999;
 
     /**
@@ -36,17 +39,6 @@ class GameClient
     {
         $this->client = $client;
         $this->player = $player;
-
-        if ($this->player->getPlayerId() === null) {
-            $this->createNewPlayer();
-        }
-        $this->getAuthToken();
-        try {
-            $this->login();
-        } catch (PlayerBannedException $e) {
-            $this->createNewPlayer();
-            $this->login();
-        }
     }
 
     /**
@@ -179,14 +171,33 @@ class GameClient
     }
 
     /**
-     * @param $command
+     * @param CommandInterface $command
      * @return CommandResponse
      */
-    protected function runCommand($command)
+    protected function runCommand(CommandInterface $command)
     {
+        if (!$this->initialized) {
+            $this->initialize();
+        }
         $request = new GameRequest($this->player);
         $request->addCommand($command, $this->requestId++);
         return $this->executeRequest($request);
+    }
+
+    protected function initialize()
+    {
+        $this->initialized = true;
+        if ($this->player->getPlayerId() === null) {
+            $this->createNewPlayer();
+        }
+        $this->getAuthToken();
+        try {
+            $this->login();
+        } catch (PlayerBannedException $e) {
+            $this->createNewPlayer();
+            $this->login();
+        }
+
     }
 
 
