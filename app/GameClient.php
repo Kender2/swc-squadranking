@@ -119,13 +119,9 @@ class GameClient
      */
     protected function getAuthToken()
     {
-        if ($this->player->getAuthKey() === '') {
-            $args = new GetAuthTokenArgs($this->player);
-            $command = new GetAuthTokenCommand($args);
-            $authKey = $this->runCommand($command)->result;
-            $this->player->setAuthKey($authKey);
-        }
-        return $this;
+        $args = new GetAuthTokenArgs($this->player);
+        $command = new GetAuthTokenCommand($args);
+        return $this->runCommand($command)->result;
     }
 
     /**
@@ -133,13 +129,11 @@ class GameClient
      */
     protected function login()
     {
-        if ($this->player->getLastLogin() === 0) {
-            $args = new LoginArgs($this->player);
-            $command = new LoginCommand($args);
-            $messages = $this->runCommand($command)->getMessages();
-            $time = current($messages->login)->message->loginTime;
-            $this->player->setLastLogin($time);
-        }
+        $args = new LoginArgs($this->player);
+        $command = new LoginCommand($args);
+        $messages = $this->runCommand($command)->getMessages();
+        $time = current($messages->login)->message->loginTime;
+        $this->player->setLastLogin($time);
 
         return $this;
     }
@@ -190,7 +184,8 @@ class GameClient
         if ($this->player->getPlayerId() === null) {
             $this->createNewPlayer();
         }
-        $this->getAuthToken();
+        $authKey = $this->getAuthToken();
+        $this->player->setAuthKey($authKey);
         try {
             $this->login();
         } catch (PlayerBannedException $e) {
@@ -199,6 +194,5 @@ class GameClient
         }
 
     }
-
 
 }
