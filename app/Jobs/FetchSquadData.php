@@ -45,65 +45,69 @@ class FetchSquadData extends Job implements ShouldQueue
         if ($this->refresh || $squad->needsFetching()) {
             Log::debug('Fetching squad' . ($this->refresh ? ' due to refresh.' : '.'));
             $data = $client->guildGetPublic($this->guildId);
-            $squad->name = $data->name;
-            $squad->faction = $data->membershipRestrictions->faction;
+            if ($data === null) {
+                $squad->deleted = true;
+                Log::debug('Marking squad as deleted');
+            } else {
+                $squad->name = $data->name;
+                $faction = $squad->faction = $data->membershipRestrictions->faction;
 
-            $squad->wins = 0;
-            $squad->losses = 0;
-            $squad->draws = 0;
-            $squad->uplinks_captured = 0;
-            $squad->uplinks_saved = 0;
-
-            foreach ($data->warHistory as $war) {
-                if ($war->opponentGuildId !== null) {
-
-                    $battle = Battle::firstOrNew(['id' => $war->warId]);
-                    if (!$battle->exists) {
-                        $battle->end_date = Carbon::createFromTimestampUTC($war->endDate);
-                        if ($squad->faction === 'rebel') {
-                            $battle->rebel_id = $this->guildId;
-                            $battle->empire_id = $war->opponentGuildId;
-                            $battle->rebel_score = $war->score;
-                            $battle->empire_score = $war->opponentScore;
-                        } else {
-                            $battle->rebel_id = $war->opponentGuildId;
-                            $battle->empire_id = $this->guildId;
-                            $battle->rebel_score = $war->opponentScore;
-                            $battle->empire_score = $war->score;
-                        }
-                        Log::debug('Adding new battle');
-                        $battle->save();
-                        // @TODO: send battle to ranking modifying code.
-                    }
-                    else {
-                        Log::debug('Already seen this battle');
-                    }
-
-                    $opponent = Squad::firstOrNew(['id' => $war->opponentGuildId]);
-                    if ($opponent->needsFetching()) {
-                        Log::debug('Adding squad to queue.');
-                        try {
-                            $this->dispatch(new FetchSquadData($war->opponentGuildId));
-                        }
-                        catch (\Exception $e) {}
+                foreach ($data->warHistory as $war) {
+                    if ($war->opponentGuildId !== null) {
+                        $this->processWarResult($war, $faction);
+                        $opponentId = $war->opponentGuildId;
+                        $this->queueOpponent($opponentId);
                     }
                 }
-                if ($war->score > $war->opponentScore) {
-                    $squad->wins++;
-                } elseif ($war->score < $war->opponentScore) {
-                    $squad->losses++;
-                } else {
-                    $squad->draws++;
-                }
-                $squad->uplinks_captured += $war->score;
-                $squad->uplinks_saved += 45 - $war->opponentScore;
             }
-
             $squad->save();
             sleep(mt_rand(1, 3));
-        }
-        else {
+        } else {
             Log::debug('No need to fetch squad.');
+        }
+    }
+
+    /**
+     * @param \stdClass $war
+     * @param string $faction
+     */
+    protected function processWarResult($war, $faction)
+    {
+        $battle = Battle::firstOrNew(['id' => $war->warId]);
+        if (!$battle->exists) {
+            $battle->end_date = Carbon::createFromTimestampUTC($war->endDate);
+            if ($faction === 'rebel') {
+                $battle->rebel_id = $this->guildId;
+                $battle->empire_id = $war->opponentGuildId;
+                $battle->rebel_score = $war->score;
+                $battle->empire_score = $war->opponentScore;
+            } else {
+                $battle->rebel_id = $war->opponentGuildId;
+                $battle->empire_id = $this->guildId;
+                $battle->rebel_score = $war->opponentScore;
+                $battle->empire_score = $war->score;
+            }
+            Log::debug('Adding new battle');
+            $battle->save();
+            // @TODO: send battle to ranking modifying code.
+        } else {
+            Log::debug('Already seen this battle');
+        }
+    }
+
+    /**
+     * @param string $opponentId
+     */
+    protected function queueOpponent($opponentId)
+    {
+        $opponent = Squad::firstOrNew(['id' => $opponentId]);
+        if ($opponent->needsFetching()) {
+            try {
+                $this->dispatch(new FetchSquadData($opponentId));
+                Log::debug('Added opponent squad to queue.');
+            } catch (\Exception $e) {
+                // Ignoring duplicate key errors.
+            }
         }
     }
 }

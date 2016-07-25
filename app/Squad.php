@@ -21,6 +21,9 @@ class Squad extends Model
         if (!$this->exists) {
             return true;
         }
+        if ($this->deleted) {
+            return false;
+        }
         $twoDaysAgo = Carbon::now()->subDays(2);
         $recentlyFetched = $this->updated_at->gt($twoDaysAgo);
 

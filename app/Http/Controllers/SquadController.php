@@ -31,6 +31,9 @@ class SquadController extends Controller
         if ($request->has('squadId')) {
             $squadId = $request->input('squadId');
             $squad = $this->client->guildGetPublic($squadId);
+            if ($squad === null) {
+                return view('squad_not_found');
+            }
             $warRecord = [];
             if (!empty($squad->warHistory)) {
                 foreach ($squad->warHistory as $battle) {
