@@ -42,7 +42,7 @@ class Squad extends Model
         if (!$this->exists) {
             return true;
         }
-        if ($this->deleted) {
+        if ($this->getAttributeValue('deleted')) {
             return false;
         }
         $twoDaysAgo = Carbon::now()->subDays(2);
