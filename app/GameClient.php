@@ -93,7 +93,7 @@ class GameClient
     {
         $args = new GetPublicArgs($this->player, $guildId);
         $command = new GetPublicCommand($args);
-        return  $this->runCommand($command)->result;
+        return $this->runCommand($command)->result;
     }
 
     /**
@@ -186,10 +186,12 @@ class GameClient
         $request = new GameRequest($this->player);
         $request->addCommand($command, $this->requestId++);
         try {
-            $this->executeRequest($request);
+            $response = $this->executeRequest($request);
         } catch (PlayerLoggedOutException $e) {
             $this->initialize();
+            $response = $this->executeRequest($request);
         }
+        return $response;
     }
 
     protected function initialize()
