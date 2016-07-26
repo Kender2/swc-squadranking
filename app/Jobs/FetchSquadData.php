@@ -50,11 +50,11 @@ class FetchSquadData extends Job implements ShouldQueue
                 Log::debug('Marking squad as deleted');
             } else {
                 $squad->name = $data->name;
-                $faction = $squad->faction = $data->membershipRestrictions->faction;
+                $squad->faction = $data->membershipRestrictions->faction;
 
                 foreach ($data->warHistory as $war) {
                     if ($war->opponentGuildId !== null) {
-                        $this->processWarResult($war, $faction);
+                        $this->processWarResult($war);
                         $opponentId = $war->opponentGuildId;
                         $this->queueOpponent($opponentId);
                     }
@@ -69,24 +69,16 @@ class FetchSquadData extends Job implements ShouldQueue
 
     /**
      * @param \stdClass $war
-     * @param string $faction
      */
-    protected function processWarResult($war, $faction)
+    protected function processWarResult($war)
     {
         $battle = Battle::firstOrNew(['id' => $war->warId]);
         if (!$battle->exists) {
             $battle->end_date = Carbon::createFromTimestampUTC($war->endDate);
-            if ($faction === 'rebel') {
-                $battle->rebel_id = $this->guildId;
-                $battle->empire_id = $war->opponentGuildId;
-                $battle->rebel_score = $war->score;
-                $battle->empire_score = $war->opponentScore;
-            } else {
-                $battle->rebel_id = $war->opponentGuildId;
-                $battle->empire_id = $this->guildId;
-                $battle->rebel_score = $war->opponentScore;
-                $battle->empire_score = $war->score;
-            }
+            $battle->squad_id = $this->guildId;
+            $battle->opponent_id = $war->opponentGuildId;
+            $battle->score = $war->score;
+            $battle->opponent_score = $war->opponentScore;
             Log::debug('Adding new battle');
             $battle->save();
             // @TODO: send battle to ranking modifying code.
@@ -106,7 +98,7 @@ class FetchSquadData extends Job implements ShouldQueue
                 $this->dispatch(new FetchSquadData($opponentId));
                 Log::debug('Added opponent squad to queue.');
             } catch (\Exception $e) {
-                // Ignoring duplicate key errors.
+                Log::debug('Duplicate queue item');
             }
         }
     }
