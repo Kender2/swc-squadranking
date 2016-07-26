@@ -5,16 +5,16 @@ namespace App\Jobs;
 use App\Battle;
 use App\GameClient;
 use App\Squad;
+use App\WarProcessor;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Log;
 
 class FetchSquadData extends Job implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels, DispatchesJobs;
+    use InteractsWithQueue, SerializesModels;
 
     private $guildId;
     /**
@@ -38,8 +38,9 @@ class FetchSquadData extends Job implements ShouldQueue
      * Execute the job.
      *
      * @param GameClient $client
+     * @param WarProcessor $warProcessor
      */
-    public function handle(GameClient $client)
+    public function handle(GameClient $client, WarProcessor $warProcessor)
     {
         $squad = Squad::firstOrNew(['id' => $this->guildId]);
         if ($this->refresh || $squad->needsFetching()) {
@@ -51,14 +52,7 @@ class FetchSquadData extends Job implements ShouldQueue
             } else {
                 $squad->name = $data->name;
                 $squad->faction = $data->membershipRestrictions->faction;
-
-                foreach ($data->warHistory as $war) {
-                    if ($war->opponentGuildId !== null) {
-                        $this->processWarResult($war);
-                        $opponentId = $war->opponentGuildId;
-                        $this->queueOpponent($opponentId);
-                    }
-                }
+                $warProcessor->processWarHistory($data->warHistory, $squad->id);
             }
             $squad->save();
             sleep(mt_rand(1, 3));
@@ -67,39 +61,4 @@ class FetchSquadData extends Job implements ShouldQueue
         }
     }
 
-    /**
-     * @param \stdClass $war
-     */
-    protected function processWarResult($war)
-    {
-        $battle = Battle::firstOrNew(['id' => $war->warId]);
-        if (!$battle->exists) {
-            $battle->end_date = Carbon::createFromTimestampUTC($war->endDate);
-            $battle->squad_id = $this->guildId;
-            $battle->opponent_id = $war->opponentGuildId;
-            $battle->score = $war->score;
-            $battle->opponent_score = $war->opponentScore;
-            Log::debug('Adding new battle');
-            $battle->save();
-            // @TODO: send battle to ranking modifying code.
-        } else {
-            Log::debug('Already seen this battle');
-        }
-    }
-
-    /**
-     * @param string $opponentId
-     */
-    protected function queueOpponent($opponentId)
-    {
-        $opponent = Squad::firstOrNew(['id' => $opponentId]);
-        if ($opponent->needsFetching()) {
-            try {
-                $this->dispatch(new FetchSquadData($opponentId));
-                Log::debug('Added opponent squad to queue.');
-            } catch (\Exception $e) {
-                Log::debug('Duplicate queue item');
-            }
-        }
-    }
 }

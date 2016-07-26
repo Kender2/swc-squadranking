@@ -3,16 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\GameClient;
-use App\Jobs\FetchSquadData;
 use App\Squad;
 use Carbon\Carbon;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
 use Log;
 
 class SquadController extends Controller
 {
-    use DispatchesJobs;
 
     private $client;
 
@@ -60,13 +57,8 @@ class SquadController extends Controller
         if ($request->has('name')) {
             $results = $this->client->guildSearchByName($request->input('name'));
             foreach ($results as $result) {
-                $squad = Squad::firstOrNew(['id' => $result->_id]);
-                if ($squad->needsFetching()) {
-                    Log::debug('Adding squad to queue from search.');
-                    try {
-                        $this->dispatch(new FetchSquadData($result->_id));
-                    } catch (\Exception $e) {
-                    }
+                if (Squad::firstOrNew(['id' => $result->_id])->queueIfNeeded()) {
+                    Log::debug('Added squad to queue from search.');
                 }
             }
         }

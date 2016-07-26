@@ -119,9 +119,13 @@ class GameClient
      */
     protected function getAuthToken()
     {
-        $args = new GetAuthTokenArgs($this->player);
-        $command = new GetAuthTokenCommand($args);
-        return $this->runCommand($command)->result;
+        $authKey = $this->player->getAuthKey();
+        if ($authKey === '') {
+            $args = new GetAuthTokenArgs($this->player);
+            $command = new GetAuthTokenCommand($args);
+            $authKey = $this->runCommand($command)->result;
+        }
+        return $authKey;
     }
 
     /**
@@ -129,12 +133,13 @@ class GameClient
      */
     protected function login()
     {
-        $args = new LoginArgs($this->player);
-        $command = new LoginCommand($args);
-        $messages = $this->runCommand($command)->getMessages();
-        $time = current($messages->login)->message->loginTime;
-        $this->player->setLastLogin($time);
-
+        if (!$this->player->isLoggedIn()) {
+            $args = new LoginArgs($this->player);
+            $command = new LoginCommand($args);
+            $messages = $this->runCommand($command)->getMessages();
+            $time = current($messages->login)->message->loginTime;
+            $this->player->setLastLogin($time);
+        }
         return $this;
     }
 

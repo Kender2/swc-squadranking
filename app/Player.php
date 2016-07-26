@@ -105,5 +105,10 @@ class Player
         return $this;
     }
 
+    public function isLoggedIn()
+    {
+        return $this->getLastLogin() > 0;
+    }
+
 
 }
