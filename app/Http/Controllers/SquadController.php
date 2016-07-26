@@ -58,7 +58,7 @@ class SquadController extends Controller
             $results = $this->client->guildSearchByName($request->input('name'));
             foreach ($results as $result) {
                 if (Squad::firstOrNew(['id' => $result->_id])->queueIfNeeded()) {
-                    Log::debug('Added squad to queue from search.');
+                    Log::info('Added squad to queue from search.');
                 }
             }
         }

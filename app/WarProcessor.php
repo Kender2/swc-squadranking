@@ -25,13 +25,13 @@ class WarProcessor
      */
     public function processWarHistory(array $warHistory, $squadId)
     {
-        Log::debug('Processing war history');
+        Log::info('Processing war history');
         foreach ($warHistory as $war) {
             if ($war->opponentGuildId !== null) {
                 $war->squadId = $squadId;
                 $this->processWarResult($war);
                 if (Squad::firstOrNew(['id' => $war->opponentGuildId])->queueIfNeeded()) {
-                    Log::debug('Added opponent squad to queue.');
+                    Log::info('Added opponent squad to queue.');
                 }
             }
         }
@@ -49,11 +49,11 @@ class WarProcessor
             $battle->opponent_id = $war->opponentGuildId;
             $battle->score = $war->score;
             $battle->opponent_score = $war->opponentScore;
-            Log::debug('Adding new battle');
+            Log::info('Adding new battle');
             $battle->save();
             $this->ranker->rank($battle);
         } else {
-            Log::debug('Already seen this battle');
+            Log::info('Already seen battle ' . $war->warId);
         }
     }
 }

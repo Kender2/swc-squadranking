@@ -43,7 +43,6 @@ class Squad extends Model
             return true;
         }
         if ($this->deleted) {
-            Log::debug("Deleted squad doesn't need fetching.", ['squad' => $this]);
             return false;
         }
         $twoDaysAgo = Carbon::now()->subDays(2);
