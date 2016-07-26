@@ -42,7 +42,7 @@ class FetchSquadData extends Job implements ShouldQueue
      */
     public function handle(GameClient $client, WarProcessor $warProcessor)
     {
-        $squad = Squad::firstOrNew(['id' => $this->guildId]);
+        $squad = Squad::firstOrCreate(['id' => $this->guildId]);
         if ($this->refresh || $squad->needsFetching()) {
             Log::info('Fetching squad' . ($this->refresh ? ' due to refresh.' : '.'));
             $data = $client->guildGetPublic($this->guildId);

@@ -25,7 +25,7 @@ class WarProcessor
      */
     public function processWarHistory(array $warHistory, $squadId)
     {
-        Log::info('Processing war history');
+        Log::info('Processing war history: ' . count($warHistory) . ' wars.');
         foreach ($warHistory as $war) {
             if ($war->opponentGuildId !== null) {
                 $war->squadId = $squadId;
