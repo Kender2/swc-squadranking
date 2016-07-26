@@ -107,8 +107,7 @@ class Player
 
     public function isLoggedIn()
     {
-        return $this->getLastLogin() > 0;
+        return $this->getAuthKey() !== '';
     }
-
 
 }

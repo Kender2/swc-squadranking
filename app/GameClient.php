@@ -188,6 +188,7 @@ class GameClient
         try {
             $response = $this->executeRequest($request);
         } catch (PlayerLoggedOutException $e) {
+            $this->player->setAuthKey();
             $this->initialize();
             $response = $this->executeRequest($request);
         }
@@ -208,7 +209,6 @@ class GameClient
             $this->createNewPlayer();
             $this->login();
         }
-
     }
 
 }
