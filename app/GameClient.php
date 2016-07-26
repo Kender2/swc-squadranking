@@ -93,14 +93,7 @@ class GameClient
     {
         $args = new GetPublicArgs($this->player, $guildId);
         $command = new GetPublicCommand($args);
-        $response = $this->runCommand($command);
-
-        // Exception if requesting data for own squad.
-        if ($response->result === null) {
-            return $this->guildGet()->result;
-        }
-
-        return $response->result;
+        return  $this->runCommand($command)->result;
     }
 
     /**
