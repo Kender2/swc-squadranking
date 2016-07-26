@@ -57,7 +57,7 @@ class FetchSquadData extends Job implements ShouldQueue
             $squad->save();
             sleep(mt_rand(1, 3));
         } else {
-            Log::debug('No need to fetch squad.');
+            Log::debug('No need to fetch squad ' . $this->guildId);
         }
     }
 
