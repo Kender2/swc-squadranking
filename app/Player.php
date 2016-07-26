@@ -12,6 +12,7 @@ class Player
     protected $lastLogin;
     protected $authKey;
     protected $deviceToken;
+    protected $loggedIn;
     const SESSION_TIMEOUT_MINUTES = 60;
 
     /**
@@ -83,6 +84,7 @@ class Player
     {
         $this->lastLogin = $lastLogin;
         Cache::put('lastLogin', $lastLogin, self::SESSION_TIMEOUT_MINUTES);
+        $this->loggedIn = true;
         return $this;
     }
 
@@ -107,7 +109,13 @@ class Player
 
     public function isLoggedIn()
     {
-        return $this->getAuthKey() !== '';
+        return $this->loggedIn;
+    }
+
+    public function logout()
+    {
+        $this->loggedIn = false;
+        $this->setAuthKey();
     }
 
 }
