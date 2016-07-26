@@ -19,6 +19,7 @@ use App\Commands\Player\Neighbor\VisitArgs;
 use App\Commands\Player\Neighbor\VisitCommand;
 use App\Exceptions\CommandException;
 use App\Exceptions\PlayerBannedException;
+use App\Exceptions\PlayerLoggedOutException;
 
 class GameClient
 {
@@ -162,6 +163,8 @@ class GameClient
         switch ($commandResponse->status) {
             case 0:
                 return;
+            case 802:
+                throw new PlayerLoggedOutException($request, $commandResponse);
             case 1999:
                 throw new PlayerBannedException($request, $commandResponse);
                 break;
@@ -189,7 +192,11 @@ class GameClient
         }
         $request = new GameRequest($this->player);
         $request->addCommand($command, $this->requestId++);
-        return $this->executeRequest($request);
+        try {
+            $this->executeRequest($request);
+        } catch (PlayerLoggedOutException $e) {
+            $this->initialize();
+        }
     }
 
     protected function initialize()
