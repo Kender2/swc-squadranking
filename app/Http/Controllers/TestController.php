@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\GameClient;
 use App\Jobs\FetchSquadData;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Http\JsonResponse;
 
 class TestController extends Controller
 {
@@ -12,21 +13,5 @@ class TestController extends Controller
 
     public function test(GameClient $client)
     {
-        $guild = $client->guildSearchByName('Darkness')->result;
-
-        $warHistory = $guild->warHistory;
-
-        foreach ($warHistory as $war) {
-            if ($war->opponentGuildId !== null) {
-//                if (!Squad::where('id', $war->opponentGuildId)->exists()) {
-                try {
-                    $this->dispatch(new FetchSquadData($war->opponentGuildId, true));
-                } catch (\Exception $e) {
-                }
-//                }
-            }
-        }
-
-        return \GuzzleHttp\json_encode($guild);
     }
 }

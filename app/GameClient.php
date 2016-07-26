@@ -15,6 +15,8 @@ use App\Commands\Guild\SearchByNameArgs;
 use App\Commands\Guild\SearchByNameCommand;
 use App\Commands\Player\LoginArgs;
 use App\Commands\Player\LoginCommand;
+use App\Commands\Player\Neighbor\VisitArgs;
+use App\Commands\Player\Neighbor\VisitCommand;
 use App\Exceptions\CommandException;
 use App\Exceptions\PlayerBannedException;
 
@@ -111,6 +113,13 @@ class GameClient
     {
         $args = new SearchByNameArgs($this->player, $searchTerm);
         $command = new SearchByNameCommand($args);
+        return $this->runCommand($command)->result;
+    }
+
+    public function visitNeighbor($neighborId)
+    {
+        $args = new VisitArgs($this->player, $neighborId);
+        $command = new VisitCommand($args);
         return $this->runCommand($command)->result;
     }
 
