@@ -39,7 +39,7 @@ class Squad extends Model
 
     public function needsFetching()
     {
-        if (!$this->exists) {
+        if (!$this->exists || $this->name === null) {
             return true;
         }
         if ($this->getAttributeValue('deleted')) {
