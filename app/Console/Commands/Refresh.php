@@ -56,7 +56,7 @@ class Refresh extends Command
                 $squad->faction = $data->membershipRestrictions->faction;
                 $warProcessor->processWarHistory($data->warHistory, $squad->id);
             }
-            $squad->save();
+            $squad->touch();
             $seconds = mt_rand(2, 8);
             $this->comment('Sleeping ' . $seconds . ' seconds.');
             sleep($seconds);
