@@ -47,8 +47,9 @@ class WarProcessor
     protected function processWarResult($war)
     {
         $battle = Battle::firstOrNew(['id' => $war->warId]);
+        $warEnded = Carbon::createFromTimestampUTC($war->endDate);
         if (!$battle->exists) {
-            $battle->end_date = Carbon::createFromTimestampUTC($war->endDate);
+            $battle->end_date = $warEnded;
             $battle->squad_id = $war->squadId;
             $battle->opponent_id = $war->opponentGuildId;
             $battle->score = $war->score;
@@ -58,6 +59,10 @@ class WarProcessor
             $this->ranker->rank($battle);
         } else {
             Log::info('Already seen battle ' . $war->warId);
+            if ($battle->end_date !== $warEnded) {
+                Log::notice('Fixing war end date from ' . $battle->end_date . ' to ' . $warEnded);
+                $battle->update(['end_date' => $warEnded]);
+            }
         }
     }
 }
