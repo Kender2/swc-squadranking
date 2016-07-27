@@ -11,8 +11,10 @@
             <a class="navbar-brand" href="/">Home</a>
         </div>
         <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="{{ url('/squadranking') }}">Top 100</a></li>
+            </ul>
             <ul class="nav navbar-nav navbar-right">
-                {{--<li><a href="{{ url('/squadview') }}">View squad</a></li>--}}
                 <li><a href="{{ url('/squadsearch') }}">Search squad</a></li>
             </ul>
         </div>
