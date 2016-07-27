@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Route::get('/test', 'TestController@test');
 
-Route::get('/squadview', 'SquadController@viewSquad');
-Route::get('/squadranking', 'RankingController@ranking');
-Route::any('/squadsearch', 'SquadController@squadSearch');
+Route::get('/squadview', 'SquadController@viewSquad')->name('squadview');
+Route::get('/squadranking', 'RankingController@ranking')->name('squadranking');
+Route::any('/squadsearch', 'SquadController@squadSearch')->name('squadsearch');
 
