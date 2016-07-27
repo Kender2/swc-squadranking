@@ -54,7 +54,7 @@ class FetchSquadData extends Job implements ShouldQueue
                 $squad->faction = $data->membershipRestrictions->faction;
                 $warProcessor->processWarHistory($data->warHistory, $squad->id);
             }
-            $squad->save();
+            $squad->touch();
             sleep(mt_rand(2, 8));
         } else {
             Log::info('No need to fetch squad ' . $squad->id);

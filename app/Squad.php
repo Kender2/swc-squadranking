@@ -6,7 +6,6 @@ use App\Jobs\FetchSquadData;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Log;
 
 /**
  * App\Squad
@@ -36,6 +35,11 @@ class Squad extends Model
     public $incrementing = false;
 
     public $fillable = ['id'];
+
+    protected $attributes = [
+        'mu' => 25,
+        'sigma' => 25 / 3,
+    ];
 
     public function needsFetching()
     {

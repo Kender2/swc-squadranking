@@ -26,8 +26,6 @@ class Ranker
     {
         $gameInfo = new GameInfo();
 
-        Log::debug('Ranking battle', ['battle' => $battle]);
-
         $squad1 = Squad::firstOrCreate(['id' => $battle->squad_id]);
         $player1 = new \Moserware\Skills\Player($squad1->id);
         $rating1 = new Rating($squad1->mu, $squad1->sigma);
@@ -41,6 +39,8 @@ class Ranker
         $teams = [$team1, $team2];
         $teamOrder = [46 - $battle->score, 46 - $battle->opponent_score];
 
+        Log::info('Ranking battle between ' . $squad1->id . ' and ' . $squad2->id);
+
         /** @var RatingContainer $newRatings */
         $newRatings = $this->calculator->calculateNewRatings($gameInfo, $teams, $teamOrder);
 
@@ -50,10 +50,12 @@ class Ranker
         $squad1->mu = $player1NewRating->getMean();
         $squad1->sigma = $player1NewRating->getStandardDeviation();
         $squad1->save();
+        Log::info('Rating for squad ' . $squad1->id . ' updated from ' . $rating1->getMean() . ' to ' . $squad1->mu);
 
         $squad2->mu = $player2NewRating->getMean();
         $squad2->sigma = $player2NewRating->getStandardDeviation();
         $squad2->save();
+        Log::info('Rating for squad ' . $squad2->id . ' updated from ' . $rating2->getMean() . ' to ' . $squad2->mu);
 
         $battle->processed_at = Carbon::now();
         $battle->save();
