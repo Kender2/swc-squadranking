@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Exceptions\PlayerBannedException;
 use Carbon\Carbon;
 use Log;
 
@@ -33,6 +34,9 @@ class WarProcessor
                 if (Squad::firstOrNew(['id' => $war->opponentGuildId])->queueIfNeeded()) {
                     Log::info('Added opponent squad to queue.');
                 }
+            }
+            else {
+                Log::info('Ignoring old war with no opponent id.');
             }
         }
     }
