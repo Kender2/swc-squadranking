@@ -44,7 +44,7 @@ class FetchSquadData extends Job implements ShouldQueue
     {
         $squad = Squad::firstOrCreate(['id' => $this->guildId]);
         if ($this->refresh || $squad->needsFetching()) {
-            Log::info('Fetching squad ' . $squad->id . ' ' . ($this->refresh ? ' due to refresh.' : '.'));
+            Log::info('Fetching squad ' . $squad->id . ($this->refresh ? ' due to refresh.' : '.'));
             $data = $client->guildGetPublic($this->guildId);
             if ($data === null) {
                 $squad->deleted = true;
