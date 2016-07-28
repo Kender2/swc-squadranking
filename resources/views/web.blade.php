@@ -10,15 +10,21 @@
 
     <link rel="stylesheet" href="/css/all.css">
 
-    </head>
-    <body>
-        <div class="container">
-            <div class="title">@yield('title')</div>
-            @include('nav')
-            <div class="content">
-                @yield('content')
-            </div>
-        </div>
+</head>
+<body>
+<div class="container">
+    <div class="title">
+        @hasSection ('heading')
+        @yield('heading')
+        @else
+            @yield('title')
+        @endif
+    </div>
+    @include('nav')
+    <div class="content">
+        @yield('content')
+    </div>
+</div>
 
 <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>

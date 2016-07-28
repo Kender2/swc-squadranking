@@ -78,14 +78,14 @@ class SquadController extends Controller
             $battles[$offensiveBattle->end_date] = [
                 'score' => $offensiveBattle->score,
                 'opponent_score' => $offensiveBattle->opponent_score,
-                'opponent' => Squad::find($offensiveBattle->opponent_id),
+                'opponent' => Squad::findOrNew($offensiveBattle->opponent_id),
             ];
         }
         foreach ($defensiveBattles as $defensiveBattle) {
             $battles[$defensiveBattle->end_date] = [
                 'score' => $defensiveBattle->opponent_score,
                 'opponent_score' => $defensiveBattle->score,
-                'opponent' => Squad::find($defensiveBattle->squad_id),
+                'opponent' => Squad::findOrNew($defensiveBattle->squad_id),
             ];
         }
 

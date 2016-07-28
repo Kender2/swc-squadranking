@@ -31,6 +31,8 @@ class GameClient
 
     private $initialized = false;
 
+    const AUTH_FAILURE = 802;
+    const LOGIN_TIME_MISMATCH = 917;
     const DESYNC_BANNED = 1999;
 
     /**
@@ -156,14 +158,14 @@ class GameClient
         switch ($commandResponse->status) {
             case 0:
                 return;
-            case 802:
+            case self::AUTH_FAILURE:
+            case self::LOGIN_TIME_MISMATCH:
                 throw new PlayerLoggedOutException($request, $commandResponse);
-            case 1999:
+            case self::DESYNC_BANNED:
                 throw new PlayerBannedException($request, $commandResponse);
                 break;
             default:
                 throw new CommandException($request, $commandResponse);
-
         }
     }
 

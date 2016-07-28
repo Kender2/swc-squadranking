@@ -1,8 +1,8 @@
 @extends('web')
 
-@section('title')
-    {{ urldecode($totals['squad']->name) }}
-@endsection
+@section('title'){!! $totals['squad']->renderNamePlain() !!}@endsection
+@section('heading'){!! $totals['squad']->renderName() !!}@endsection
+
 
 @section('content')
     <div class="row">
@@ -64,7 +64,7 @@
                 @foreach($battles as $date => $battle)
                     <tr>
                         <td>{{$date}}</td>
-                        <td><a href="{{$battle['opponent']->id}}">{{ urldecode($battle['opponent']->name) }}</a>
+                        <td><a href="{{$battle['opponent']->id}}">{!! $battle['opponent']->renderName() !!}</a>
                         </td>
                         <td>{{$battle['result']}}</td>
                         <td class="rank">{{$battle['score']}}</td>

@@ -84,4 +84,28 @@ class Squad extends Model
         }
         return false;
     }
+
+    public function renderName()
+    {
+        return static::colorName($this->name);
+    }
+
+    public function renderNamePlain()
+    {
+       return static::plainName($this->name);
+    }
+
+    public static function colorName($name)
+    {
+        $safe_name = htmlentities(urldecode($name));
+        return preg_replace('/\[([0-9A-F]{6})\]/', '<span style="color: #$1">', $safe_name) . '</span>';
+    }
+
+    public static function plainName($name)
+    {
+        $safe_name = htmlentities(urldecode($name));
+        return preg_replace('/\[[0-9A-F]{6}\]/', '', $safe_name);
+    }
+
+
 }
