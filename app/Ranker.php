@@ -24,7 +24,7 @@ class Ranker
 
     public function rank(Battle $battle)
     {
-        $gameInfo = new GameInfo();
+        $gameInfo = new GameInfo(null, null, null, null, 1/40);
 
         $squad1 = Squad::firstOrCreate(['id' => $battle->squad_id]);
         $player1 = new \Moserware\Skills\Player($squad1->id);

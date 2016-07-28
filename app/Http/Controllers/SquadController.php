@@ -7,6 +7,7 @@ use App\GameClient;
 use App\Squad;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Log;
 
 class SquadController extends Controller
@@ -55,7 +56,7 @@ class SquadController extends Controller
 
     public function squadSearch(Request $request)
     {
-        if ($request->has('name')) {
+        if ($request->has('name') && Str::length($request->input('name')) >= 3) {
             $results = $this->client->guildSearchByName($request->input('name'));
             foreach ($results as $result) {
                 if (Squad::firstOrNew(['id' => $result->_id])->queueIfNeeded()) {
