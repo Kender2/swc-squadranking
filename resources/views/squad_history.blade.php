@@ -75,4 +75,7 @@
             </table>
         </div>
     </div>
+    <div class="row">
+        <div class="col-lg-12"><small>*Note: <em>Wars from before June 22th 2016 are not included.</em></small></div>
+    </div>
 @endsection

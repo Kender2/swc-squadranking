@@ -1,8 +1,7 @@
 @extends('web')
 
-@section('title')
-    SQUAD WAR RANKING
-@endsection
+@section('title')SQUAD WAR RANKING @endsection
+@section('heading')SQUAD WAR RANKING <em class="text-danger">*BETA*</em> @endsection
 
 @section('content')
     <div>
