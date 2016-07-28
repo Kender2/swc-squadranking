@@ -4,8 +4,21 @@
 @section('heading')SQUAD WAR RANKING <em class="text-danger">*BETA*</em> @endsection
 
 @section('content')
-    <div>
-        <div class="col-sm-offset-1 col-sm-6">
+    <div class="row">
+        <div class="col-sm-2">
+            <table class="table table-bordered table-condensed table-hover">
+                <caption>Statistics</caption>
+                <tr>
+                    <td>Squads in database:</td>
+                    <td class="rank">{{ number_format(\App\Squad::count()) }}</td>
+                </tr>
+                <tr>
+                    <td>Wars in database:</td>
+                    <td class="rank">{{ number_format(\App\Battle::count()) }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-sm-6">
             <h2>Top 100 squads</h2>
             <table class="table table-striped table-bordered">
                 <thead>
