@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Battle;
 use App\GameClient;
 use App\Squad;
 use Carbon\Carbon;
@@ -63,5 +64,64 @@ class SquadController extends Controller
             }
         }
         return view('squadsearch', compact('results'));
+    }
+
+    public function squadHistory($id)
+    {
+        $squad = Squad::findOrFail($id);
+
+        $offensiveBattles = Battle::whereSquadId($squad->id)->get();
+        $defensiveBattles = Battle::whereOpponentId($squad->id)->get();
+
+        $battles = [];
+        foreach ($offensiveBattles as $offensiveBattle) {
+            $battles[$offensiveBattle->end_date] = [
+                'score' => $offensiveBattle->score,
+                'opponent_score' => $offensiveBattle->opponent_score,
+                'opponent' => Squad::find($offensiveBattle->opponent_id),
+            ];
+        }
+        foreach ($defensiveBattles as $defensiveBattle) {
+            $battles[$defensiveBattle->end_date] = [
+                'score' => $defensiveBattle->opponent_score,
+                'opponent_score' => $defensiveBattle->score,
+                'opponent' => Squad::find($defensiveBattle->squad_id),
+            ];
+        }
+
+        ksort($battles);
+
+        $totals = [
+            'squad' => $squad,
+            'rank' => $squad->getRank(),
+            'skill' => round($squad->mu * 1000),
+            'uplinksCaptured' => 0,
+            'uplinksSaved' => 0,
+            'wins' => 0,
+            'losses' => 0,
+            'draws' => 0,
+        ];
+
+        foreach ($battles as $endDate => $battle) {
+            $totals['uplinksCaptured'] += $battle['score'];
+            $totals['uplinksSaved'] += 45 - $battle['opponent_score'];
+
+            if ($battle['score'] > $battle['opponent_score']) {
+                $battles[$endDate]['result'] = 'WIN';
+                $totals['wins']++;
+             }
+             elseif ($battle['score'] < $battle['opponent_score']) {
+                 $battles[$endDate]['result'] = 'LOSS';
+                 $totals['losses']++;
+             }
+             else {
+                 $battles[$endDate]['result'] = 'DRAW';
+                 $totals['draws']++;
+             }
+        }
+
+        $totals['wars'] = count($battles);
+
+        return view('squad_history', compact(['battles', 'totals']));
     }
 }

@@ -34,7 +34,7 @@
                 @foreach($results as $squad)
                     <tr>
                         <td class="rank">{{$squad->rank}}</td>
-                        <td><a href="squadview?squadId={{$squad->_id}}">{{$squad->name}}</a></td>
+                        <td><a href="squadview?squadId={{$squad->_id}}">{{ urldecode($squad->name)}}</a></td>
                         <td>{{$squad->faction}}</td>
                     </tr>
                 @endforeach

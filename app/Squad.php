@@ -4,6 +4,7 @@ namespace App;
 
 use App\Jobs\FetchSquadData;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
@@ -40,6 +41,14 @@ class Squad extends Model
         'mu' => 25,
         'sigma' => 25 / 3,
     ];
+
+
+    public function getRank()
+    {
+        $query = 'SELECT 1 + (SELECT count(*) FROM squads a WHERE a.mu > b.mu ) AS rank FROM squads b WHERE id = :id';
+        $bindings = ['id' => $this->id];
+        return DB::selectOne($query, $bindings)->rank;
+    }
 
     public function needsFetching()
     {

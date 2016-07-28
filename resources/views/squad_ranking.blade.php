@@ -20,7 +20,7 @@
                 @foreach($squads as $index => $squad)
                     <tr>
                         <td class="rank">{{$index+1}}</td>
-                        <td><a href="squadview?squadId={{$squad->id}}">{{ urldecode($squad->name) }}</a></td>
+                        <td><a href="squad/{{$squad->id}}">{{ urldecode($squad->name) }}</a></td>
                         <td>{{$squad->faction}}</td>
                         <td class="rank">{{round($squad->mu * 1000)}}</td>
                     </tr>
