@@ -13,7 +13,7 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
                 <li class="{{Route::currentRouteNamed('squadranking') ? 'active' : ''}}"><a
-                            href="{{ route('squadranking') }}">Top 100</a></li>
+                            href="{{ route('squadranking') }}">Squad ranking</a></li>
             </ul>
             {{--<form class="navbar-form navbar-right" role="search" method="get"--}}
                   {{--action="{{ action('SquadController@squadSearch') }}">--}}

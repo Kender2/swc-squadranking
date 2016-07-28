@@ -13,8 +13,8 @@ class RankingController extends Controller
     {
         $squads = Squad::whereDeleted(false)
             ->orderBy('mu', 'desc')
-            ->take(100)
-            ->get();
+            ->simplePaginate(50);
+
         return view('squad_ranking', compact('squads'));
     }
 }

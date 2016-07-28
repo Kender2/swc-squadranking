@@ -19,7 +19,7 @@
             </table>
         </div>
         <div class="col-sm-6">
-            <h2>Top 100 squads</h2>
+            <h3>Ranks {{ $squads->firstItem() }} - {{ $squads->lastItem() }}</h3>
             <table class="table table-striped table-bordered">
                 <thead>
                 <tr>
@@ -31,13 +31,14 @@
                 </thead>
                 @foreach($squads as $index => $squad)
                     <tr>
-                        <td class="rank">{{$index+1}}</td>
+                        <td class="rank">{{$index + $squads->firstItem()}}</td>
                         <td><a href="squad/{{$squad->id}}">{!! $squad->renderName() !!}</a></td>
                         <td>{{$squad->faction}}</td>
                         <td class="rank">{{round($squad->mu * 1000)}}</td>
                     </tr>
                 @endforeach
             </table>
+            {!! $squads->render() !!}
         </div>
     </div>
 @endsection
