@@ -59,7 +59,7 @@ class Squad extends Model
 
     public function getSkillAttribute()
     {
-        return round($this->mu-(3*$this->sigma) * 1000);
+        return round(($this->mu-(3*$this->sigma)) * 1000);
     }
 
     public function needsFetching()
