@@ -47,4 +47,10 @@ class Rank extends Command
             $ranker->rank($battle);
         }
     }
+
+    /*
+     * UPDATE `squads` SET mu=25,sigma=25/3,wins=0,losses=0,draws=0,uplinks_captured=0,uplinks_saved=0;
+     * UPDATE `battles` SET processed_at = NULL;
+     */
+
 }

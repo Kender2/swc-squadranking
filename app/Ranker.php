@@ -12,6 +12,7 @@ use Moserware\Skills\Team;
 class Ranker
 {
     protected $calculator;
+    const DRAWPROBABILITY = 1 / 40;
 
     /**
      * Ranker constructor.
@@ -24,7 +25,7 @@ class Ranker
 
     public function rank(Battle $battle)
     {
-        $gameInfo = new GameInfo(null, null, null, null, 1/40);
+        $gameInfo = new GameInfo(null, null, null, null, self::DRAWPROBABILITY);
 
         $squad1 = Squad::firstOrCreate(['id' => $battle->squad_id]);
         $player1 = new \Moserware\Skills\Player($squad1->id);
@@ -37,7 +38,27 @@ class Ranker
         $team2 = new Team($player2, $rating2);
 
         $teams = [$team1, $team2];
-        $teamOrder = [46 - $battle->score, 46 - $battle->opponent_score];
+
+        $squad1->uplinks_captured += $battle->score;
+        $squad1->uplinks_saved += 45 - $battle->opponent_score;
+        $squad2->uplinks_captured += $battle->opponent_score;
+        $squad2->uplinks_saved += 45 - $battle->score;
+
+        if ($battle->score > $battle->opponent_score) {
+            $squad1->wins++;
+            $squad2->losses++;
+            $teamOrder = [1,2];
+        }
+        elseif ($battle->score < $battle->opponent_score) {
+            $squad1->losses++;
+            $squad2->wins++;
+            $teamOrder = [2,1];
+        }
+        else {
+            $squad1->draws++;
+            $squad2->draws++;
+            $teamOrder = [1,1];
+        }
 
         Log::info('Ranking battle between ' . $squad1->id . ' and ' . $squad2->id);
 

@@ -3,15 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Squad;
-use Illuminate\Http\Request;
-
-use App\Http\Requests;
 
 class RankingController extends Controller
 {
     public function ranking()
     {
         $squads = Squad::whereDeleted(false)
+            ->where('wins', '>=', 10)
             ->orderBy('mu', 'desc')
             ->simplePaginate(50);
 

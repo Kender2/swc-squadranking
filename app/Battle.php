@@ -31,4 +31,14 @@ class Battle extends Model
 
     public $fillable = ['id', 'squad_id', 'score', 'opponent_id', 'opponent_id', 'end_date'];
 
+    public static function result($score, $opponentScore)
+    {
+        if ($score > $opponentScore) {
+            return 'WIN';
+        }
+        if ($score < $opponentScore) {
+            return 'LOSS';
+        }
+        return 'DRAW';
+    }
 }

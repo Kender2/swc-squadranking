@@ -3,3 +3,19 @@
 }
 
 body { padding-top: 70px; }
+
+.bg-rebel {
+    background-color: #2e4053;
+}
+
+.bg-empire {
+    background-color: #293b4e;
+}
+
+.text-rebel {
+    color: gold;
+}
+
+.text-empire {
+    color: #d9534f;
+}

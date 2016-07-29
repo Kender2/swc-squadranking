@@ -92,37 +92,6 @@ class SquadController extends Controller
 
         ksort($battles);
 
-        $totals = [
-            'squad' => $squad,
-            'rank' => $squad->getRank(),
-            'skill' => round($squad->mu * 1000),
-            'uplinksCaptured' => 0,
-            'uplinksSaved' => 0,
-            'wins' => 0,
-            'losses' => 0,
-            'draws' => 0,
-        ];
-
-        foreach ($battles as $endDate => $battle) {
-            $totals['uplinksCaptured'] += $battle['score'];
-            $totals['uplinksSaved'] += 45 - $battle['opponent_score'];
-
-            if ($battle['score'] > $battle['opponent_score']) {
-                $battles[$endDate]['result'] = 'WIN';
-                $totals['wins']++;
-             }
-             elseif ($battle['score'] < $battle['opponent_score']) {
-                 $battles[$endDate]['result'] = 'LOSS';
-                 $totals['losses']++;
-             }
-             else {
-                 $battles[$endDate]['result'] = 'DRAW';
-                 $totals['draws']++;
-             }
-        }
-
-        $totals['wars'] = count($battles);
-
-        return view('squad_history', compact(['battles', 'totals']));
+        return view('squad_history', compact(['battles', 'squad']));
     }
 }

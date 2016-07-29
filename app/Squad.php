@@ -31,6 +31,8 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
  */
 class Squad extends Model
 {
+    const DEFAULT_INITIAL_MEAN = 25.0;
+    const DEFAULT_INITIAL_STANDARD_DEVIATION = self::DEFAULT_INITIAL_MEAN / 3;
     use DispatchesJobs;
 
     public $incrementing = false;
@@ -38,16 +40,26 @@ class Squad extends Model
     public $fillable = ['id'];
 
     protected $attributes = [
-        'mu' => 25,
-        'sigma' => 25 / 3,
+        'mu' => self::DEFAULT_INITIAL_MEAN,
+        'sigma' => self::DEFAULT_INITIAL_STANDARD_DEVIATION,
     ];
 
 
-    public function getRank()
+    public function getRankAttribute()
     {
-        $query = 'SELECT 1 + (SELECT count(*) FROM squads a WHERE a.mu > b.mu ) AS rank FROM squads b WHERE id = :id';
+        $query = 'SELECT 1 + (SELECT count(*) FROM squads a WHERE a.mu > b.mu AND a.wins >= 10 AND b.wins >= 10 ) AS rank FROM squads b WHERE id = :id';
         $bindings = ['id' => $this->id];
         return DB::selectOne($query, $bindings)->rank;
+    }
+
+    public function getWarsAttribute()
+    {
+        return $this->wins + $this->losses + $this->draws;
+    }
+
+    public function getSkillAttribute()
+    {
+        return round($this->mu-(3*$this->sigma) * 1000);
     }
 
     public function needsFetching()
