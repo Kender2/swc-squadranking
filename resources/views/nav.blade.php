@@ -15,17 +15,17 @@
                 <li class="{{Route::currentRouteNamed('squadranking') ? 'active' : ''}}"><a
                             href="{{ route('squadranking') }}">Squad ranking</a></li>
             </ul>
-            {{--<form class="navbar-form navbar-right" role="search" method="get"--}}
-                  {{--action="{{ action('SquadController@squadSearch') }}">--}}
-                {{--<div class="input-group">--}}
-                    {{--<input class="form-control" type="text" name="name" value="{{ old('name') }}"--}}
-                           {{--placeholder="Search squad">--}}
-                    {{--<div class="input-group-btn">--}}
-                        {{--<button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>--}}
-                        {{--</button>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-            {{--</form>--}}
+            <form class="navbar-form navbar-right" role="search" method="get"
+                  action="{{ action('SquadController@squadSearch') }}">
+                <div class="input-group">
+                    <input class="form-control" type="text" name="q" value="{{ request('q') }}"
+                           placeholder="Search squad">
+                    <div class="input-group-btn">
+                        <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </nav>

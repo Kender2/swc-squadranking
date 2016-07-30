@@ -15,7 +15,7 @@
                 </tr>
                 <tr>
                     <td>Rank</td>
-                    <td class="rank">{{$squad->rank}}</td>
+                    <td class="rank">{!! $squad->rank !!}</td>
                 </tr>
                 <tr>
                     <td>Wars</td>

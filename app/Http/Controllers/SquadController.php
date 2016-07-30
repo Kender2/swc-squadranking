@@ -54,7 +54,7 @@ class SquadController extends Controller
         return redirect('/');
     }
 
-    public function squadSearch(Request $request)
+    public function ssquadSearch(Request $request)
     {
         if ($request->has('name') && Str::length($request->input('name')) >= 3) {
             $results = $this->client->guildSearchByName($request->input('name'));
@@ -62,6 +62,21 @@ class SquadController extends Controller
                 if (Squad::firstOrNew(['id' => $result->_id])->queueIfNeeded()) {
                     Log::info('Added squad ' . $result->_id . ' to queue from search.');
                 }
+            }
+        }
+        return view('ssquadsearch', compact('results'));
+    }
+
+    public function squadSearch(Request $request)
+    {
+        if ($request->has('q')) {
+            $searchTerm = $request->input('q');
+            $results = Squad::whereDeleted(false)
+                ->where('name', 'LIKE', '%' . $searchTerm . '%')
+                ->orderBy('mu', 'desc')
+                ->simplePaginate(20);
+            if (count($results) === 1) {
+                return redirect()->route('squadhistory', [$results->first()]);
             }
         }
         return view('squadsearch', compact('results'));

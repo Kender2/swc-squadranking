@@ -47,9 +47,12 @@ class Squad extends Model
 
     public function getRankAttribute()
     {
-        $query = 'SELECT 1 + (SELECT count(*) FROM squads a WHERE a.mu > b.mu AND a.wins >= 10 AND b.wins >= 10 ) AS rank FROM squads b WHERE id = :id';
-        $bindings = ['id' => $this->id];
-        return DB::selectOne($query, $bindings)->rank;
+        if ($this->wins >= 10 ) {
+            $query = 'SELECT 1 + (SELECT count(*) FROM squads a WHERE a.mu > b.mu AND a.wins >= 10 AND b.wins >= 10 ) AS rank FROM squads b WHERE id = :id';
+            $bindings = ['id' => $this->id];
+            return DB::selectOne($query, $bindings)->rank;
+        }
+        return '<span title="Needs ' . (10 - $this->wins) . ' more win' . ($this->wins !== 1 ? 's' : '') .  ' to rank.">Unranked</span>';
     }
 
     public function getWarsAttribute()
