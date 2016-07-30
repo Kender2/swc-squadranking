@@ -54,7 +54,7 @@
                 <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Opponent</th>
+                    <th colspan="2" class="text-center">Opponent</th>
                     <th>Result</th>
                     <th class="rank">Score</th>
                     <th class="rank">Opponent score</th>
@@ -64,6 +64,7 @@
                 @foreach($battles as $date => $battle)
                     <tr>
                         <td>{{$date}}</td>
+                        <td class="rank">{!! $battle['opponent']->rank !!}</td>
                         <td><a href="{{$battle['opponent']->id}}">{!! $battle['opponent']->renderName() !!}</a>
                         </td>
                         <td>{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}</td>

@@ -47,12 +47,15 @@ class Squad extends Model
 
     public function getRankAttribute()
     {
-        if ($this->wins >= 10 ) {
+        if ($this->wins >= 10) {
             $query = 'SELECT 1 + (SELECT count(*) FROM squads a WHERE a.mu > b.mu AND a.wins >= 10 AND b.wins >= 10 ) AS rank FROM squads b WHERE id = :id';
             $bindings = ['id' => $this->id];
             return DB::selectOne($query, $bindings)->rank;
         }
-        return '<span title="Needs ' . (10 - $this->wins) . ' more win' . ($this->wins !== 1 ? 's' : '') .  ' to rank.">Unranked</span>';
+
+        $winsToGo = 10 - $this->wins;
+        $plural = $this->wins !== 1 ? 's' : '';
+        return '<span title="Needs ' . $winsToGo . ' more win' . $plural . ' to rank. Skill ' . $this->skill . '.">Unranked</span>';
     }
 
     public function getWarsAttribute()
@@ -62,7 +65,7 @@ class Squad extends Model
 
     public function getSkillAttribute()
     {
-        return round(($this->mu-(3*$this->sigma)) * 1000);
+        return round(($this->mu - (3 * $this->sigma)) * 1000);
     }
 
     public function needsFetching()
@@ -107,7 +110,7 @@ class Squad extends Model
 
     public function renderNamePlain()
     {
-       return static::plainName($this->name);
+        return static::plainName($this->name);
     }
 
     public static function colorName($name)
