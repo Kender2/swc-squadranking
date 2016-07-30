@@ -21,23 +21,23 @@
                     <td>Wars</td>
                     <td class="rank">{{$squad->wars}}</td>
                 </tr>
-                <tr>
+                <tr title="Won {{ round($squad->wins/$squad->wars * 100,1) }}% of wars">
                     <td>Wins</td>
                     <td class="rank">{{$squad->wins}}</td>
                 </tr>
-                <tr>
+                <tr title="Tied {{ round($squad->draws/$squad->wars * 100,1) }}% of wars">
                     <td>Draws</td>
                     <td class="rank">{{$squad->draws}}</td>
                 </tr>
-                <tr>
+                <tr title="Lost {{ round($squad->losses/$squad->wars * 100,1) }}% of wars">
                     <td>Losses</td>
                     <td class="rank">{{$squad->losses}}</td>
                 </tr>
-                <tr>
+                <tr title="Captured an average of {{ round($squad->uplinks_captured/$squad->wars) }} uplinks per war">
                     <td>Uplinks captured</td>
                     <td class="rank">{{$squad->uplinks_captured}}</td>
                 </tr>
-                <tr>
+                <tr title="Saved an average of {{ round($squad->uplinks_saved/$squad->wars) }} uplinks per war">
                     <td>Uplinks saved</td>
                     <td class="rank">{{$squad->uplinks_saved}}</td>
                 </tr>
@@ -54,7 +54,8 @@
                 <thead>
                 <tr>
                     <th>Date</th>
-                    <th colspan="2" class="text-center">Opponent</th>
+                    <th class="rank">Opp. rank</th>
+                    <th>Opponent</th>
                     <th>Result</th>
                     <th class="rank">Score</th>
                     <th class="rank">Opponent score</th>
@@ -67,7 +68,7 @@
                         <td class="rank">{!! $battle['opponent']->rank !!}</td>
                         <td><a href="{{$battle['opponent']->id}}">{!! $battle['opponent']->renderName() !!}</a>
                         </td>
-                        <td>{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}</td>
+                        <td class="text-{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}">{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}</td>
                         <td class="rank">{{$battle['score']}}</td>
                         <td class="rank">{{$battle['opponent_score']}}</td>
                     </tr>

@@ -37,11 +37,11 @@
                     <tr class="bg-{{$squad->faction}}">
                         <td class="rank">{{$index + $squads->firstItem()}}</td>
                         <td><a href="squad/{{$squad->id}}">{!! $squad->renderName() !!}</a></td>
-                        <td class="rank">{{$squad->wins}}</td>
-                        <td class="rank">{{$squad->draws}}</td>
-                        <td class="rank">{{$squad->losses}}</td>
-                        <td class="rank">{{$squad->uplinks_captured}}</td>
-                        <td class="rank">{{$squad->uplinks_saved}}</td>
+                        <td class="rank" title="{{ round($squad->wins/$squad->wars * 100,1) }}%">{{$squad->wins}}</td>
+                        <td class="rank" title="{{ round($squad->draws/$squad->wars * 100,1) }}%">{{$squad->draws}}</td>
+                        <td class="rank" title="{{ round($squad->losses/$squad->wars * 100,1) }}%">{{$squad->losses}}</td>
+                        <td class="rank" title="{{ round($squad->uplinks_captured/$squad->wars,1) }} / war">{{$squad->uplinks_captured}}</td>
+                        <td class="rank" title="{{ round($squad->uplinks_saved/$squad->wars,1) }} / war">{{$squad->uplinks_saved}}</td>
                         <td class="text-{{$squad->faction}}">{{ucfirst($squad->faction)}}</td>
                     </tr>
                 @endforeach

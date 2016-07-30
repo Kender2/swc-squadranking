@@ -19,3 +19,11 @@ body { padding-top: 70px; }
 .text-empire {
     color: #d9534f;
 }
+
+.text-WIN {
+    color: #4cae4c;
+}
+
+.text-LOSS {
+    color: #dd1144;
+}
