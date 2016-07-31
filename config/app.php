@@ -155,7 +155,8 @@ return [
          */
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
-        
+        Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -180,6 +181,7 @@ return [
     'aliases' => [
 
         'App' => Illuminate\Support\Facades\App::class,
+        'Analytics' => Ipunkt\LaravelAnalytics\AnalyticsFacade::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
         'Blade' => Illuminate\Support\Facades\Blade::class,

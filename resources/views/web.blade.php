@@ -9,7 +9,7 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="/css/all.css">
-
+    {!! Analytics::render() !!}
 </head>
 <body>
 <div class="container">
