@@ -54,7 +54,7 @@ class Squad extends Model
         }
 
         $winsToGo = 10 - $this->wins;
-        $plural = $this->wins !== 1 ? 's' : '';
+        $plural = $winsToGo !== 1 ? 's' : '';
         return '<span title="Needs ' . $winsToGo . ' more win' . $plural . ' to rank. Skill ' . $this->skill . '.">Unranked</span>';
     }
 

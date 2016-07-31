@@ -57,9 +57,6 @@ class Refresh extends Command
                 $warProcessor->processWarHistory($data->warHistory, $squad->id);
             }
             $squad->touch();
-            // Process an item from the queue in the same session to avoid the
-            // queue from filling up with unknown squads.
-            \Artisan::call('queue:work');
             // Delay to ease the strain on the server.
             $seconds = mt_rand(2, 8);
             $this->comment('Sleeping ' . $seconds . ' seconds.');

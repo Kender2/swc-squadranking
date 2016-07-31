@@ -2,11 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Battle;
 use App\GameClient;
 use App\Squad;
 use App\WarProcessor;
-use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
