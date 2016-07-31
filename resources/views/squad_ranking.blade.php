@@ -16,6 +16,10 @@
                     <td>Wars in database:</td>
                     <td class="rank">{{ number_format(\App\Battle::count()) }}</td>
                 </tr>
+                <tr>
+                    <td>Last update:</td>
+                    <td class="rank">{{ \App\Squad::lastUpdate() }}</td>
+                </tr>
             </table>
         </div>
         <div class="col-sm-6">

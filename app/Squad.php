@@ -124,5 +124,9 @@ class Squad extends Model
         $safe_name = htmlentities(urldecode($name));
         return preg_replace('/\[[0-9A-Fa-f]{6}\]/', '', $safe_name);
     }
+    public static function lastUpdate()
+    {
+        return Squad::orderBy('updated_at', 'desc')->limit(1)->first(['updated_at'])->updated_at->diffForHumans();
+    }
 
 }
