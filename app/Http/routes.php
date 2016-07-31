@@ -24,3 +24,4 @@ Route::get('squadranking', 'RankingController@ranking')->name('squadranking');
 Route::any('ssquadsearch', 'SquadController@ssquadSearch')->name('ssquadsearch');
 Route::any('squadsearch', 'SquadController@squadSearch')->name('squadsearch');
 
+Route::any('faq', 'FAQController@form')->name('faq');

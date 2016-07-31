@@ -84,7 +84,7 @@ class Player
     {
         $this->lastLogin = $lastLogin;
         Cache::put('lastLogin', $lastLogin, self::SESSION_TIMEOUT_MINUTES);
-        $this->loggedIn = true;
+        $this->loggedIn = ($lastLogin > 0);
         return $this;
     }
 

@@ -14,6 +14,8 @@
             <ul class="nav navbar-nav navbar-left">
                 <li class="{{Route::currentRouteNamed('squadranking') ? 'active' : ''}}"><a
                             href="{{ route('squadranking') }}">Squad ranking</a></li>
+                <li class="{{Route::currentRouteNamed('faq') ? 'active' : ''}}"><a
+                            href="{{ route('faq') }}">F.A.Q.</a></li>
             </ul>
             <form class="navbar-form navbar-right" role="search" method="get"
                   action="{{ action('SquadController@squadSearch') }}">
