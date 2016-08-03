@@ -23,7 +23,8 @@
             </table>
         </div>
         <div class="col-sm-6">
-            <h3>Ranks {{ $squads->firstItem() }} - {{ $squads->lastItem() }}</h3>
+            <h3 class="pull-left">Ranks {{ $squads->firstItem() }} - {{ $squads->lastItem() }}</h3>
+            {!! $squads->render() !!}
             <table class="table table-bordered">
                 <thead>
                 <tr>
