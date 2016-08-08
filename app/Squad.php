@@ -48,7 +48,7 @@ class Squad extends Model
     public function getRankAttribute()
     {
         if ($this->wins >= 10) {
-            $query = 'SELECT 1 + (SELECT count(*) FROM squads a WHERE a.mu > b.mu AND a.wins >= 10 AND b.wins >= 10 ) AS rank FROM squads b WHERE id = :id';
+            $query = 'SELECT 1 + (SELECT count(*) FROM squads a WHERE a.mu-(3*a.sigma) > b.mu-(3*b.sigma) AND a.wins >= 10 AND b.wins >= 10 ) AS rank FROM squads b WHERE id = :id';
             $bindings = ['id' => $this->id];
             return DB::selectOne($query, $bindings)->rank;
         }
