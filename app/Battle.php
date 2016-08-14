@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -40,5 +41,15 @@ class Battle extends Model
             return 'LOSS';
         }
         return 'DRAW';
+    }
+
+    /**
+     * Get the date of the most recent battle.
+     *
+     * @return Carbon
+     */
+    public static function mostRecentBattleDate()
+    {
+        return new Carbon(Battle::orderBy('end_date', 'desc')->limit(1)->first(['end_date'])->end_date);
     }
 }
