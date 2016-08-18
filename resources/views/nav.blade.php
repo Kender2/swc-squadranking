@@ -4,13 +4,13 @@
             <a class="navbar-brand" href="{{ route('squadranking') }}">Squad ranking</a>
             <form class="navbar-form navbar-left" role="search" method="get"
                   action="{{ action('SquadController@squadSearch') }}">
-                <div class="input-group">
-                    <input class="form-control" type="text" name="q" value="{{ request('q') }}"
+                <div class="input-group col-xs-6 col-sm-10 col-lg-12">
+                    <input class="form-control input" type="search" name="q" value="{{ request('q') }}"
                            placeholder="Search squad">
-                    <div class="input-group-btn">
+                    <span class="input-group-btn">
                         <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>
                         </button>
-                    </div>
+                    </span>
                 </div>
             </form>
         </div>
