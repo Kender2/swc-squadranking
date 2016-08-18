@@ -73,7 +73,7 @@ class SquadController extends Controller
             $searchTerm = $request->input('q');
             $results = Squad::whereDeleted(false)
                 ->where('name', 'LIKE', '%' . $searchTerm . '%')
-                ->orderBy('mu', 'desc')
+                ->orderByRaw('mu - (3*sigma) desc')
                 ->simplePaginate(20);
             if (count($results) === 1) {
                 return redirect()->route('squadhistory', [$results->first()]);

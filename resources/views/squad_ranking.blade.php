@@ -17,8 +17,8 @@
                     <td class="rank">{{ number_format(\App\Battle::count()) }}</td>
                 </tr>
                 <tr>
-                    <td>Last update:</td>
-                    <td class="rank">{{ \App\Squad::lastUpdate() }}</td>
+                    <td>Latest battle:</td>
+                    <td class="rank">{{ \App\Battle::mostRecentBattleDate()->diffForHumans() }}</td>
                 </tr>
             </table>
         </div>
@@ -30,10 +30,10 @@
                 <tr>
                     <th class="rank">Rank</th>
                     <th>Name</th>
-                    <th class="rank">Wins</th>
-                    <th class="rank">Draws</th>
-                    <th class="rank">Losses</th>
-                    <th class="rank">UL captured</th>
+                    <th class="rank">Won</th>
+                    <th class="rank">Tied</th>
+                    <th class="rank">Lost</th>
+                    <th class="rank">UL killed</th>
                     <th class="rank">UL saved</th>
                     <th>Faction</th>
                 </tr>

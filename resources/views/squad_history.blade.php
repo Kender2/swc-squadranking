@@ -45,6 +45,10 @@
                     <td>TrueSkill™</td>
                     <td class="rank">{{$squad->skill}}</td>
                 </tr>
+                <tr>
+                    <td>Last updated</td>
+                    <td class="rank">{{$squad->updated_at->diffForHumans()}}</td>
+                </tr>
             </table>
 
         </div>

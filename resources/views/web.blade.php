@@ -27,6 +27,7 @@
         @endif
         @yield('content')
     </div>
+    @include('footer')
 </div>
 
 <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>

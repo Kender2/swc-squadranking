@@ -10,7 +10,7 @@ class RankingController extends Controller
     {
         $squads = Squad::whereDeleted(false)
             ->where('wins', '>=', 10)
-            ->orderBy('mu', 'desc')
+            ->orderByRaw('mu - (3*sigma) desc')
             ->simplePaginate(50);
 
         return view('squad_ranking', compact('squads'));

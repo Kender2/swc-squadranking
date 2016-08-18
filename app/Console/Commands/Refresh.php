@@ -25,16 +25,6 @@ class Refresh extends Command
     protected $description = 'Refreshes all squad data';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @param GameClient $client
@@ -50,7 +40,7 @@ class Refresh extends Command
             $data = $client->guildGetPublic($squad->id);
             if ($data === null) {
                 $squad->deleted = true;
-                Log::info('Marking squad ' . $squad->id . ' as deleted');
+                Log::notice('Marking squad ' . $squad->id . ' as deleted');
             } else {
                 $squad->name = $data->name;
                 $squad->faction = $data->membershipRestrictions->faction;
