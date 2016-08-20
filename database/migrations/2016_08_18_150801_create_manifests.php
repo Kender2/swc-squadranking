@@ -3,10 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateVarsTable extends Migration
+class CreateManifests extends Migration
 {
-    protected $connection ='swcdata';
-
     /**
      * Run the migrations.
      *
@@ -14,9 +12,9 @@ class CreateVarsTable extends Migration
      */
     public function up()
     {
-        Schema::connection($this->connection)->create('vars', function (Blueprint $table) {
-            $table->string('name')->unique();
-            $table->string('value');
+        Schema::create('manifests', function (Blueprint $table) {
+            $table->integer('version')->unique();
+            $table->timestamps();
         });
     }
 
@@ -27,6 +25,6 @@ class CreateVarsTable extends Migration
      */
     public function down()
     {
-        Schema::connection($this->connection)->drop('vars');
+        Schema::drop('manifests');
     }
 }

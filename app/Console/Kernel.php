@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         // Commands\Inspire::class,
         Commands\Rank::class,
         Commands\Refresh::class,
+        Commands\GrabData::class,
     ];
 
     /**
