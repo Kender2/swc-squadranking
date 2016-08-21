@@ -40,7 +40,7 @@ class GrabData extends Command
                 $changes = $newManifest->compareTo(Manifest::fromFile($currentVersion));
                 foreach ($changes as $path => $hash) {
                     $this->info('Downloading version ' . $newVersion . ' of ' . $path);
-                    $downloader->downloadFile($path, $hash, $newVersion);
+                    $downloader->downloadFile($path, $hash);
                 }
                 $newManifest->save();
                 $currentVersion = $newVersion;

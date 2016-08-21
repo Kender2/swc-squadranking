@@ -36,17 +36,16 @@ class SwcDataFileDownloader
         $jsonText = $response->getBody()->getContents();
 
         $path = storage_path('app/manifests');
-        File::makeDirectory($path . DIRECTORY_SEPARATOR . $version, null, true, true);
         $manifest = Manifest::fromJsonString($jsonText);
         $filename = $version . '.json';
         File::put($path . DIRECTORY_SEPARATOR . $filename, $jsonText);
         return $manifest;
     }
 
-    public function downloadFile($path, $hash, $version)
+    public function downloadFile($path, $hash)
     {
         $url = 'starts/prod/' . $path . '/' . $hash . '.' . basename($path);
-        $filePath = storage_path('app/manifests') . DIRECTORY_SEPARATOR . $version . DIRECTORY_SEPARATOR . $path;
+        $filePath = storage_path('app/data') . DIRECTORY_SEPARATOR . $path;
         File::makeDirectory(dirname($filePath), null, true, true);
         return $this->client->request('GET', $url, ['sink' => $filePath]);
     }
