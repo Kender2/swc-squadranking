@@ -9,10 +9,10 @@ class JsonToDatabaseConverter
 
     public function convert($json, $connection)
     {
-        $base = json_decode($json, true);
-        foreach ($base['spreadsheetInfo']['pages'] as $page) {
+        $file = json_decode($json, true);
+        foreach ($file['spreadsheetInfo']['pages'] as $page) {
             $name = $page['pageName'];
-            $rows = $base['content']['objects'][$name];
+            $rows = $file['content']['objects'][$name];
 
             $columnInfo = [];
             foreach ($page['columns'] as $column) {

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Exceptions\PlayerBannedException;
 use Carbon\Carbon;
 use Log;
 
@@ -34,8 +33,7 @@ class WarProcessor
                 if (Squad::firstOrNew(['id' => $war->opponentGuildId])->queueIfNeeded()) {
                     Log::info('Added opponent squad to queue.');
                 }
-            }
-            else {
+            } else {
                 Log::info('Ignoring old war with no opponent id.');
             }
         }
@@ -59,10 +57,6 @@ class WarProcessor
             $this->ranker->rank($battle);
         } else {
             Log::info('Already seen battle ' . $war->warId);
-//            if ($warEnded->toDateTimeString() !== $battle->end_date) {
-//                Log::notice('Fixing war end date from ' . $battle->end_date . ' to ' . $warEnded);
-//                $battle->update(['end_date' => $warEnded]);
-//            }
         }
     }
 }

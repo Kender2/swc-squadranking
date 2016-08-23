@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\GameClient;
+use App\MemberProcessor;
 use App\Squad;
 use App\WarProcessor;
 use Illuminate\Console\Command;
@@ -29,9 +30,10 @@ class Refresh extends Command
      *
      * @param GameClient $client
      * @param WarProcessor $warProcessor
+     * @param MemberProcessor $memberProcessor
      * @return mixed
      */
-    public function handle(GameClient $client, WarProcessor $warProcessor)
+    public function handle(GameClient $client, WarProcessor $warProcessor, MemberProcessor $memberProcessor)
     {
         $squads = Squad::where('deleted', false)->orderBy('updated_at')->get();
         foreach ($squads as $squad) {
@@ -45,6 +47,7 @@ class Refresh extends Command
                 $squad->name = $data->name;
                 $squad->faction = $data->membershipRestrictions->faction;
                 $warProcessor->processWarHistory($data->warHistory, $squad->id);
+                $memberProcessor->processMembers($data->members, $squad);
             }
             $squad->touch();
             // Delay to ease the strain on the server.

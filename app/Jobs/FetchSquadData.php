@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\GameClient;
+use App\MemberProcessor;
 use App\Squad;
 use App\WarProcessor;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -37,8 +38,9 @@ class FetchSquadData extends Job implements ShouldQueue
      *
      * @param GameClient $client
      * @param WarProcessor $warProcessor
+     * @param MemberProcessor $memberProcessor
      */
-    public function handle(GameClient $client, WarProcessor $warProcessor)
+    public function handle(GameClient $client, WarProcessor $warProcessor, MemberProcessor $memberProcessor)
     {
         $squad = Squad::firstOrCreate(['id' => $this->guildId]);
         if ($this->refresh || $squad->needsFetching()) {
@@ -51,6 +53,7 @@ class FetchSquadData extends Job implements ShouldQueue
                 $squad->name = $data->name;
                 $squad->faction = $data->membershipRestrictions->faction;
                 $warProcessor->processWarHistory($data->warHistory, $squad->id);
+                $memberProcessor->processMembers($data->members, $squad);
             }
             $squad->touch();
             sleep(mt_rand(2, 8));
