@@ -27,7 +27,8 @@ class MemberProcessor
             "playerId" : "fe6138ab-8846-11e4-a398-06c322004ec3"
          */
         foreach ($members as $member) {
-            $commander = Commander::firstOrNew(['playerId' => $member->playerId]);
+            $commander = Commander::findOrNew($member->playerId);
+            $commander->playerId = $member->playerId;
             $commander->name = $member->name;
             $commander->isOwner = $member->isOwner;
             $commander->isOfficer = $member->isOfficer;
