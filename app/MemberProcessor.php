@@ -27,25 +27,27 @@ class MemberProcessor
             "playerId" : "fe6138ab-8846-11e4-a398-06c322004ec3"
          */
         foreach ($members as $member) {
-            $commander = Commander::findOrNew($member->playerId);
-            $commander->playerId = $member->playerId;
-            $commander->name = $member->name;
-            $commander->isOwner = $member->isOwner;
-            $commander->isOfficer = $member->isOfficer;
-            $commander->joinDate = Carbon::createFromTimestampUTC($member->joinDate);
-            $commander->troopsDonated = $member->troopsDonated;
-            $commander->troopsReceived = $member->troopsReceived;
-            $commander->hqLevel = $member->hqLevel;
-            $commander->reputationInvested = $member->reputationInvested;
-            $commander->xp = $member->xp;
-            $commander->score = $member->score;
-            $commander->attacksWon = $member->attacksWon;
-            $commander->defensesWon = $member->defensesWon;
-            $commander->lastLoginTime = Carbon::createFromTimestampUTC($member->lastLoginTime);
-            $commander->lastUpdated = Carbon::createFromTimestampUTC($member->lastUpdated);
-            $commander->squadId = $squad->id;
-            $commander->faction = $squad->faction;
-            $commander->save();
+            Commander::findOrNew($member->playerId)
+                ->fill([
+                    'playerId' => $member->playerId,
+                    'name' => $member->name,
+                    'isOwner' => $member->isOwner,
+                    'isOfficer' => $member->isOfficer,
+                    'joinDate' => Carbon::createFromTimestampUTC($member->joinDate),
+                    'troopsDonated' => $member->troopsDonated,
+                    'troopsReceived' => $member->troopsReceived,
+                    'hqLevel' => $member->hqLevel,
+                    'reputationInvested' => $member->reputationInvested,
+                    'xp' => $member->xp,
+                    'score' => $member->score,
+                    'attacksWon' => $member->attacksWon,
+                    'defensesWon' => $member->defensesWon,
+                    'lastLoginTime' => Carbon::createFromTimestampUTC($member->lastLoginTime),
+                    'lastUpdated' => Carbon::createFromTimestampUTC($member->lastUpdated),
+                    'squadId' => $squad->id,
+                    'faction' => $squad->faction,
+                ])
+                ->save();
         }
 
     }
