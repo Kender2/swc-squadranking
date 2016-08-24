@@ -3,6 +3,7 @@ namespace App;
 
 
 use Carbon\Carbon;
+use Log;
 
 class MemberProcessor
 {
@@ -27,27 +28,32 @@ class MemberProcessor
             "playerId" : "fe6138ab-8846-11e4-a398-06c322004ec3"
          */
         foreach ($members as $member) {
-            Commander::findOrNew($member->playerId)
-                ->fill([
-                    'playerId' => $member->playerId,
-                    'name' => $member->name,
-                    'isOwner' => $member->isOwner,
-                    'isOfficer' => $member->isOfficer,
-                    'joinDate' => Carbon::createFromTimestampUTC($member->joinDate),
-                    'troopsDonated' => $member->troopsDonated,
-                    'troopsReceived' => $member->troopsReceived,
-                    'hqLevel' => $member->hqLevel,
-                    'reputationInvested' => $member->reputationInvested,
-                    'xp' => $member->xp,
-                    'score' => $member->score,
-                    'attacksWon' => $member->attacksWon,
-                    'defensesWon' => $member->defensesWon,
-                    'lastLoginTime' => Carbon::createFromTimestampUTC($member->lastLoginTime),
-                    'lastUpdated' => Carbon::createFromTimestampUTC($member->lastUpdated),
-                    'squadId' => $squad->id,
-                    'faction' => $squad->faction,
-                ])
-                ->save();
+            try {
+                Commander::findOrNew($member->playerId)
+                    ->fill([
+                        'playerId' => $member->playerId,
+                        'name' => $member->name,
+                        'isOwner' => $member->isOwner,
+                        'isOfficer' => $member->isOfficer,
+                        'joinDate' => Carbon::createFromTimestampUTC($member->joinDate),
+                        'troopsDonated' => $member->troopsDonated,
+                        'troopsReceived' => $member->troopsReceived,
+                        'hqLevel' => $member->hqLevel,
+                        'reputationInvested' => $member->reputationInvested,
+                        'xp' => $member->xp,
+                        'score' => $member->score,
+                        'attacksWon' => $member->attacksWon,
+                        'defensesWon' => $member->defensesWon,
+                        'lastLoginTime' => Carbon::createFromTimestampUTC($member->lastLoginTime),
+                        'lastUpdated' => Carbon::createFromTimestampUTC($member->lastUpdated),
+                        'squadId' => $squad->id,
+                        'faction' => $squad->faction,
+                    ])
+                    ->save();
+            }
+            catch (\Exception $e) {
+                Log::error('Duplicate ID? ' . $member->playerId);
+            }
         }
 
     }
