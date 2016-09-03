@@ -17,7 +17,9 @@ Route::get('/', function () {
 
 Route::get('/test', 'TestController@test');
 
-Route::get('squad/{id}', 'SquadController@squadHistory')->name('squadhistory');
+Route::get('squad/{id}', 'SquadController@squadHistory');
+Route::get('squad/{id}/history', 'SquadController@squadHistory')->name('squadhistory');
+Route::get('squad/{id}/members', 'SquadController@squadMembers')->name('squadmembers');
 
 Route::get('squadview', 'SquadController@viewSquad')->name('squadview');
 Route::get('squadranking', 'RankingController@ranking')->name('squadranking');

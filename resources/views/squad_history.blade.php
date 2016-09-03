@@ -1,12 +1,20 @@
 @extends('web')
 
-@section('title'){!! $squad->renderNamePlain() !!}@endsection
-@section('heading'){!! $squad->renderName() !!}@endsection
-
+@section('title'){!! $squad->renderNamePlain() !!} War History @endsection
+@section('heading')<div class="col-lg-6 col-md-8 col-sm-10 col-xs-10">
+    <ul class="nav-justified nav-pills nav">
+        <li>{!! $squad->renderName() !!}</li>
+        <li class="active"><a>War History</a></li>
+        <li><a href="{{ route('squadmembers', ['id' => $squad->id]) }}">Members</a></li>
+    </ul>
+</div>@endsection
 
 @section('content')
     <div class="row">
-        <div class="col-lg-2">
+
+    </div>
+    <div class="row">
+        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">
             <table class="table table-bordered table-condensed table-hover bg-{{$squad->faction}}">
                 <caption>Totals</caption>
                 <tr>
@@ -52,7 +60,7 @@
             </table>
 
         </div>
-        <div class="col-lg-8">
+        <div class="col-lg-6 col-md-8 col-sm-9 col-xs-10">
             <table class="table table-striped table-bordered table-hover">
                 <caption class="strong">Battle history</caption>
                 <thead>

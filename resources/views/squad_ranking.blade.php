@@ -5,7 +5,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-2">
+        <div class="col-lg-2 col-sm-2 col-md-3 col-xs-7">
             <table class="table table-bordered table-condensed table-hover">
                 <caption>Statistics</caption>
                 <tr>
@@ -22,7 +22,7 @@
                 </tr>
             </table>
         </div>
-        <div class="col-sm-6">
+        <div class="col-lg-9 col-sm-8 col-md-7 col-xs-10">
             <h3 class="pull-left">Ranks {{ $squads->firstItem() }} - {{ $squads->lastItem() }}</h3>
             {!! $squads->render() !!}
             <table class="table table-bordered">
@@ -41,7 +41,7 @@
                 @foreach($squads as $index => $squad)
                     <tr class="bg-{{$squad->faction}}">
                         <td class="rank">{{$index + $squads->firstItem()}}</td>
-                        <td><a href="squad/{{$squad->id}}">{!! $squad->renderName() !!}</a></td>
+                        <td><a href="{{ route('squadhistory', ['id' => $squad->id]) }}">{!! $squad->renderName() !!}</a></td>
                         <td class="rank" title="{{ round($squad->wins/$squad->wars * 100,1) }}%">{{$squad->wins}}</td>
                         <td class="rank" title="{{ round($squad->draws/$squad->wars * 100,1) }}%">{{$squad->draws}}</td>
                         <td class="rank" title="{{ round($squad->losses/$squad->wars * 100,1) }}%">{{$squad->losses}}</td>

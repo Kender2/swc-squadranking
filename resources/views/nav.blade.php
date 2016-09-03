@@ -2,7 +2,7 @@
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand" href="{{ route('squadranking') }}">Squad ranking</a>
-            <form class="navbar-form navbar-left" role="search" method="get"
+            <form class="navbar-form navbar-right" role="search" method="get"
                   action="{{ action('SquadController@squadSearch') }}">
                 <div class="input-group col-xs-6 col-sm-10 col-lg-12">
                     <input class="form-control input" type="search" name="q" value="{{ request('q') }}"

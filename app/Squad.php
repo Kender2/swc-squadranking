@@ -129,4 +129,11 @@ class Squad extends Model
         return Squad::orderBy('updated_at', 'desc')->limit(1)->first(['updated_at'])->updated_at->diffForHumans();
     }
 
+    /**
+     * Get the members of the squad.
+     */
+    public function members()
+    {
+        return $this->hasMany('App\Commander', 'squadId');
+    }
 }

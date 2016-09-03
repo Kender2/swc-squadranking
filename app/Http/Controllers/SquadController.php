@@ -105,8 +105,16 @@ class SquadController extends Controller
             ];
         }
 
-        ksort($battles);
+        krsort($battles);
 
         return view('squad_history', compact(['battles', 'squad']));
+    }
+
+    public function squadMembers($id) {
+        $squad = Squad::findOrFail($id);
+
+        $members = $squad->members()->orderBy('joinDate')->get();
+
+        return view('squad_members', compact(['members', 'squad']));
     }
 }
