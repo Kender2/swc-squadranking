@@ -47,6 +47,7 @@ class GrabData extends Command
                 $newManifest->save();
                 if ($git->hasChanges()) {
                     $git->commit((string)$newVersion);
+                    $git->push();
                 }
                 $currentVersion = $newVersion;
             } else {
