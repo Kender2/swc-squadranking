@@ -45,7 +45,9 @@ class GrabData extends Command
                     $git->add($path);
                 }
                 $newManifest->save();
-                $git->commit((string)$newVersion);
+                if ($git->hasChanges()) {
+                    $git->commit((string)$newVersion);
+                }
                 $currentVersion = $newVersion;
             } else {
                 $this->info('Version ' . $newVersion . ' is not available.');
