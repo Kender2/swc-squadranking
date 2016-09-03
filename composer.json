@@ -14,7 +14,8 @@
         "barryvdh/laravel-debugbar": "^2.2",
         "ramsey/uuid": "^3.4",
         "doctrine/dbal": "^2.5",
-        "ipunkt/laravel-analytics": "^1.2"
+        "ipunkt/laravel-analytics": "^1.2",
+        "cpliakas/git-wrapper": "^1.7"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -15,6 +15,12 @@ class SwcDataFileDownloader
         $this->client = $client;
     }
 
+    /**
+     * Check if a version of the manifest is available.
+     *
+     * @param string $version
+     * @return bool
+     */
     public function isDownloadAvailable($version)
     {
         if ($version === null) {
@@ -29,6 +35,12 @@ class SwcDataFileDownloader
         return true;
     }
 
+    /**
+     * Download a manifest.
+     *
+     * @param string $version
+     * @return Manifest
+     */
     public function downloadManifest($version)
     {
         $url = 'manifest/starts/prod/' . $version . '.json';
@@ -42,6 +54,13 @@ class SwcDataFileDownloader
         return $manifest;
     }
 
+    /**
+     * Downloads a data file.
+     *
+     * @param string $path
+     * @param string $hash
+     * @return string Path to downloaded file.
+     */
     public function downloadFile($path, $hash)
     {
         $url = 'starts/prod/' . $path . '/' . $hash . '.' . basename($path);

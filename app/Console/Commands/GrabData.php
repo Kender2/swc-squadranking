@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Manifest;
 use App\SwcDataFileDownloader;
+use GitWrapper\GitWorkingCopy;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
@@ -28,7 +29,7 @@ class GrabData extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(GitWorkingCopy $git)
     {
         $client = new Client(['base_uri' => 'https://starts0.content.disney.io/cloud-cms/']);
         $downloader = new SwcDataFileDownloader($client);
@@ -41,8 +42,10 @@ class GrabData extends Command
                 foreach ($changes as $path => $hash) {
                     $this->info('Downloading version ' . $newVersion . ' of ' . $path);
                     $downloader->downloadFile($path, $hash);
+                    $git->add($path);
                 }
                 $newManifest->save();
+                $git->commit((string)$newVersion);
                 $currentVersion = $newVersion;
             } else {
                 $this->info('Version ' . $newVersion . ' is not available.');
