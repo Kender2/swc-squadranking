@@ -78,8 +78,7 @@
                     <tr>
                         <td>{{$date}}</td>
                         <td class="rank">{!! $battle['opponent']->rank !!}</td>
-                        <td><a href="{{$battle['opponent']->id}}">{!! $battle['opponent']->renderName() !!}</a>
-                        </td>
+                        <td><a href="{{ route('squadhistory', ['id' => $battle['opponent']->id]) }}">{!! $battle['opponent']->renderName() !!}</a></td>
                         <td class="text-{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}">{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}</td>
                         <td class="rank">{{$battle['score']}}</td>
                         <td class="rank">{{$battle['opponent_score']}}</td>
