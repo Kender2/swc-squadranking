@@ -52,6 +52,8 @@ class FetchSquadData extends Job implements ShouldQueue
             } else {
                 $squad->name = $data->name;
                 $squad->faction = $data->membershipRestrictions->faction;
+                $squad->reputation = $data->totalRepInvested;
+                $squad->medals = $data->score;
                 $warProcessor->processWarHistory($data->warHistory, $squad->id);
                 $memberProcessor->processMembers($data->members, $squad);
             }

@@ -24,7 +24,6 @@ class SquadController extends Controller
         $this->client = $client;
     }
 
-
     public function viewSquad(Request $request)
     {
         if ($request->has('squadId')) {

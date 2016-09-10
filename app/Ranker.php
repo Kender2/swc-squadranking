@@ -101,7 +101,7 @@ class Ranker implements RankerInterface
      */
     public static function calculateScore($mu, $sigma)
     {
-        return max(round(($mu - (config('sod.sigma_multiplier') * $sigma)) * 100), 0);
+        return max(round(($mu - (config('sod.sigma_multiplier') * $sigma)) * 1000), 0);
     }
 
 }
