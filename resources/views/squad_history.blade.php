@@ -26,6 +26,10 @@
                     <td class="rank">{!! $squad->rank !!}</td>
                 </tr>
                 <tr>
+                    <td>TrueSkill™</td>
+                    <td class="rank">{{$squad->skill}}</td>
+                </tr>
+                <tr>
                     <td>Wars</td>
                     <td class="rank">{{$squad->wars}}</td>
                 </tr>
@@ -50,10 +54,6 @@
                     <td class="rank">{{$squad->uplinks_saved}}</td>
                 </tr>
                 <tr>
-                    <td>TrueSkill™</td>
-                    <td class="rank">{{$squad->skill}}</td>
-                </tr>
-                <tr>
                     <td>Last updated</td>
                     <td class="rank">{{$squad->updated_at->diffForHumans()}}</td>
                 </tr>
@@ -66,22 +66,24 @@
                 <thead>
                 <tr>
                     <th>Date</th>
-                    <th class="rank">Opp. rank</th>
+                    <th class="rank">Opponent skill</th>
                     <th>Opponent</th>
                     <th>Result</th>
                     <th class="rank">Score</th>
                     <th class="rank">Opponent score</th>
+                    <th class="rank">Skill result</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($battles as $date => $battle)
                     <tr>
                         <td>{{$date}}</td>
-                        <td class="rank">{!! $battle['opponent']->rank !!}</td>
+                        <td class="rank">{{ round($battle['skill_difference'] * 100) }}%</td>
                         <td><a href="{{ route('squadhistory', ['id' => $battle['opponent']->id]) }}">{!! $battle['opponent']->renderName() !!}</a></td>
                         <td class="text-{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}">{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}</td>
                         <td class="rank">{{$battle['score']}}</td>
                         <td class="rank">{{$battle['opponent_score']}}</td>
+                        <td class="rank">{{$battle['skill_change'] > 0 ? '+' : ''}}{{$battle['skill_change']}}</td>
                     </tr>
                 @endforeach
                 </tbody>

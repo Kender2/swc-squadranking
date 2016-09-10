@@ -56,7 +56,7 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <small>*Note: <em>Squads with less than 10 victories are not included.</em></small>
+            <small>*Note: <em>Squads with less than {{ config('sod.win_threshold') }} victories are not included.</em></small>
         </div>
     </div>
 @endsection

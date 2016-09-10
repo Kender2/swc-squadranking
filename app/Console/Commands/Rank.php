@@ -3,9 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Battle;
-use App\Ranker;
+use App\RankerInterface;
 use Illuminate\Console\Command;
-use Moserware\Skills\TrueSkill\TwoPlayerTrueSkillCalculator;
 
 class Rank extends Command
 {
@@ -26,11 +25,11 @@ class Rank extends Command
     /**
      * Execute the console command.
      *
+     * @param RankerInterface $ranker
      * @return mixed
      */
-    public function handle()
+    public function handle(RankerInterface $ranker)
     {
-        $ranker = new Ranker(new TwoPlayerTrueSkillCalculator());
         $battles = Battle::where('processed_at', null)->orderBy('end_date')->get();
         foreach ($battles as $battle) {
             $this->comment('Ranking battle: ' . $battle->id);
@@ -39,8 +38,8 @@ class Rank extends Command
     }
 
     /*
-     * UPDATE `squads` SET mu=25,sigma=25/3,wins=0,losses=0,draws=0,uplinks_captured=0,uplinks_saved=0;
-     * UPDATE `battles` SET processed_at = NULL;
+     * UPDATE `squads` SET mu=DEFAULT,sigma=DEFAULT,wins=0,losses=0,draws=0,uplinks_captured=0,uplinks_saved=0;
+     * UPDATE `battles` SET processed_at=NULL,mu_before=NULL,mu_after=NULL,opponent_mu_before=NULL,opponent_mu_after=NULL,sigma_before=NULL,sigma_after=NULL,opponent_sigma_before=NULL,opponent_sigma_after=NULL;
      */
 
 }

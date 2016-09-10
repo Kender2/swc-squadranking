@@ -9,10 +9,10 @@ use Moserware\Skills\RatingContainer;
 use Moserware\Skills\SkillCalculator;
 use Moserware\Skills\Team;
 
-class Ranker
+class Ranker implements RankerInterface
 {
     protected $calculator;
-    const DRAWPROBABILITY = 1 / 40;
+    const DRAW_PROBABILITY = 1 / 40;
 
     /**
      * Ranker constructor.
@@ -25,61 +25,83 @@ class Ranker
 
     public function rank(Battle $battle)
     {
-        $gameInfo = new GameInfo(null, null, null, null, self::DRAWPROBABILITY);
-
-        $squad1 = Squad::firstOrCreate(['id' => $battle->squad_id]);
-        $player1 = new \Moserware\Skills\Player($squad1->id);
-        $rating1 = new Rating($squad1->mu, $squad1->sigma);
+        $squad = Squad::firstOrCreate(['id' => $battle->squad_id]);
+        $player1 = new \Moserware\Skills\Player($squad->id);
+        $rating1 = new Rating($squad->mu, $squad->sigma);
         $team1 = new Team($player1, $rating1);
 
-        $squad2 = Squad::firstOrCreate(['id' => $battle->opponent_id]);
-        $player2 = new \Moserware\Skills\Player($squad2->id);
-        $rating2 = new Rating($squad2->mu, $squad2->sigma);
+        $opponent_squad = Squad::firstOrCreate(['id' => $battle->opponent_id]);
+        $player2 = new \Moserware\Skills\Player($opponent_squad->id);
+        $rating2 = new Rating($opponent_squad->mu, $opponent_squad->sigma);
         $team2 = new Team($player2, $rating2);
 
         $teams = [$team1, $team2];
 
-        $squad1->uplinks_captured += $battle->score;
-        $squad1->uplinks_saved += 45 - $battle->opponent_score;
-        $squad2->uplinks_captured += $battle->opponent_score;
-        $squad2->uplinks_saved += 45 - $battle->score;
+        $squad->uplinks_captured += $battle->score;
+        $squad->uplinks_saved += 45 - $battle->opponent_score;
+        $opponent_squad->uplinks_captured += $battle->opponent_score;
+        $opponent_squad->uplinks_saved += 45 - $battle->score;
 
         if ($battle->score > $battle->opponent_score) {
-            $squad1->wins++;
-            $squad2->losses++;
-            $teamOrder = [1,2];
-        }
-        elseif ($battle->score < $battle->opponent_score) {
-            $squad1->losses++;
-            $squad2->wins++;
-            $teamOrder = [2,1];
-        }
-        else {
-            $squad1->draws++;
-            $squad2->draws++;
-            $teamOrder = [1,1];
+            $squad->wins++;
+            $opponent_squad->losses++;
+            $teamOrder = [1, 2];
+        } elseif ($battle->score < $battle->opponent_score) {
+            $squad->losses++;
+            $opponent_squad->wins++;
+            $teamOrder = [2, 1];
+        } else {
+            $squad->draws++;
+            $opponent_squad->draws++;
+            $teamOrder = [1, 1];
         }
 
-        Log::info('Ranking battle between ' . $squad1->id . ' and ' . $squad2->id);
+        Log::info('Ranking battle between ' . $squad->id . ' and ' . $opponent_squad->id);
 
+        $gameInfo = new GameInfo(null, null, null, null, self::DRAW_PROBABILITY);
         /** @var RatingContainer $newRatings */
         $newRatings = $this->calculator->calculateNewRatings($gameInfo, $teams, $teamOrder);
 
         $player1NewRating = $newRatings->getRating($player1);
         $player2NewRating = $newRatings->getRating($player2);
 
-        $squad1->mu = $player1NewRating->getMean();
-        $squad1->sigma = $player1NewRating->getStandardDeviation();
-        $squad1->save();
-        Log::info('Rating for squad ' . $squad1->id . ' updated from ' . $rating1->getMean() . ' to ' . $squad1->mu);
+        // Update the squad.
+        $squad->mu = $player1NewRating->getMean();
+        $squad->sigma = $player1NewRating->getStandardDeviation();
+        $squad->save();
+        Log::info('Rating for squad ' . $squad->id . ' updated from ' . $rating1->getMean() . ' to ' . $squad->mu);
 
-        $squad2->mu = $player2NewRating->getMean();
-        $squad2->sigma = $player2NewRating->getStandardDeviation();
-        $squad2->save();
-        Log::info('Rating for squad ' . $squad2->id . ' updated from ' . $rating2->getMean() . ' to ' . $squad2->mu);
+        // Update the opponent squad.
+        $opponent_squad->mu = $player2NewRating->getMean();
+        $opponent_squad->sigma = $player2NewRating->getStandardDeviation();
+        $opponent_squad->save();
+        Log::info('Rating for squad ' . $opponent_squad->id . ' updated from ' . $rating2->getMean() . ' to ' . $opponent_squad->mu);
+
+        // Store the effects the battle had on the ratings.
+        $battle->mu_before = $rating1->getMean();
+        $battle->mu_after = $squad->mu;
+        $battle->sigma_before = $rating1->getStandardDeviation();
+        $battle->sigma_after = $squad->sigma;
+        $battle->opponent_mu_before = $rating2->getMean();
+        $battle->opponent_mu_after = $opponent_squad->mu;
+        $battle->opponent_sigma_before = $rating2->getStandardDeviation();
+        $battle->opponent_sigma_after = $opponent_squad->sigma;
 
         $battle->processed_at = Carbon::now();
         $battle->save();
 
     }
+
+    /**
+     * Calculate a ranking score.
+     *
+     * @param float $mu
+     * @param float $sigma
+     * @return float
+     */
+    public static function calculateScore($mu, $sigma)
+    {
+        return max(round(($mu - (config('sod.sigma_multiplier') * $sigma)) * 100), 0);
+    }
+
 }

@@ -12,9 +12,9 @@ class WarProcessor
 
     /**
      * WarProcessor constructor.
-     * @param $ranker
+     * @param RankerInterface $ranker
      */
-    public function __construct(Ranker $ranker)
+    public function __construct(RankerInterface $ranker)
     {
         $this->ranker = $ranker;
     }

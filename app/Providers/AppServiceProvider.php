@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\ClientRequest;
 use App\GameClient;
 use App\Player;
+use App\Ranker;
 use GitWrapper\GitWrapper;
 use Illuminate\Support\ServiceProvider;
 use Moserware\Skills\TrueSkill\TwoPlayerTrueSkillCalculator;
@@ -35,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
 
         // The skill calculator for the ranking.
         $this->app->bind('Moserware\Skills\SkillCalculator', TwoPlayerTrueSkillCalculator::class);
+        $this->app->bind('App\RankerInterface', Ranker::class);
 
         // The git working copy for the game data.
         $this->app->bind('GitWrapper\GitWorkingCopy', function ($app) {

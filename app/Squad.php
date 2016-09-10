@@ -47,13 +47,19 @@ class Squad extends Model
 
     public function getRankAttribute()
     {
-        if ($this->wins >= 10) {
-            $query = 'SELECT 1 + (SELECT count(*) FROM squads a WHERE a.mu-(3*a.sigma) > b.mu-(3*b.sigma) AND a.wins >= 10 AND b.wins >= 10 ) AS rank FROM squads b WHERE id = :id';
-            $bindings = ['id' => $this->id];
+        if ($this->wins >= config('sod.win_threshold')) {
+            $query = 'SELECT 1 + (SELECT count(*) FROM squads a WHERE a.mu-(:multiplier_a * a.sigma) > b.mu-(:multiplier_b * b.sigma) AND a.wins >= :win_threshold_a AND b.wins >= :win_threshold_b ) AS rank FROM squads b WHERE id = :id';
+            $bindings = [
+                'id' => $this->id,
+                'win_threshold_a' => config('sod.win_threshold'),
+                'win_threshold_b' => config('sod.win_threshold'),
+                'multiplier_a' => config('sod.sigma_multiplier'),
+                'multiplier_b' => config('sod.sigma_multiplier'),
+            ];
             return DB::selectOne($query, $bindings)->rank;
         }
 
-        $winsToGo = 10 - $this->wins;
+        $winsToGo = config('sod.win_threshold') - $this->wins;
         $plural = $winsToGo !== 1 ? 's' : '';
         return '<span title="Needs ' . $winsToGo . ' more win' . $plural . ' to rank. Skill ' . $this->skill . '.">Unranked</span>';
     }
@@ -65,7 +71,7 @@ class Squad extends Model
 
     public function getSkillAttribute()
     {
-        return round(($this->mu - (3 * $this->sigma)) * 1000);
+        return Ranker::calculateScore($this->mu, $this->sigma);
     }
 
     public function needsFetching()
@@ -124,6 +130,7 @@ class Squad extends Model
         $safe_name = htmlentities(urldecode($name));
         return preg_replace('/\[[0-9A-Fa-f]{6}\]/', '', $safe_name);
     }
+
     public static function lastUpdate()
     {
         return Squad::orderBy('updated_at', 'desc')->limit(1)->first(['updated_at'])->updated_at->diffForHumans();

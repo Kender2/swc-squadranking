@@ -30,7 +30,7 @@ class Battle extends Model
 
     public $timestamps = false;
 
-    public $fillable = ['id', 'squad_id', 'score', 'opponent_id', 'opponent_id', 'end_date'];
+    public $fillable = ['id', 'squad_id', 'score', 'opponent_id', 'end_date'];
 
     public static function result($score, $opponentScore)
     {
@@ -52,4 +52,54 @@ class Battle extends Model
     {
         return new Carbon(Battle::orderBy('end_date', 'desc')->limit(1)->first(['end_date'])->end_date);
     }
+
+
+    /**
+     * Skill delta caused by battle.
+     *
+     * @return float
+     */
+    public function getSkillChangeAttribute()
+    {
+        return $this->getScoreDelta(
+            $this->mu_before,
+            $this->sigma_before,
+            $this->mu_after,
+            $this->sigma_after
+        );
+    }
+
+    /**
+     * Skill delta for opponent caused by battle.
+     *
+     * @return float
+     */
+    public function getOpponentSkillChangeAttribute()
+    {
+        return $this->getScoreDelta(
+            $this->opponent_mu_before,
+            $this->opponent_sigma_before,
+            $this->opponent_mu_after,
+            $this->opponent_sigma_after
+        );
+    }
+
+    /**
+     * Subtract two sigmas mu pairs.
+     *
+     * @todo: move to own class, this does not belong with Battle.
+     *
+     * @param float $first_mu
+     * @param float $first_sigma
+     * @param float $second_mu
+     * @param float $second_sigma
+     * @return float
+     */
+    public function getScoreDelta($first_mu, $first_sigma, $second_mu, $second_sigma)
+    {
+        $before = Ranker::calculateScore($first_mu, $first_sigma);
+        $after = Ranker::calculateScore($second_mu, $second_sigma);
+        return $after - $before;
+    }
+
 }

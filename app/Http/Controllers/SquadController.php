@@ -73,7 +73,7 @@ class SquadController extends Controller
             $searchTerm = $request->input('q');
             $results = Squad::whereDeleted(false)
                 ->where('name', 'LIKE', '%' . $searchTerm . '%')
-                ->orderByRaw('mu - (3*sigma) desc')
+                ->orderByRaw('mu - (' . config('sod.sigma_multiplier') . '*sigma) desc')
                 ->simplePaginate(20);
             if (count($results) === 1) {
                 return redirect()->route('squadhistory', [$results->first()]);
@@ -95,6 +95,8 @@ class SquadController extends Controller
                 'score' => $offensiveBattle->score,
                 'opponent_score' => $offensiveBattle->opponent_score,
                 'opponent' => Squad::findOrNew($offensiveBattle->opponent_id),
+                'skill_difference' => max(1, $offensiveBattle->opponent_mu_before) / max(1, $offensiveBattle->mu_before),
+                'skill_change' => $offensiveBattle->skillChange,
             ];
         }
         foreach ($defensiveBattles as $defensiveBattle) {
@@ -102,6 +104,8 @@ class SquadController extends Controller
                 'score' => $defensiveBattle->opponent_score,
                 'opponent_score' => $defensiveBattle->score,
                 'opponent' => Squad::findOrNew($defensiveBattle->squad_id),
+                'skill_difference' => max(1, $defensiveBattle->mu_before) / max(1, $defensiveBattle->opponent_mu_before),
+                'skill_change' => $defensiveBattle->opponentSkillChange,
             ];
         }
 
@@ -110,7 +114,8 @@ class SquadController extends Controller
         return view('squad_history', compact(['battles', 'squad']));
     }
 
-    public function squadMembers($id) {
+    public function squadMembers($id)
+    {
         $squad = Squad::findOrFail($id);
 
         $members = $squad->members()->orderBy('joinDate')->get();

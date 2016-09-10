@@ -9,8 +9,8 @@ class RankingController extends Controller
     public function ranking()
     {
         $squads = Squad::whereDeleted(false)
-            ->where('wins', '>=', 10)
-            ->orderByRaw('mu - (3*sigma) desc')
+            ->where('wins', '>=', config('sod.win_threshold'))
+            ->orderByRaw('mu - (' . config('sod.sigma_multiplier') . '*sigma) desc')
             ->simplePaginate(50);
 
         return view('squad_ranking', compact('squads'));
