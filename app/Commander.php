@@ -4,6 +4,48 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Commander
+ *
+ * @property string $playerId
+ * @property string $squadId
+ * @property string $name
+ * @property boolean $isOwner
+ * @property boolean $isOfficer
+ * @property \Carbon\Carbon $joinDate
+ * @property integer $troopsDonated
+ * @property integer $troopsReceived
+ * @property boolean $hqLevel
+ * @property integer $reputationInvested
+ * @property integer $xp
+ * @property integer $score
+ * @property integer $attacksWon
+ * @property integer $defensesWon
+ * @property \Carbon\Carbon $lastLoginTime
+ * @property \Carbon\Carbon $lastUpdated
+ * @property string $faction
+ * @property string $planet
+ * @property-read \App\Squad $squad
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander wherePlayerId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereSquadId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereIsOwner($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereIsOfficer($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereJoinDate($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereTroopsDonated($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereTroopsReceived($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereHqLevel($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereReputationInvested($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereXp($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereScore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereAttacksWon($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereDefensesWon($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereLastLoginTime($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereLastUpdated($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander whereFaction($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander wherePlanet($value)
+ * @mixin \Eloquent
+ */
 class Commander extends Model
 {
     public $incrementing = false;

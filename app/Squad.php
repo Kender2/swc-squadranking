@@ -28,6 +28,24 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
  * @method static \Illuminate\Database\Query\Builder|\App\Squad whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Squad whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Squad whereDeleted($value)
+ * @property integer $wins
+ * @property integer $draws
+ * @property integer $losses
+ * @property integer $uplinks_captured
+ * @property integer $uplinks_saved
+ * @property integer $reputation
+ * @property integer $medals
+ * @property-read mixed $rank
+ * @property-read mixed $wars
+ * @property-read mixed $skill
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Commander[] $members
+ * @method static \Illuminate\Database\Query\Builder|\App\Squad whereWins($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Squad whereDraws($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Squad whereLosses($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Squad whereUplinksCaptured($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Squad whereUplinksSaved($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Squad whereReputation($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Squad whereMedals($value)
  */
 class Squad extends Model
 {
@@ -133,7 +151,18 @@ class Squad extends Model
 
     public static function lastUpdate()
     {
-        return Squad::orderBy('updated_at', 'desc')->limit(1)->first(['updated_at'])->updated_at->diffForHumans();
+        return Squad::orderBy('updated_at', 'desc')
+            ->first(['updated_at'])
+            ->updated_at
+            ->diffForHumans();
+    }
+
+    public function lastBattle()
+    {
+        return Battle::whereSquadId($this->id)
+            ->orWhere('opponent_squad_id', '=', $this->id)
+            ->orderBy('end_date', 'desc')
+            ->first();
     }
 
     /**

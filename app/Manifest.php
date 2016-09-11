@@ -5,6 +5,17 @@ use Carbon\Carbon;
 use File;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Manifest
+ *
+ * @property integer $version
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Manifest whereVersion($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Manifest whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Manifest whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Manifest extends Model
 {
     protected $content;

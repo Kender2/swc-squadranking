@@ -23,6 +23,24 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Battle whereOpponentScore($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Battle whereEndDate($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Battle whereProcessedAt($value)
+ * @property float $mu_before
+ * @property float $mu_after
+ * @property float $opponent_mu_before
+ * @property float $opponent_mu_after
+ * @property float $sigma_before
+ * @property float $sigma_after
+ * @property float $opponent_sigma_before
+ * @property float $opponent_sigma_after
+ * @property-read mixed $skill_change
+ * @property-read mixed $opponent_skill_change
+ * @method static \Illuminate\Database\Query\Builder|\App\Battle whereMuBefore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Battle whereMuAfter($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Battle whereOpponentMuBefore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Battle whereOpponentMuAfter($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Battle whereSigmaBefore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Battle whereSigmaAfter($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Battle whereOpponentSigmaBefore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Battle whereOpponentSigmaAfter($value)
  */
 class Battle extends Model
 {
