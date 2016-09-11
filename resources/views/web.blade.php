@@ -8,7 +8,7 @@
     <title>@yield('title')</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="/css/all.css">
+    <style>.rank{text-align:right}body{padding-top:70px}.bg-rebel{background-color:#2e4053}.bg-empire{background-color:#293b4e}.text-rebel{color:gold}.text-empire{color:#d9534f}.text-WIN{color:#4cae4c}.text-LOSS{color:#d14}.footer{background-color:#2a323a}</style>
     {!! Analytics::render() !!}
 </head>
 <body>
