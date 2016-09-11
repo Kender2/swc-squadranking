@@ -17,12 +17,13 @@ class MemberProcessor
     public function processMembers($members, $squad)
     {
         // Delete all squad members first.
-        Commander::whereSquadId($squad->id)->delete();
+        $squad->members()->delete();
         // Add the current members.
         foreach ($members as $member) {
             try {
                 Commander::findOrNew($member->playerId)
                     ->fill([
+                        'playerId' => $member->playerId,
                         'name' => $member->name,
                         'isOwner' => $member->isOwner,
                         'isOfficer' => $member->isOfficer,
