@@ -20,9 +20,9 @@
                     <td>Latest battle:</td>
                     <td class="rank">{{ \App\Battle::mostRecentBattleDate()->diffForHumans() }}</td>
                 </tr>
-                <tr>
-                    <td colspan="2"><a href="{{ route('stats') }}">more stats..</a></td>
-                </tr>
+                {{--<tr>--}}
+                    {{--<td colspan="2"><a href="{{ route('stats') }}">more stats..</a></td>--}}
+                {{--</tr>--}}
             </table>
         </div>
         <div class="col-lg-9 col-sm-8 col-md-7 col-xs-10">
