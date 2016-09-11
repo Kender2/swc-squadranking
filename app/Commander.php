@@ -48,6 +48,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Commander extends Model
 {
+    use StatisticsTrait;
+
     public $incrementing = false;
     public $timestamps = false;
     protected $primaryKey = 'playerId';
@@ -70,4 +72,28 @@ class Commander extends Model
     {
         return $this->belongsTo('App\Squad', 'id');
     }
+
+    /**
+     * @param array $factions
+     * @return array
+     */
+    public static function getStats(array $factions = ['empire', 'rebel'])
+    {
+        $columns = [
+            'Amount' => 'count(1)',
+            'Avg donated' => 'avg(troopsDonated)',
+            'Avg received' => 'avg(troopsReceived)',
+            'Avg HQ level' => 'avg(hqLevel)',
+            'Avg rep invested' => 'avg(reputationInvested)',
+            'Avg base score' => 'avg(xp)',
+            'Avg medals' => 'avg(score)',
+            'Avg attacks won' => 'avg(attacksWon)',
+            'Avg defenses won' => 'avg(defensesWon)',
+        ];
+        $stats = self::getStatsForFactions($factions, $columns);
+        self::addTotalsToStats($stats);
+
+        return $stats;
+    }
+
 }

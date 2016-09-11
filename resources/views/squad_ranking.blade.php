@@ -7,10 +7,10 @@
     <div class="row">
         <div class="col-lg-2 col-sm-2 col-md-3 col-xs-7">
             <table class="table table-bordered table-condensed table-hover">
-                <caption>Statistics</caption>
+                <caption class="text-info">Statistics</caption>
                 <tr>
                     <td>Squads in database:</td>
-                    <td class="rank">{{ number_format(\App\Squad::count()) }}</td>
+                    <td class="rank">{{ number_format(\App\Squad::whereIn('faction', ['rebel', 'empire'])->count()) }}</td>
                 </tr>
                 <tr>
                     <td>Wars in database:</td>
@@ -19,6 +19,9 @@
                 <tr>
                     <td>Latest battle:</td>
                     <td class="rank">{{ \App\Battle::mostRecentBattleDate()->diffForHumans() }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a href="{{ route('stats') }}">more stats..</a></td>
                 </tr>
             </table>
         </div>

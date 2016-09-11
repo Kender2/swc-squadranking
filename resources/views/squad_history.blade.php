@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">
             <table class="table table-bordered table-condensed table-hover bg-{{$squad->faction}}">
-                <caption>Totals</caption>
+                <caption class="text-info">Totals</caption>
                 <tr>
                     <td>Faction</td>
                     <td class="rank text-{{$squad->faction}}">{{ucfirst($squad->faction)}}</td>
@@ -62,7 +62,7 @@
         </div>
         <div class="col-lg-6 col-md-8 col-sm-9 col-xs-10">
             <table class="table table-striped table-bordered table-hover">
-                <caption class="strong">Battle history</caption>
+                <caption class="text-info">Battle history</caption>
                 <thead>
                 <tr>
                     <th>Date</th>

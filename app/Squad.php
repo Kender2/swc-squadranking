@@ -52,6 +52,7 @@ class Squad extends Model
     const DEFAULT_INITIAL_MEAN = 25.0;
     const DEFAULT_INITIAL_STANDARD_DEVIATION = self::DEFAULT_INITIAL_MEAN / 3;
     use DispatchesJobs;
+    use StatisticsTrait;
 
     public $incrementing = false;
 
@@ -61,7 +62,6 @@ class Squad extends Model
         'mu' => self::DEFAULT_INITIAL_MEAN,
         'sigma' => self::DEFAULT_INITIAL_STANDARD_DEVIATION,
     ];
-
 
     public function getRankAttribute()
     {
@@ -172,4 +172,27 @@ class Squad extends Model
     {
         return $this->hasMany('App\Commander', 'squadId');
     }
+
+    /**
+     * @param array $factions
+     * @return array
+     */
+    public static function getStats(array $factions = ['empire', 'rebel'])
+    {
+        $columns = [
+            'Amount' => 'count(1)',
+            'Avg wins' => 'avg(wins)',
+            'Avg draws' => 'avg(draws)',
+            'Avg losses' => 'avg(losses)',
+            'Avg uplinks taken' => 'avg(uplinks_captured)',
+            'Avg uplinks saved' => 'avg(uplinks_saved)',
+            'Avg reputation' => 'avg(reputation)',
+            'Avg medals' => 'avg(medals)',
+        ];
+        $stats = self::getStatsForFactions($factions, $columns);
+        self::addTotalsToStats($stats);
+
+        return $stats;
+    }
+
 }
