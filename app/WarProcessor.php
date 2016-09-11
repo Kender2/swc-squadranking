@@ -34,7 +34,7 @@ class WarProcessor
                     Log::info('Added opponent squad to queue.');
                 }
             } else {
-                Log::info('Ignoring old war with no opponent id.');
+                Log::debug('Ignoring old war with no opponent id.');
             }
         }
     }
@@ -56,7 +56,7 @@ class WarProcessor
             $battle->save();
             $this->ranker->rank($battle);
         } else {
-            Log::info('Already seen battle ' . $war->warId);
+            Log::debug('Already seen battle ' . $war->warId);
         }
     }
 }
