@@ -18,6 +18,7 @@ class ClientRequest
     {
         $this->client = new Client([
             'base_uri' => config('sod.game_url'),
+            'timeout' => 30,
         ]);
     }
 
