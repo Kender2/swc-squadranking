@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Battle;
 use App\GameClient;
+use App\Ranker;
 use App\Squad;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -90,20 +91,24 @@ class SquadController extends Controller
 
         $battles = [];
         foreach ($offensiveBattles as $offensiveBattle) {
+            $skill_before = Ranker::calculateScore($offensiveBattle->mu_before, $offensiveBattle->sigma_before);
+            $opponent_skill_before = Ranker::calculateScore($offensiveBattle->opponent_mu_before, $offensiveBattle->opponent_sigma_before);
             $battles[$offensiveBattle->end_date] = [
                 'score' => $offensiveBattle->score,
                 'opponent_score' => $offensiveBattle->opponent_score,
                 'opponent' => Squad::findOrNew($offensiveBattle->opponent_id),
-                'skill_difference' => max(1, $offensiveBattle->opponent_mu_before) / max(1, $offensiveBattle->mu_before),
+                'skill_difference' => max(1, $opponent_skill_before) / max(1, $skill_before),
                 'skill_change' => $offensiveBattle->skillChange,
             ];
         }
         foreach ($defensiveBattles as $defensiveBattle) {
+            $skill_before = Ranker::calculateScore($defensiveBattle->opponent_mu_before, $defensiveBattle->opponent_sigma_before);
+            $opponent_skill_before = Ranker::calculateScore($defensiveBattle->mu_before, $defensiveBattle->sigma_before);
             $battles[$defensiveBattle->end_date] = [
                 'score' => $defensiveBattle->opponent_score,
                 'opponent_score' => $defensiveBattle->score,
                 'opponent' => Squad::findOrNew($defensiveBattle->squad_id),
-                'skill_difference' => max(1, $defensiveBattle->mu_before) / max(1, $defensiveBattle->opponent_mu_before),
+                'skill_difference' => max(1, $opponent_skill_before) / max(1, $skill_before),
                 'skill_change' => $defensiveBattle->opponentSkillChange,
             ];
         }
