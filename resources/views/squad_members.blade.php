@@ -15,22 +15,22 @@
 
     </div>
     <div class="row">
-        <div class="col-lg-10 col-md-8 col-sm-9 col-xs-10">
+        <div class="col-lg-8 col-md-9 col-sm-10 col-xs-10">
             <table class="table table-striped table-bordered table-hover">
                 <caption class="text-info">Squad members</caption>
                 <thead>
                 <tr>
                     <th></th>
                     <th>Name</th>
-                    <th class="rank">Donated</th>
-                    <th class="rank">Received</th>
-                    {{--<th class="rank">HQ</th>--}}
-                    <th class="rank">Rep invested</th>
+                    <th class="rank hidden-xs">Donated</th>
+                    <th class="rank hidden-xs">Received</th>
+                    <th class="rank hidden-xs hidden-sm">HQ</th>
+                    <th class="rank hidden-xs hidden-sm">Rep invested</th>
                     <th class="rank">Base score</th>
                     <th class="rank">Medals</th>
                     <th class="rank">Att. won</th>
                     <th class="rank">Def. won</th>
-                    <th>Joined</th>
+                    <th class="hidden-xs hidden-sm">Joined</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -44,15 +44,15 @@
                             <td class="rank"></td>
                         @endif
                         <td>{{$member->name}}</td>
-                        <td class="rank">{{$member->troopsDonated}}</td>
-                        <td class="rank">{{$member->troopsReceived}}</td>
-                        {{--                        <td class="rank">{{$member->hqLevel}}</td>--}}
-                        <td class="rank">{{$member->reputationInvested}}</td>
+                        <td class="rank hidden-xs">{{$member->troopsDonated}}</td>
+                        <td class="rank hidden-xs">{{$member->troopsReceived}}</td>
+                        <td class="rank hidden-xs hidden-sm">{{$member->hqLevel}}</td>
+                        <td class="rank hidden-xs hidden-sm">{{$member->reputationInvested}}</td>
                         <td class="rank">{{$member->xp}}</td>
                         <td class="rank">{{$member->score}}</td>
                         <td class="rank">{{$member->attacksWon}}</td>
                         <td class="rank">{{$member->defensesWon}}</td>
-                        <td>{{$member->joinDate->toDateString()}}</td>
+                        <td class="hidden-xs hidden-sm">{{$member->joinDate->toDateString()}}</td>
                     </tr>
                 @endforeach
                 </tbody>
