@@ -14,8 +14,9 @@ class StatsController extends Controller
         $data = Cache::get('statistics', false);
         if ($data === false) {
             $data = [
-              'Squads' => Squad::getStats(),
-              'Commanders' => Commander::getStats(),
+                'Squads' => Squad::getStats(),
+                'Commanders' => Commander::getStats(),
+                'Planets' => Commander::getPlanetStats(),
             ];
             Cache::put('statistics', $data, 60);
         }

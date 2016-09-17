@@ -96,4 +96,28 @@ class Commander extends Model
         return $stats;
     }
 
+    /**
+     * @param array $factions
+     * @return array
+     */
+    public static function getPlanetStats(array $factions = ['empire', 'rebel'])
+    {
+        $stats = [];
+        foreach ($factions as $faction) {
+            $planets = self::whereFaction($faction)
+                ->getQuery()
+                ->groupBy('planet')
+                ->select(['planet'])
+                ->selectRaw('count(1) AS amount')
+                ->get();
+            foreach ($planets as $planet) {
+                $stats[ucfirst($faction)][$planet->planet ?: 'Unknown'] = $planet->amount;
+            }
+
+        }
+        self::addTotalsToStats($stats);
+
+        return $stats;
+    }
+
 }
