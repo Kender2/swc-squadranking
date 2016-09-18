@@ -9,23 +9,22 @@ trait StatisticsTrait
      * @param array $values
      * @return array
      */
-    protected static function addTotalsToStats(array &$values)
+    protected static function getTotalsForStats(array $values)
     {
         $factionCount = max(1, count($values));
+        $stats = array_keys(current($values));
 
-        foreach ($values as $faction => $data) {
-            foreach ($data as $stat => $value) {
-                isset($values['All'][$stat]) ? $values['All'][$stat] += $value : $values['All'][$stat] = $value;
+        $totals = [];
+        foreach ($stats as $stat) {
+            $totals[$stat] = 0;
+            foreach ($values as $data) {
+                $totals[$stat] += $data[$stat];
+            }
+            if (strpos($stat, 'Avg') === 0) {
+                $totals[$stat] /= $factionCount;
             }
         }
-
-        if (!empty($values)) {
-            foreach ($values['All'] as $stat => $value) {
-                if (strpos($stat, 'Avg') === 0) {
-                    $values['All'][$stat] /= $factionCount;
-                }
-            }
-        }
+        return $totals;
     }
 
     /**

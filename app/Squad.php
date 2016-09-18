@@ -190,7 +190,7 @@ class Squad extends Model
             'Avg medals' => 'avg(medals)',
         ];
         $stats = self::getStatsForFactions($factions, $columns);
-        self::addTotalsToStats($stats);
+        $stats['All'] = self::getTotalsForStats($stats);
 
         return $stats;
     }

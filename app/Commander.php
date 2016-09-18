@@ -91,7 +91,7 @@ class Commander extends Model
             'Avg defenses won' => 'avg(defensesWon)',
         ];
         $stats = self::getStatsForFactions($factions, $columns);
-        self::addTotalsToStats($stats);
+        $stats['All'] = self::getTotalsForStats($stats);
 
         return $stats;
     }
@@ -115,7 +115,7 @@ class Commander extends Model
             }
 
         }
-        self::addTotalsToStats($stats);
+        $stats['All'] = self::getTotalsForStats($stats);
 
         return $stats;
     }
