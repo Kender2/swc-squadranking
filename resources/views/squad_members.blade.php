@@ -26,7 +26,7 @@
                     <th class="rank hidden-xs">Received</th>
                     <th class="rank hidden-xs hidden-sm">HQ</th>
                     <th class="rank hidden-xs hidden-sm">Rep invested</th>
-                    <th class="rank">Base score</th>
+                    <th class="rank">Base strength</th>
                     <th class="rank">Medals</th>
                     <th class="rank">Att. won</th>
                     <th class="rank">Def. won</th>

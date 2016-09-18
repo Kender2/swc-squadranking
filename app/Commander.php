@@ -85,7 +85,7 @@ class Commander extends Model
             'Avg received' => 'avg(troopsReceived)',
             'Avg HQ level' => 'avg(hqLevel)',
             'Avg rep invested' => 'avg(reputationInvested)',
-            'Avg base score' => 'avg(xp)',
+            'Avg base strength' => 'avg(xp)',
             'Avg medals' => 'avg(score)',
             'Avg attacks won' => 'avg(attacksWon)',
             'Avg defenses won' => 'avg(defensesWon)',

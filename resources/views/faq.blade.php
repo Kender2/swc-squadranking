@@ -27,8 +27,8 @@
             <p>Because the developers at Disney use their own matchmaking algorithms and not ours ;)</p>
             <h5 class="text-info"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> What does "Rep invested" mean?"</h5>
             <p>That is the amount of reputation points that that member has invested in their squad.</p>
-            <h5 class="text-info"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> What does "base score" mean?</h5>
-            <p>The base score is an internal value that is used for matchmaking. It depends on the level of your HQ and SC (SquadCenter), turrets and traps. It is a MUCH better indicator of the strength of a base than HQ level.</p>
+            <h5 class="text-info"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> What does "base strength" mean?</h5>
+            <p>The base strength is an internal value that is used for matchmaking. It depends on the level of your HQ and SC (SquadCenter), turrets and traps. It is a MUCH better indicator of the strength of a base than HQ level.</p>
             <h5 class="text-info"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> What does "UL" mean?</h5>
             <p>UpLinks.</p>
         </div>

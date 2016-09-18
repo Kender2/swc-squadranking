@@ -122,7 +122,7 @@ class SquadController extends Controller
     {
         $squad = Squad::findOrFail($id);
 
-        $members = $squad->members()->orderBy('joinDate')->get();
+        $members = $squad->members()->orderBy('xp', 'desc')->get();
 
         return view('squad_members', compact(['members', 'squad']));
     }
