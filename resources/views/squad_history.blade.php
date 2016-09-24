@@ -14,9 +14,9 @@
 
     </div>
     <div class="row">
-        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
             <table class="table table-bordered table-condensed table-hover bg-{{$squad->faction}}">
-                <caption class="text-info">Totals</caption>
+                <caption class="text-info">Squad stats</caption>
                 <tr>
                     <td>Faction</td>
                     <td class="rank text-{{$squad->faction}}">{{ucfirst($squad->faction)}}</td>
@@ -27,31 +27,35 @@
                 </tr>
                 <tr>
                     <td>TrueSkill™</td>
-                    <td class="rank">{{$squad->skill}}</td>
+                    <td class="rank">{{number_format($squad->skill)}}</td>
+                </tr>
+                <tr>
+                    <td>Avg base strength</td>
+                    <td class="rank">{{number_format($squad->averageBaseScore)}}</td>
                 </tr>
                 <tr>
                     <td>Wars</td>
-                    <td class="rank">{{$squad->wars}}</td>
+                    <td class="rank">{{number_format($squad->wars)}}</td>
                 </tr>
-                <tr title="Won {{ round($squad->wins/$squad->wars * 100,1) }}% of wars">
+                <tr title="Won {{ number_format($squad->wins/$squad->wars * 100,1) }}% of wars">
                     <td>Wins</td>
                     <td class="rank">{{$squad->wins}}</td>
                 </tr>
-                <tr title="Tied {{ round($squad->draws/$squad->wars * 100,1) }}% of wars">
+                <tr title="Tied {{ number_format($squad->draws/$squad->wars * 100,1) }}% of wars">
                     <td>Draws</td>
                     <td class="rank">{{$squad->draws}}</td>
                 </tr>
-                <tr title="Lost {{ round($squad->losses/$squad->wars * 100,1) }}% of wars">
+                <tr title="Lost {{ number_format($squad->losses/$squad->wars * 100,1) }}% of wars">
                     <td>Losses</td>
                     <td class="rank">{{$squad->losses}}</td>
                 </tr>
-                <tr title="Captured an average of {{ round($squad->uplinks_captured/$squad->wars) }} uplinks per war">
+                <tr title="Captured an average of {{ number_format($squad->uplinks_captured/$squad->wars) }} uplinks per war">
                     <td>Uplinks captured</td>
-                    <td class="rank">{{$squad->uplinks_captured}}</td>
+                    <td class="rank">{{number_format($squad->uplinks_captured)}}</td>
                 </tr>
-                <tr title="Saved an average of {{ round($squad->uplinks_saved/$squad->wars) }} uplinks per war">
+                <tr title="Saved an average of {{ number_format($squad->uplinks_saved/$squad->wars) }} uplinks per war">
                     <td>Uplinks saved</td>
-                    <td class="rank">{{$squad->uplinks_saved}}</td>
+                    <td class="rank">{{number_format($squad->uplinks_saved)}}</td>
                 </tr>
                 <tr>
                     <td>Last updated</td>
@@ -60,30 +64,30 @@
             </table>
 
         </div>
-        <div class="col-lg-6 col-md-8 col-sm-9 col-xs-10">
+        <div class="col-lg-7 col-md-8 col-sm-10 col-xs-10">
             <table class="table table-striped table-bordered table-hover">
                 <caption class="text-info">Battle history</caption>
                 <thead>
                 <tr>
                     <th>Date</th>
-                    <th class="rank">Opponent skill</th>
+                    <th class="rank">Opp. skill</th>
                     <th>Opponent</th>
                     <th>Result</th>
                     <th class="rank">Score</th>
-                    <th class="rank">Opponent score</th>
+                    <th class="rank">Opp. score</th>
                     <th class="rank">Skill result</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($battles as $date => $battle)
                     <tr>
-                        <td>{{$date}}</td>
+                        <td>{{Carbon\Carbon::parse($date)->toDateString()}}</td>
                         <td class="rank">{{ round($battle['skill_difference'] * 100) }}%</td>
                         <td><a href="{{ route('squadhistory', ['id' => $battle['opponent']->id]) }}">{!! $battle['opponent']->renderName() !!}</a></td>
                         <td class="text-{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}">{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}</td>
                         <td class="rank">{{$battle['score']}}</td>
                         <td class="rank">{{$battle['opponent_score']}}</td>
-                        <td class="rank">{{$battle['skill_change'] > 0 ? '+' : ''}}{{$battle['skill_change']}}</td>
+                        <td class="rank">{{$battle['skill_change'] > 0 ? '+' : ''}}{{number_format($battle['skill_change'])}}</td>
                     </tr>
                 @endforeach
                 </tbody>

@@ -54,15 +54,27 @@ class Squad extends Model
     use DispatchesJobs;
     use StatisticsTrait;
 
+    /**
+     * @var bool
+     */
     public $incrementing = false;
 
+    /**
+     * @var array
+     */
     public $fillable = ['id'];
 
+    /**
+     * @var array
+     */
     protected $attributes = [
         'mu' => self::DEFAULT_INITIAL_MEAN,
         'sigma' => self::DEFAULT_INITIAL_STANDARD_DEVIATION,
     ];
 
+    /**
+     * @return string
+     */
     public function getRankAttribute()
     {
         if ($this->wins >= config('sod.win_threshold')) {
@@ -79,19 +91,28 @@ class Squad extends Model
 
         $winsToGo = config('sod.win_threshold') - $this->wins;
         $plural = $winsToGo !== 1 ? 's' : '';
-        return '<span title="Needs ' . $winsToGo . ' more win' . $plural . ' to rank. Skill ' . $this->skill . '.">Unranked</span>';
+        return '<span title="Needs ' . $winsToGo . ' more win' . $plural . ' to rank. Skill ' . number_format($this->skill) . '.">Unranked</span>';
     }
 
+    /**
+     * @return int
+     */
     public function getWarsAttribute()
     {
         return $this->wins + $this->losses + $this->draws;
     }
 
+    /**
+     * @return float
+     */
     public function getSkillAttribute()
     {
         return Ranker::calculateScore($this->mu, $this->sigma);
     }
 
+    /**
+     * @return bool
+     */
     public function needsFetching()
     {
         if (!$this->exists || $this->name === null) {
@@ -106,6 +127,9 @@ class Squad extends Model
         return !$recentlyFetched;
     }
 
+    /**
+     * @return bool
+     */
     protected function queue()
     {
         try {
@@ -127,28 +151,45 @@ class Squad extends Model
         return false;
     }
 
+    /**
+     * @return string
+     */
     public function renderName()
     {
         return static::colorName($this->name);
     }
 
+    /**
+     * @return string
+     */
     public function renderNamePlain()
     {
         return static::plainName($this->name);
     }
 
+    /**
+     * @param $name
+     * @return string
+     */
     public static function colorName($name)
     {
         $safe_name = htmlentities(urldecode($name));
         return preg_replace('/\[([0-9A-Fa-f]{6})\]/', '<span style="color: #$1">', $safe_name) . '</span>';
     }
 
+    /**
+     * @param $name
+     * @return string
+     */
     public static function plainName($name)
     {
         $safe_name = htmlentities(urldecode($name));
         return preg_replace('/\[[0-9A-Fa-f]{6}\]/', '', $safe_name);
     }
 
+    /**
+     * @return string
+     */
     public static function lastUpdate()
     {
         return Squad::orderBy('updated_at', 'desc')
@@ -157,20 +198,35 @@ class Squad extends Model
             ->diffForHumans();
     }
 
-    public function lastBattle()
-    {
-        return Battle::whereSquadId($this->id)
-            ->orWhere('opponent_squad_id', '=', $this->id)
-            ->orderBy('end_date', 'desc')
-            ->first();
-    }
-
     /**
      * Get the members of the squad.
      */
     public function members()
     {
         return $this->hasMany('App\Commander', 'squadId');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function averageBaseScore()
+    {
+        return $this->hasOne('App\Commander', 'squadId')
+            ->selectRaw('squadId, avg(xp) as aggregate')
+            ->groupBy('squadId');
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageBaseScoreAttribute()
+    {
+        if (!$this->relationLoaded('averageBaseScore')) {
+            $this->load('averageBaseScore');
+        }
+        $related = $this->getRelation('averageBaseScore');
+
+        return $related ? $related->aggregate : 0;
     }
 
     /**

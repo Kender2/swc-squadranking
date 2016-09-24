@@ -44,14 +44,14 @@
                             <td class="rank"></td>
                         @endif
                         <td>{{$member->name}}</td>
-                        <td class="rank hidden-xs">{{$member->troopsDonated}}</td>
-                        <td class="rank hidden-xs">{{$member->troopsReceived}}</td>
-                        <td class="rank hidden-xs hidden-sm">{{$member->hqLevel}}</td>
-                        <td class="rank hidden-xs hidden-sm">{{$member->reputationInvested}}</td>
-                        <td class="rank">{{$member->xp}}</td>
-                        <td class="rank">{{$member->score}}</td>
-                        <td class="rank">{{$member->attacksWon}}</td>
-                        <td class="rank">{{$member->defensesWon}}</td>
+                        <td class="rank hidden-xs">{{number_format($member->troopsDonated)}}</td>
+                        <td class="rank hidden-xs">{{number_format($member->troopsReceived)}}</td>
+                        <td class="rank hidden-xs hidden-sm">{{number_format($member->hqLevel)}}</td>
+                        <td class="rank hidden-xs hidden-sm">{{number_format($member->reputationInvested)}}</td>
+                        <td class="rank">{{number_format($member->xp)}}</td>
+                        <td class="rank">{{number_format($member->score)}}</td>
+                        <td class="rank">{{number_format($member->attacksWon)}}</td>
+                        <td class="rank">{{number_format($member->defensesWon)}}</td>
                         <td class="hidden-xs hidden-sm">{{$member->joinDate->toDateString()}}</td>
                     </tr>
                 @endforeach

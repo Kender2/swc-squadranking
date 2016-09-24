@@ -33,11 +33,13 @@
                 <tr>
                     <th class="rank">Rank</th>
                     <th>Name</th>
+                    <th class="rank">Skill points</th>
+                    <th class="rank hidden-xs">Avg base strength</th>
                     <th class="rank">Won</th>
                     <th class="rank">Tied</th>
                     <th class="rank">Lost</th>
-                    <th class="rank">UL killed</th>
-                    <th class="rank">UL saved</th>
+                    <th class="rank hidden-xs">UL killed</th>
+                    <th class="rank hidden-xs">UL saved</th>
                     <th>Faction</th>
                 </tr>
                 </thead>
@@ -45,11 +47,13 @@
                     <tr class="bg-{{$squad->faction}}">
                         <td class="rank">{{$index + $squads->firstItem()}}</td>
                         <td><a href="{{ route('squadhistory', ['id' => $squad->id]) }}">{!! $squad->renderName() !!}</a></td>
-                        <td class="rank" title="{{ round($squad->wins/$squad->wars * 100,1) }}%">{{$squad->wins}}</td>
-                        <td class="rank" title="{{ round($squad->draws/$squad->wars * 100,1) }}%">{{$squad->draws}}</td>
-                        <td class="rank" title="{{ round($squad->losses/$squad->wars * 100,1) }}%">{{$squad->losses}}</td>
-                        <td class="rank" title="{{ round($squad->uplinks_captured/$squad->wars,1) }} / war">{{$squad->uplinks_captured}}</td>
-                        <td class="rank" title="{{ round($squad->uplinks_saved/$squad->wars,1) }} / war">{{$squad->uplinks_saved}}</td>
+                        <td class="rank">{{number_format($squad->skill)}}</td>
+                        <td class="rank hidden-xs">{{number_format($squad->averageBaseScore)}}</td>
+                        <td class="rank" title="{{ number_format($squad->wins/$squad->wars * 100,1) }}%">{{number_format($squad->wins)}}</td>
+                        <td class="rank" title="{{ number_format($squad->draws/$squad->wars * 100,1) }}%">{{number_format($squad->draws)}}</td>
+                        <td class="rank" title="{{ number_format($squad->losses/$squad->wars * 100,1) }}%">{{number_format($squad->losses)}}</td>
+                        <td class="rank hidden-xs" title="{{ number_format($squad->uplinks_captured/$squad->wars,1) }} / war">{{number_format($squad->uplinks_captured)}}</td>
+                        <td class="rank hidden-xs" title="{{ number_format($squad->uplinks_saved/$squad->wars,1) }} / war">{{number_format($squad->uplinks_saved)}}</td>
                         <td class="text-{{$squad->faction}}">{{ucfirst($squad->faction)}}</td>
                     </tr>
                 @endforeach
