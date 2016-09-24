@@ -29,6 +29,7 @@
             <p>That is the amount of reputation points that that member has invested in their squad.</p>
             <h5 class="text-info"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> What does "base strength" mean?</h5>
             <p>The base strength is an internal value that is used for matchmaking. It depends on the level of your HQ and SC (SquadCenter), turrets and traps. It is a MUCH better indicator of the strength of a base than HQ level.</p>
+            <p>A table listing the values is located <a href="{{ route('baseScoreTable') }}">here</a>.</p>
             <h5 class="text-info"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> What does "UL" mean?</h5>
             <p>UpLinks.</p>
         </div>

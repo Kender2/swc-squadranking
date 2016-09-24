@@ -29,3 +29,7 @@ Route::any('squadsearch', 'SquadController@squadSearch')->name('squadsearch');
 Route::get('stats', 'StatsController@stats')->name('stats');
 
 Route::any('faq', 'FAQController@form')->name('faq');
+
+Route::get('base-score-table', function () {
+    return View::make('base_score');
+})->name('baseScoreTable');
