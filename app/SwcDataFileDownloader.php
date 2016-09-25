@@ -9,6 +9,7 @@ class SwcDataFileDownloader
 {
     /**
      * SwcDataFileDownloader constructor.
+     * @param ClientInterface $client
      */
     public function __construct(ClientInterface $client)
     {
@@ -29,7 +30,7 @@ class SwcDataFileDownloader
         try {
             $url = 'manifest/starts/prod/' . $version . '.json';
             $this->client->request('HEAD', $url);
-        } catch (ClientException $e) {
+        } catch (\Exception $e) {
             return false;
         }
         return true;
@@ -40,6 +41,8 @@ class SwcDataFileDownloader
      *
      * @param string $version
      * @return Manifest
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \RuntimeException
      */
     public function downloadManifest($version)
     {

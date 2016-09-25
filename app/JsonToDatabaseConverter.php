@@ -9,6 +9,7 @@ class JsonToDatabaseConverter
 
     public function convert($json, $connection)
     {
+        $db = Schema::connection($connection);
         $file = json_decode($json, true);
         foreach ($file['spreadsheetInfo']['pages'] as $page) {
             $name = $page['pageName'];
@@ -36,7 +37,6 @@ class JsonToDatabaseConverter
             }
 
             // Create table.
-            $db = Schema::connection($connection);
             $db->dropIfExists($name);
             $db->create($name, function ($table) use ($columnInfo) {
                 foreach ($columnInfo as $columnName => $info) {

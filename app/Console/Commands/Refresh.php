@@ -31,7 +31,6 @@ class Refresh extends Command
      * @param GameClient $client
      * @param WarProcessor $warProcessor
      * @param MemberProcessor $memberProcessor
-     * @return mixed
      */
     public function handle(GameClient $client, WarProcessor $warProcessor, MemberProcessor $memberProcessor)
     {

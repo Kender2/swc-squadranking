@@ -38,10 +38,22 @@ class SquadController extends Controller
                 foreach ($squad->warHistory as $battle) {
                     $row = [];
                     $row['endDate'] = Carbon::createFromTimestampUTC($battle->endDate);
-                    $row['result'] = ($battle->score > $battle->opponentScore) ? 'WIN' : (($battle->score < $battle->opponentScore) ? 'LOSS' : 'DRAW');
+                    if ($battle->score > $battle->opponentScore) {
+                        $row['result'] = 'WIN';
+                    }
+                    elseif ($battle->score < $battle->opponentScore) {
+                        $row['result'] = 'LOSS';
+                    }
+                    else {
+                        $row['result'] = 'DRAW';
+                    }
                     $row['score'] = $battle->score;
                     $row['opponentScore'] = $battle->opponentScore;
-                    $row['opponent'] = empty($battle->opponentName) ? '<i>Unknown</i>' : urldecode($battle->opponentName);
+                    if (!$battle->opponentName) {
+                        $row['opponent'] = '<i>Unknown</i>';
+                    } else {
+                        $row['opponent'] = urldecode($battle->opponentName);
+                    }
                     $row['opponentId'] = $battle->opponentGuildId;
                     $warRecord[$battle->endDate] = $row;
                 }

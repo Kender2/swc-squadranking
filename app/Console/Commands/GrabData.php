@@ -27,7 +27,10 @@ class GrabData extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @param GitWorkingCopy $git
+     * @throws \GitWrapper\GitException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \RuntimeException
      */
     public function handle(GitWorkingCopy $git)
     {

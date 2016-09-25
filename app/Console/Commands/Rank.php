@@ -26,7 +26,6 @@ class Rank extends Command
      * Execute the console command.
      *
      * @param RankerInterface $ranker
-     * @return mixed
      */
     public function handle(RankerInterface $ranker)
     {

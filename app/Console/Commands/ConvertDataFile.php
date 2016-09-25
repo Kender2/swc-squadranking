@@ -37,8 +37,6 @@ class ConvertDataFile extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {
@@ -56,7 +54,7 @@ class ConvertDataFile extends Command
         } while ($currentVersion > 0 && !File::exists($path));
 
         if (!$currentVersion) {
-            return 'Failed to find ' . $file . '.json';
+            echo 'Failed to find ' . $file . '.json';
         }
 
         $json = File::get($path);

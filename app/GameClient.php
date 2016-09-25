@@ -179,6 +179,7 @@ class GameClient
     /**
      * @param CommandInterface $command
      * @return CommandResponse
+     * @throws \App\Exceptions\CommandException
      */
     protected function runCommand(CommandInterface $command)
     {
