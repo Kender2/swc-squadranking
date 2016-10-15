@@ -18,7 +18,7 @@
             <h5 class="text-info"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> How does the ranking work?</h5>
             <p>We use TrueSkill&trade;. It's an algorithm to determine the relative strength between opponents. <a href="http://www.moserware.com/2010/03/computing-your-skill.html">This site</a> has an excellent explanation. In short it looks more at <i>who</i> you win or lose from than <i>how much</i> you win or lose.</p>
             <h5 class="text-info"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> When does a war appear on the site?</h5>
-            <p>Our droid is programmed so that every squad should be updated roughly once every 24 hours. Sometimes a bit faster, sometimes a bit slower.</p>
+            <p>Our droid is programmed so that each squad should be updated roughly once every 24 hours. Sometimes a bit faster, sometimes a bit slower.</p>
             <h5 class="text-info"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Why do we need {{ config('sod.win_threshold') }} victories to be ranked?</h5>
             <p>Because the skill determination algorithm needs to have enough data to work with to become accurate enough. And using the amount of wins rather than the amount of wars keeps out the losers.</p>
             <h5 class="text-info"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> When will you provide ranking for windows server?</h5>
