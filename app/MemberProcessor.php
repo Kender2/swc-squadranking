@@ -21,6 +21,10 @@ class MemberProcessor
         // Add the current members.
         foreach ($members as $member) {
             try {
+                // Trim extra suffixes if needed.
+                if (strlen($member->playerId) > 36) {
+                    $member->playerId = substr($member->playerId, 0, 36);
+                }
                 Commander::findOrNew($member->playerId)
                     ->fill([
                         'playerId' => $member->playerId,
