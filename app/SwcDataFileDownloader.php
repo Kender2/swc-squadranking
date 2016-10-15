@@ -20,6 +20,7 @@ class SwcDataFileDownloader
      *
      * @param string $version
      * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function isDownloadAvailable($version)
     {

@@ -37,6 +37,7 @@ class ConvertDataFile extends Command
 
     /**
      * Execute the console command.
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function handle()
     {

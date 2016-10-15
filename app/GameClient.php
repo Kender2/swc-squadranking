@@ -104,6 +104,7 @@ class GameClient
      * @param string $searchTerm
      *
      * @return array
+     * @throws \App\Exceptions\CommandException
      */
     public function guildSearchByName($searchTerm)
     {
@@ -121,6 +122,7 @@ class GameClient
 
     /**
      * @return GameClient
+     * @throws \App\Exceptions\CommandException
      */
     protected function getAuthToken()
     {
@@ -135,6 +137,7 @@ class GameClient
 
     /**
      * @return GameClient
+     * @throws \App\Exceptions\CommandException
      */
     protected function login()
     {

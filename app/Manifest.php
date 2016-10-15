@@ -4,7 +4,6 @@ namespace App;
 use App\Exceptions\InvalidManifestException;
 use Carbon\Carbon;
 use File;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -33,7 +32,7 @@ class Manifest extends Model
      */
     public function setContent(array $content)
     {
-        if (!array_key_exists('hashes', $content) || !array_key_exists('hashes', $content)) {
+        if (!array_key_exists('hashes', $content) || !array_key_exists('version', $content)) {
             throw new InvalidManifestException('No hashes or version');
         }
         $this->content = $content;
@@ -42,7 +41,8 @@ class Manifest extends Model
     }
 
 
-    public static function fromJsonString($jsonText) {
+    public static function fromJsonString($jsonText)
+    {
         $content = json_decode($jsonText, true);
         if ($content === null) {
             throw new InvalidManifestException('Empty or invalid json.');
@@ -53,7 +53,8 @@ class Manifest extends Model
         return $manifest;
     }
 
-    public static function fromFile($version) {
+    public static function fromFile($version)
+    {
         $path = storage_path('app/manifests');
         $json = File::get($path . DIRECTORY_SEPARATOR . $version . '.json');
         return self::fromJsonString($json);
