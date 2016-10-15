@@ -7,6 +7,7 @@
             <li>{!! $squad->renderName() !!}</li>
             <li><a href="{{ route('squadhistory', ['id' => $squad->id]) }}">War History</a></li>
             <li class="active"><a>Members</a></li>
+            <li><a href="{{ route('squadpredict', ['id' => $squad->id]) }}">Predict</a></li>
         </ul>
     </div>@endsection
 
@@ -57,11 +58,6 @@
                 @endforeach
                 </tbody>
             </table>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <small>*Note: <em>Wars from before June 22nd 2016 are not included.</em></small>
         </div>
     </div>
 @endsection

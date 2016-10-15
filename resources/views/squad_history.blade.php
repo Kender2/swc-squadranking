@@ -6,6 +6,7 @@
         <li>{!! $squad->renderName() !!}</li>
         <li class="active"><a>War History</a></li>
         <li><a href="{{ route('squadmembers', ['id' => $squad->id]) }}">Members</a></li>
+        <li><a href="{{ route('squadpredict', ['id' => $squad->id]) }}">Predict</a></li>
     </ul>
 </div>@endsection
 

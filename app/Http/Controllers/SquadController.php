@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Battle;
 use App\GameClient;
+use App\Outcome;
 use App\Ranker;
+use App\RankerInterface;
 use App\Squad;
 use Carbon\Carbon;
+use Cookie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Log;
@@ -40,11 +43,9 @@ class SquadController extends Controller
                     $row['endDate'] = Carbon::createFromTimestampUTC($battle->endDate);
                     if ($battle->score > $battle->opponentScore) {
                         $row['result'] = 'WIN';
-                    }
-                    elseif ($battle->score < $battle->opponentScore) {
+                    } elseif ($battle->score < $battle->opponentScore) {
                         $row['result'] = 'LOSS';
-                    }
-                    else {
+                    } else {
                         $row['result'] = 'DRAW';
                     }
                     $row['score'] = $battle->score;
@@ -137,5 +138,143 @@ class SquadController extends Controller
         $members = $squad->members()->orderBy('xp', 'desc')->get();
 
         return view('squad_members', compact(['members', 'squad']));
+    }
+
+    public function squadPredict(Request $request, $id, $opponentId = null)
+    {
+        /** @var Squad $squad */
+        $squad = Squad::findOrFail($id);
+
+        // Get the opponent from the url if present.
+        if ($opponentId) {
+            $opponent = Squad::find($opponentId);
+        } // Get the opponent from the search of present.
+        elseif ($request->has('match')) {
+            $searchTerm = $request->input('match');
+            $results = Squad::whereDeleted(false)
+                ->where('name', 'LIKE', '%' . $searchTerm . '%')
+                ->orderByRaw('mu - (' . config('sod.sigma_multiplier') . '*sigma) desc')
+                ->simplePaginate(20);
+            if (count($results) === 1) {
+                $opponent = $results->first();
+                unset($results);
+            }
+        } elseif ($request->hasCookie('squad_id')) {
+            $opponent = Squad::find($request->cookie('squad_id'));
+        }
+
+        // Add the match prediction.
+        if (isset($opponent)) {
+            Cookie::queue('squad_id', $opponent->id);
+
+            if ($squad->skill > $opponent->skill) {
+                $predictions = $this->winPrediction($squad, $opponent);
+            } elseif ($squad->skill < $opponent->skill) {
+                $predictions = $this->losePrediction($opponent, $squad);
+            } else {
+                $predictions = $this->drawPrediction($squad, $opponent);
+            }
+        }
+
+        return view('squad_predict', compact(['squad', 'opponent', 'results', 'predictions']));
+    }
+
+    /**
+     * @param Squad $squad
+     * @param Squad $opponent
+     * @param int $outcome
+     * @return array
+     */
+    protected function createOutcomeTableData(Squad $squad, Squad $opponent, $outcome)
+    {
+        /** @var RankerInterface $ranker */
+        $ranker = app()->make('App\RankerInterface');
+        list($squadRating, $opponentRating) = $ranker->calculateSkillRatings($squad, $opponent, $outcome);
+        $newSkill = $ranker::calculateScore($squadRating->getMean(), $squadRating->getStandardDeviation());
+        $opponentNewSkill = $ranker::calculateScore($opponentRating->getMean(), $opponentRating->getStandardDeviation());
+        $data = [
+            [
+                'squad' => $squad->renderName(),
+                'old_skill' => $squad->skill,
+                'new_skill' => $newSkill,
+                'change' => $newSkill - $squad->skill,
+            ],
+            [
+                'squad' => $opponent->renderName(),
+                'old_skill' => $opponent->skill,
+                'new_skill' => $opponentNewSkill,
+                'change' => $opponentNewSkill - $opponent->skill,
+            ],
+        ];
+        return $data;
+    }
+
+    /**
+     * @param Squad $squad
+     * @param Squad $opponent
+     * @return array
+     */
+    protected function winPrediction(Squad $squad, Squad $opponent)
+    {
+        return [
+            [
+                'text' => 'I predict that ' . $squad->renderName() . ' will beat ' . $opponent->renderName() . ' with this result:',
+                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Win),
+            ],
+            [
+                'text' => 'But if ' . $opponent->renderName() . ' beats ' . $squad->renderName() . ' the result will be:',
+                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Lose),
+            ],
+            [
+                'text' => 'And in case of a tie the results will be:',
+                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Draw),
+            ],
+        ];
+    }
+
+    /**
+     * @param Squad $squad
+     * @param Squad $opponent
+     * @return array
+     */
+    protected function losePrediction(Squad $opponent, Squad $squad)
+    {
+        return [
+            [
+                'text' => 'I predict that ' . $opponent->renderName() . ' will beat ' . $squad->renderName() . ' with this result:',
+                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Lose),
+            ],
+            [
+                'text' => 'But if ' . $squad->renderName() . ' beats ' . $opponent->renderName() . ' the result will be:',
+                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Lose),
+            ],
+            [
+                'text' => 'And in case of a tie the results will be:',
+                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Draw),
+            ],
+        ];
+    }
+
+    /**
+     * @param Squad $squad
+     * @param Squad $opponent
+     * @return array
+     */
+    protected function drawPrediction(Squad $squad, Squad $opponent)
+    {
+        return [
+            [
+                'text' => 'I predict a tie between ' . $squad->renderName() . ' and ' . $opponent->renderName(),
+                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Lose),
+            ],
+            [
+                'text' => 'But if ' . $squad->renderName() . ' beats ' . $opponent->renderName() . ' the result will be:',
+                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Lose),
+            ],
+            [
+                'text' => 'And if ' . $opponent->renderName() . ' beats ' . $squad->renderName() . ' the result will be:',
+                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Draw),
+            ],
+        ];
     }
 }

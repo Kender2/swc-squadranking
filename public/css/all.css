@@ -31,3 +31,7 @@ body { padding-top: 70px; }
 .footer {
     background-color: #2a323a;
 }
+
+ul.nav > li > a {
+    padding: 3px 15px;
+}
