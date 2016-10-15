@@ -41,6 +41,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Battle whereSigmaAfter($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Battle whereOpponentSigmaBefore($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Battle whereOpponentSigmaAfter($value)
+ * @property-read mixed $outcome
  */
 class Battle extends Model
 {

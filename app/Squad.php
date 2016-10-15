@@ -47,6 +47,8 @@ use Log;
  * @method static \Illuminate\Database\Query\Builder|\App\Squad whereUplinksSaved($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Squad whereReputation($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Squad whereMedals($value)
+ * @property-read \App\Commander $averageBaseScore
+ * @property-read mixed $average_base_score
  */
 class Squad extends Model
 {
