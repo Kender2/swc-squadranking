@@ -52,9 +52,8 @@ class Refresh extends Command
             }
             $squad->touch();
             // Delay to ease the strain on the server.
-            $seconds = mt_rand(2, 8);
-            $this->comment('Sleeping ' . $seconds . ' seconds.');
-            sleep($seconds);
+            $this->comment('Sleeping 4 seconds.');
+            sleep(4);
         }
     }
 }
