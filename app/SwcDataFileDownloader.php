@@ -3,7 +3,6 @@ namespace App;
 
 use File;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\ClientException;
 
 class SwcDataFileDownloader
 {
@@ -63,6 +62,7 @@ class SwcDataFileDownloader
      * @param string $path
      * @param string $hash
      * @return string Path to downloaded file.
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function downloadFile($path, $hash)
     {

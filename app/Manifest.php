@@ -1,8 +1,10 @@
 <?php
 namespace App;
 
+use App\Exceptions\InvalidManifestException;
 use Carbon\Carbon;
 use File;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -25,11 +27,15 @@ class Manifest extends Model
     public $incrementing = false;
 
     /**
-     * @param mixed $content
+     * @param array $content
      * @return Manifest
+     * @throws \App\Exceptions\InvalidManifestException
      */
-    public function setContent($content)
+    public function setContent(array $content)
     {
+        if (!array_key_exists('hashes', $content) || !array_key_exists('hashes', $content)) {
+            throw new InvalidManifestException('No hashes or version');
+        }
         $this->content = $content;
         $this->attributes['version'] = $content['version'];
         return $this;
@@ -37,8 +43,12 @@ class Manifest extends Model
 
 
     public static function fromJsonString($jsonText) {
+        $content = json_decode($jsonText, true);
+        if ($content === null) {
+            throw new InvalidManifestException('Empty or invalid json.');
+        }
         $manifest = new Manifest();
-        $manifest->setContent(json_decode($jsonText, true));
+        $manifest->setContent($content);
         $manifest->setCreatedAt(Carbon::parse($manifest->content['created']));
         return $manifest;
     }

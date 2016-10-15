@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Manifest;
 use App\SwcDataFileDownloader;
 use GitWrapper\GitWorkingCopy;
-use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
 class GrabData extends Command
@@ -27,15 +26,14 @@ class GrabData extends Command
     /**
      * Execute the console command.
      *
+     * @param SwcDataFileDownloader $downloader
      * @param GitWorkingCopy $git
-     * @throws \GitWrapper\GitException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \GitWrapper\GitException
      * @throws \RuntimeException
      */
-    public function handle(GitWorkingCopy $git)
+    public function handle(SwcDataFileDownloader $downloader, GitWorkingCopy $git)
     {
-        $client = new Client(['base_uri' => 'https://starts0.content.disney.io/cloud-cms/']);
-        $downloader = new SwcDataFileDownloader($client);
         $currentVersion = Manifest::latestVersion();
         $limit = $currentVersion + 10;
         for ($newVersion = $currentVersion + 1; $newVersion < $limit; $newVersion++) {
@@ -50,12 +48,15 @@ class GrabData extends Command
                 $newManifest->save();
                 if ($git->hasChanges()) {
                     $git->commit((string)$newVersion);
-                    $git->push();
                 }
                 $currentVersion = $newVersion;
             } else {
                 $this->info('Version ' . $newVersion . ' is not available.');
             }
+        }
+        // We always run this so that if a previous push failed it will be retried.
+        if ($git->isTracking() && $git->isAhead()) {
+            $git->push();
         }
     }
 }
