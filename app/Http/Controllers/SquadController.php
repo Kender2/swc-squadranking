@@ -237,7 +237,7 @@ class SquadController extends Controller
      * @param Squad $opponent
      * @return array
      */
-    protected function losePrediction(Squad $opponent, Squad $squad)
+    protected function losePrediction(Squad $squad, Squad $opponent)
     {
         return [
             [
@@ -246,7 +246,7 @@ class SquadController extends Controller
             ],
             [
                 'text' => 'But if ' . $squad->renderName() . ' beats ' . $opponent->renderName() . ' the result will be:',
-                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Lose),
+                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Win),
             ],
             [
                 'text' => 'And in case of a tie the results will be:',
