@@ -102,6 +102,48 @@ class Battle extends Model
         );
     }
 
+
+    /**
+     * The outcome of the battle.
+     *
+     * Outcome::Win if the first squad won from the second.
+     * Outcome::Lose if the first squad lost from the second.
+     * Outcome::draw if they tied.
+     *
+     * @return int
+     */
+    public function getOutcomeAttribute()
+    {
+        if ($this->score > $this->opponent_score) {
+            return Outcome::Win;
+        } elseif ($this->score < $this->opponent_score) {
+            return Outcome::Lose;
+        } else {
+            return Outcome::Draw;
+        }
+    }
+
+    /**
+     * @param $squad
+     * @param $newRating
+     * @param $opponent
+     * @param $opponentNewRating
+     */
+    public function updateStats($squad, $newRating, $opponent, $opponentNewRating)
+    {
+        $this->mu_before = $squad->mu;
+        $this->mu_after = $newRating->getMean();
+        $this->sigma_before = $squad->sigma;
+        $this->sigma_after = $newRating->getStandardDeviation();
+        $this->opponent_mu_before = $opponent->mu;
+        $this->opponent_mu_after = $opponentNewRating->getMean();
+        $this->opponent_sigma_before = $opponent->sigma;
+        $this->opponent_sigma_after = $opponentNewRating->getStandardDeviation();
+
+        $this->processed_at = Carbon::now();
+        $this->save();
+    }
+
     /**
      * Subtract two sigmas mu pairs.
      *
@@ -119,5 +161,6 @@ class Battle extends Model
         $after = Ranker::calculateScore($second_mu, $second_sigma);
         return $after - $before;
     }
+
 
 }

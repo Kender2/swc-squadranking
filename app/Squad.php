@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Log;
 
 /**
  * App\Squad
@@ -214,6 +215,22 @@ class Squad extends Model
         return $this->hasOne('App\Commander', 'squadId')
             ->selectRaw('squadId, avg(xp) as aggregate')
             ->groupBy('squadId');
+    }
+
+    /**
+     * @param int $score
+     * @param int $opponentScore
+     * @param float $mu
+     * @param float $sigma
+     */
+    public function updateFromBattle($score, $opponentScore, $mu, $sigma)
+    {
+        Log::info('Updating mu for squad ' . $this->id . ' from ' . $this->mu . ' to ' . $mu);
+        $this->uplinks_captured += $score;
+        $this->uplinks_saved += 45 - $opponentScore;
+        $this->mu = $mu;
+        $this->sigma = $sigma;
+        $this->save();
     }
 
     /**
