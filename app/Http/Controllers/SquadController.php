@@ -170,7 +170,7 @@ class SquadController extends Controller
             if ($squad->skill > $opponent->skill) {
                 $predictions = $this->winPrediction($squad, $opponent);
             } elseif ($squad->skill < $opponent->skill) {
-                $predictions = $this->losePrediction($opponent, $squad);
+                $predictions = $this->losePrediction($squad, $opponent);
             } else {
                 $predictions = $this->drawPrediction($squad, $opponent);
             }
