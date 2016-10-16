@@ -81,20 +81,22 @@ class Squad extends Model
     public function getRankAttribute()
     {
         if ($this->wins >= config('sod.win_threshold')) {
-            $query = 'SELECT 1 + (SELECT count(*) FROM squads a WHERE a.mu-(:multiplier_a * a.sigma) > b.mu-(:multiplier_b * b.sigma) AND a.wins >= :win_threshold_a AND b.wins >= :win_threshold_b ) AS rank FROM squads b WHERE id = :id';
-            $bindings = [
-                'id' => $this->id,
-                'win_threshold_a' => config('sod.win_threshold'),
-                'win_threshold_b' => config('sod.win_threshold'),
-                'multiplier_a' => config('sod.sigma_multiplier'),
-                'multiplier_b' => config('sod.sigma_multiplier'),
-            ];
-            return DB::selectOne($query, $bindings)->rank;
+            return static::calculateRankFromSkill($this->skill);
         }
 
         $winsToGo = config('sod.win_threshold') - $this->wins;
-        $plural = $winsToGo !== 1 ? 's' : '';
-        return '<span title="Needs ' . $winsToGo . ' more win' . $plural . ' to rank. Skill ' . number_format($this->skill) . '.">Unranked</span>';
+        return static::formatUnranked($winsToGo, $this->skill);
+    }
+
+    public static function calculateRankFromSkill($skill)
+    {
+        $query = 'SELECT count(*) AS rank FROM squads WHERE ROUND((mu-(:multiplier * sigma)),3) >= :skill AND wins >= :win_threshold AND deleted = 0';
+        $bindings = [
+            'win_threshold' => config('sod.win_threshold'),
+            'multiplier' => config('sod.sigma_multiplier'),
+            'skill' => round($skill / 1000, 3),
+        ];
+        return DB::selectOne($query, $bindings)->rank;
     }
 
     /**
@@ -268,6 +270,17 @@ class Squad extends Model
         $stats['All'] = self::getTotalsForStats($stats);
 
         return $stats;
+    }
+
+    /**
+     * @param int $winsToGo
+     * @param float $skill
+     * @return string
+     */
+    public static function formatUnranked($winsToGo, $skill)
+    {
+        $plural = $winsToGo !== 1 ? 's' : '';
+        return '<span title="Needs ' . $winsToGo . ' more win' . $plural . ' to rank. Skill ' . number_format($skill) . '.">Unranked</span>';
     }
 
 }

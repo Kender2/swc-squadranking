@@ -1,6 +1,6 @@
 @extends('web')
 
-@section('title'){!! $squad->renderNamePlain() !!} Members @endsection
+@section('title'){!! $squad->renderNamePlain() !!} Prediction @endsection
 @section('heading')
     <div class="col-lg-6 col-md-8 col-sm-10 col-xs-10">
         <ul class="list-inline nav-justified nav-pills nav">
@@ -30,7 +30,6 @@
                     </span>
                 </div>
             </form>
-
         </div>
         @if (isset($results) && count($results) > 0)
             <div class="col-sm-offset-2 col-sm-6">
@@ -63,16 +62,16 @@
                         <thead>
                         <tr>
                             <th>Squad</th>
-                            <th class="rank">Old skill</th>
-                            <th class="rank">New skill</th>
-                            <th class="rank">Change</th>
+                            <th class="rank">Current rank</th>
+                            <th class="rank">Predicted rank</th>
+                            <th class="rank">Skill points</th>
                         </tr>
                         </thead>
                         @foreach ($prediction['data'] as $data)
                             <tr>
                                 <td>{!! $data['squad'] !!}</td>
-                                <td class="rank">{{ number_format($data['old_skill']) }}</td>
-                                <td class="rank">{{ number_format($data['new_skill']) }}</td>
+                                <td class="rank">{!! $data['old_rank'] !!}</td>
+                                <td class="rank">{!! $data['new_rank'] !!}</td>
                                 <td class="rank">{{ $data['change']  > 0 ? '+' : ''}}{{ number_format($data['change']) }}</td>
                             </tr>
                         @endforeach
@@ -81,6 +80,10 @@
             </div>
         @endforeach
     @endif
-
+    <div class="row">
+        <div class="col-lg-12">
+            <small>*Note: <em>Actual results may vary from predictions. No rights can be derived from data on this
+                    page.</em></small>
+        </div>
+    </div>
 @endsection
-

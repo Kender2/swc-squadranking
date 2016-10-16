@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Battle;
 use App\GameClient;
 use App\Outcome;
-use App\Ranker;
 use App\RankerInterface;
 use App\Squad;
 use Carbon\Carbon;
@@ -17,15 +16,18 @@ use Log;
 class SquadController extends Controller
 {
 
-    private $client;
+    protected $client;
+    protected $ranker;
 
     /**
      * SquadController constructor.
      * @param GameClient $client
+     * @param RankerInterface $ranker
      */
-    public function __construct(GameClient $client)
+    public function __construct(GameClient $client, RankerInterface $ranker)
     {
         $this->client = $client;
+        $this->ranker = $ranker;
     }
 
     public function viewSquad(Request $request)
@@ -104,8 +106,8 @@ class SquadController extends Controller
 
         $battles = [];
         foreach ($offensiveBattles as $offensiveBattle) {
-            $skill_before = Ranker::calculateScore($offensiveBattle->mu_before, $offensiveBattle->sigma_before);
-            $opponent_skill_before = Ranker::calculateScore($offensiveBattle->opponent_mu_before, $offensiveBattle->opponent_sigma_before);
+            $skill_before = $this->ranker->calculateScore($offensiveBattle->mu_before, $offensiveBattle->sigma_before);
+            $opponent_skill_before = $this->ranker->calculateScore($offensiveBattle->opponent_mu_before, $offensiveBattle->opponent_sigma_before);
             $battles[$offensiveBattle->end_date] = [
                 'score' => $offensiveBattle->score,
                 'opponent_score' => $offensiveBattle->opponent_score,
@@ -115,8 +117,8 @@ class SquadController extends Controller
             ];
         }
         foreach ($defensiveBattles as $defensiveBattle) {
-            $skill_before = Ranker::calculateScore($defensiveBattle->opponent_mu_before, $defensiveBattle->opponent_sigma_before);
-            $opponent_skill_before = Ranker::calculateScore($defensiveBattle->mu_before, $defensiveBattle->sigma_before);
+            $skill_before = $this->ranker->calculateScore($defensiveBattle->opponent_mu_before, $defensiveBattle->opponent_sigma_before);
+            $opponent_skill_before = $this->ranker->calculateScore($defensiveBattle->mu_before, $defensiveBattle->sigma_before);
             $battles[$defensiveBattle->end_date] = [
                 'score' => $defensiveBattle->opponent_score,
                 'opponent_score' => $defensiveBattle->score,
@@ -187,22 +189,25 @@ class SquadController extends Controller
      */
     protected function createOutcomeTableData(Squad $squad, Squad $opponent, $outcome)
     {
-        /** @var RankerInterface $ranker */
-        $ranker = app()->make('App\RankerInterface');
-        list($squadRating, $opponentRating) = $ranker->calculateSkillRatings($squad, $opponent, $outcome);
-        $newSkill = $ranker::calculateScore($squadRating->getMean(), $squadRating->getStandardDeviation());
-        $opponentNewSkill = $ranker::calculateScore($opponentRating->getMean(), $opponentRating->getStandardDeviation());
+        list($squadRating, $opponentRating) = $this->ranker->calculateSkillRatings($squad, $opponent, $outcome);
+        $newSkill = $this->ranker->calculateScore($squadRating->getMean(), $squadRating->getStandardDeviation());
+        $opponentNewSkill = $this->ranker->calculateScore($opponentRating->getMean(), $opponentRating->getStandardDeviation());
+
+        // Deal with unranked squads.
+        $newSquadRank = $this->calculateNewSquadRank($squad, $outcome, $newSkill);
+        $newOpponentRank = $this->calculateNewSquadRank($opponent, 0 - $outcome, $opponentNewSkill);
+
         $data = [
             [
                 'squad' => $squad->renderName(),
-                'old_skill' => $squad->skill,
-                'new_skill' => $newSkill,
+                'old_rank' => $squad->rank,
+                'new_rank' => $newSquadRank,
                 'change' => $newSkill - $squad->skill,
             ],
             [
                 'squad' => $opponent->renderName(),
-                'old_skill' => $opponent->skill,
-                'new_skill' => $opponentNewSkill,
+                'old_rank' => $opponent->rank,
+                'new_rank' => $newOpponentRank,
                 'change' => $opponentNewSkill - $opponent->skill,
             ],
         ];
@@ -276,5 +281,22 @@ class SquadController extends Controller
                 'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Draw),
             ],
         ];
+    }
+
+    /**
+     * @param Squad $squad
+     * @param int $outcome
+     * @param float $newSkill
+     * @return int
+     */
+    protected function calculateNewSquadRank(Squad $squad, $outcome, $newSkill)
+    {
+        $winsToGo = config('sod.win_threshold') - $squad->wins - max($outcome, 0);
+        if ($winsToGo > 0) {
+            $newSquadRank = $squad::formatUnranked($winsToGo, $newSkill);
+        } else {
+            $newSquadRank = $squad::calculateRankFromSkill($newSkill);
+        }
+        return $newSquadRank;
     }
 }
