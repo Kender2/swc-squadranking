@@ -1,6 +1,6 @@
 @extends('web')
 
-@section('title'){!! $squad->renderNamePlain() !!} Prediction @endsection
+@section('title'){!! $squad->renderNamePlain() !!} vs {!! isset($opponent) ? $opponent->renderNamePlain() : '???' !!} @endsection
 @section('heading')
     <div class="col-lg-6 col-md-8 col-sm-10 col-xs-10">
         <ul class="list-inline nav-justified nav-pills nav">
