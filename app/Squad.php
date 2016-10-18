@@ -234,6 +234,13 @@ class Squad extends Model
         $this->uplinks_saved += 45 - $opponentScore;
         $this->mu = $mu;
         $this->sigma = $sigma;
+        if ($score > $opponentScore) {
+            $this->wins++;
+        } elseif ($score < $opponentScore) {
+            $this->losses++;
+        } else {
+            $this->draws++;
+        }
         $this->save();
     }
 
