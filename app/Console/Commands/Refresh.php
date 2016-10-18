@@ -51,6 +51,8 @@ class Refresh extends Command
                 $memberProcessor->processMembers($data->members, $squad);
             }
             $squad->touch();
+            // Correct wrong stats due to bug #8.
+            $squad->fixBug8();
             // Delay to ease the strain on the server.
             $this->comment('Sleeping 4 seconds.');
             sleep(4);

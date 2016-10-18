@@ -290,4 +290,68 @@ class Squad extends Model
         return '<span title="Needs ' . $winsToGo . ' more win' . $plural . ' to rank. Skill ' . number_format($skill) . '.">Unranked</span>';
     }
 
+
+    /**
+     * Bug 8 https://github.com/Kender2/swc-squadranking/issues/8
+     *
+     * Stopped counting wins, losses and draws for squads.
+     * Use this function to check and fix this squad.
+     */
+    public function fixBug8()
+    {
+        $wins = $losses = $draws = 0;
+
+        // Add offensive battles.
+        $battles = Battle::whereSquadId($this->id)->get();
+        foreach ($battles as $battle) {
+            switch ($battle->outcome) {
+                case Outcome::Win:
+                    $wins++;
+                    break;
+                case Outcome::Lose:
+                    $losses++;
+                    break;
+                default:
+                    $draws++;
+                    break;
+            }
+        }
+
+        // Add defensive battles.
+        $battles = Battle::whereOpponentId($this->id)->get();
+        foreach ($battles as $battle) {
+            switch ($battle->outcome) {
+                case Outcome::Win:
+                    $losses++;
+                    break;
+                case Outcome::Lose:
+                    $wins++;
+                    break;
+                default:
+                    $draws++;
+                    break;
+            }
+        }
+
+        // Check for mismatches and correct them.
+        if ($wins !== $this->wins) {
+            Log::debug('wins ' . $wins . ' != ' . $this->wins);
+            $this->wins = $wins;
+        }
+        if ($losses !== $this->losses) {
+            Log::debug('losses ' . $losses . ' != ' . $this->losses);
+            $this->losses = $losses;
+        }
+        if ($draws !== $this->draws) {
+            Log::debug('draws ' . $draws . ' != ' . $this->draws);
+            $this->draws = $draws;
+        }
+
+        // Save if modified.
+        if ($this->isDirty()) {
+            Log::info('Fixing bug 8 for squad ' . $this->id);
+            $this->save();
+        }
+    }
+
 }
