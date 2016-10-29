@@ -13,6 +13,8 @@ use App\Commands\Guild\GetPublicArgs;
 use App\Commands\Guild\GetPublicCommand;
 use App\Commands\Guild\SearchByNameArgs;
 use App\Commands\Guild\SearchByNameCommand;
+use App\Commands\Player\Identity\SwitchArgs;
+use App\Commands\Player\Identity\SwitchCommand;
 use App\Commands\Player\LoginArgs;
 use App\Commands\Player\LoginCommand;
 use App\Commands\Player\Neighbor\VisitArgs;
@@ -117,6 +119,13 @@ class GameClient
     {
         $args = new VisitArgs($this->player, $neighborId);
         $command = new VisitCommand($args);
+        return $this->runCommand($command)->result;
+    }
+
+    public function switchIdentity($identityIndex)
+    {
+        $args = new SwitchArgs($this->player, $identityIndex);
+        $command = new SwitchCommand($args);
         return $this->runCommand($command)->result;
     }
 
