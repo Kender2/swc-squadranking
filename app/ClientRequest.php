@@ -57,7 +57,7 @@ class ClientRequest
             'DGVersion' => 'OpenGL ES 2.0',
             'DGMemory' => '208 MB',
             'DGShaderLevel' => '30',
-            'CAppVersion' => '4.4.0.8803',
+            'CAppVersion' => '4.6.0.9124',
             'X-Unity-Version' => '5.1.4p1',
             'User-Agent' => 'Dalvik/1.6.0 (Linux; U; Android 4.2.2; SM-T110 Build/JDQ39)',
             'Content-Type' => 'application/x-www-form-urlencoded',

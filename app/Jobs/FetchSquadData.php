@@ -59,7 +59,7 @@ class FetchSquadData extends Job implements ShouldQueue
             }
             $squad->touch();
             // Take it slow so we don't stress the server. Do try to get all squads done every 24 hours.
-            sleep(4);
+            sleep(3);
         } else {
             Log::info('No need to fetch squad ' . $squad->id);
         }
