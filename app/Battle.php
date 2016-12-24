@@ -45,6 +45,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Battle extends Model
 {
+    const MAX_SCORE = 45;
+
     public $incrementing = false;
 
     public $timestamps = false;
@@ -60,6 +62,16 @@ class Battle extends Model
             return 'LOSS';
         }
         return 'DRAW';
+    }
+
+    /**
+     * Determine if this a draw at the maximum score.
+     *
+     * @return bool
+     */
+    public function isMaxDraw()
+    {
+        return ($this->score === self::MAX_SCORE && $this->opponent_score === self::MAX_SCORE);
     }
 
     /**

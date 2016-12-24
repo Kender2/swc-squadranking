@@ -8,6 +8,7 @@ use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Log;
+use Moserware\Skills\Rating;
 
 /**
  * App\Squad
@@ -224,11 +225,12 @@ class Squad extends Model
     /**
      * @param int $score
      * @param int $opponentScore
-     * @param float $mu
-     * @param float $sigma
+     * @param Rating $rating
      */
-    public function updateFromBattle($score, $opponentScore, $mu, $sigma)
+    public function updateFromBattle($score, $opponentScore, Rating $rating)
     {
+        $mu = $rating->getMean();
+        $sigma = $rating->getStandardDeviation();
         Log::info('Updating mu for squad ' . $this->id . ' from ' . $this->mu . ' to ' . $mu);
         $this->uplinks_captured += $score;
         $this->uplinks_saved += 45 - $opponentScore;

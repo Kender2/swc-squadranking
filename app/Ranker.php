@@ -37,14 +37,21 @@ class Ranker implements RankerInterface
 
         Log::info('Ranking battle between ' . $squad->id . ' and ' . $opponent->id);
 
-        list($newRating, $opponentNewRating) = $this->calculateSkillRatings($squad, $opponent, $battle->outcome);
+        // In case of a 45-45 tie we don't calculate new ratings but use the
+        // old ones since that tells us nothing.
+        if ($battle->isMaxDraw()) {
+            $newRating = new Rating($squad->mu, $squad->sigma);
+            $opponentNewRating = new Rating($opponent->mu, $opponent->sigma);
+        } else {
+            list($newRating, $opponentNewRating) = $this->calculateSkillRatings($squad, $opponent, $battle->outcome);
+        }
 
         // Store the effects the battle had on the ratings.
         $battle->updateStats($squad, $newRating, $opponent, $opponentNewRating);
 
         // Update the squads.
-        $squad->updateFromBattle($battle->score, $battle->opponent_score, $battle->mu_after, $battle->sigma_after);
-        $opponent->updateFromBattle($battle->opponent_score, $battle->score, $battle->opponent_mu_after, $battle->opponent_sigma_after);
+        $squad->updateFromBattle($battle->score, $battle->opponent_score, $newRating);
+        $opponent->updateFromBattle($battle->opponent_score, $battle->score, $opponentNewRating);
     }
 
     /**
