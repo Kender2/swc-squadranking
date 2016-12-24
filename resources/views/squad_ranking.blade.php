@@ -34,7 +34,7 @@
                     <th class="rank">Rank</th>
                     <th>Name</th>
                     <th class="rank">Skill points</th>
-                    <th class="rank hidden-xs">Avg base strength</th>
+                    <th class="rank hidden-xs">Reputation</th>
                     <th class="rank">Won</th>
                     <th class="rank">Tied</th>
                     <th class="rank">Lost</th>
@@ -48,7 +48,7 @@
                         <td class="rank">{{$index + $squads->firstItem()}}</td>
                         <td><a href="{{ route('squadhistory', ['id' => $squad->id]) }}">{!! $squad->renderName() !!}</a></td>
                         <td class="rank">{{number_format($squad->skill)}}</td>
-                        <td class="rank hidden-xs">{{number_format($squad->averageBaseScore)}}</td>
+                        <td class="rank hidden-xs">{{number_format($squad->reputation)}}</td>
                         <td class="rank" title="{{ number_format($squad->wins/$squad->wars * 100,1) }}%">{{number_format($squad->wins)}}</td>
                         <td class="rank" title="{{ number_format($squad->draws/$squad->wars * 100,1) }}%">{{number_format($squad->draws)}}</td>
                         <td class="rank" title="{{ number_format($squad->losses/$squad->wars * 100,1) }}%">{{number_format($squad->losses)}}</td>

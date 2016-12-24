@@ -1,14 +1,15 @@
 @extends('web')
 
 @section('title'){!! $squad->renderNamePlain() !!} War History @endsection
-@section('heading')<div class="col-lg-6 col-md-8 col-sm-10 col-xs-10">
-    <ul class="nav-justified nav-pills nav">
-        <li>{!! $squad->renderName() !!}</li>
-        <li class="active"><a>War History</a></li>
-        <li><a href="{{ route('squadmembers', ['id' => $squad->id]) }}">Members</a></li>
-        <li><a href="{{ route('squadpredict', ['id' => $squad->id]) }}">Predict</a></li>
-    </ul>
-</div>@endsection
+@section('heading')
+    <div class="col-lg-6 col-md-8 col-sm-10 col-xs-10">
+        <ul class="nav-justified nav-pills nav">
+            <li>{!! $squad->renderName() !!}</li>
+            <li class="active"><a>War History</a></li>
+            <li><a href="{{ route('squadmembers', ['id' => $squad->id]) }}">Members</a></li>
+            <li><a href="{{ route('squadpredict', ['id' => $squad->id]) }}">Predict</a></li>
+        </ul>
+    </div>@endsection
 
 @section('content')
     <div class="row">
@@ -17,7 +18,7 @@
     <div class="row">
         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
             <table class="table table-bordered table-condensed table-hover bg-{{$squad->faction}}">
-                <caption class="text-info">Squad stats</caption>
+                <caption class="text-info">Squad war stats</caption>
                 <tr>
                     <td>Faction</td>
                     <td class="rank text-{{$squad->faction}}">{{ucfirst($squad->faction)}}</td>
@@ -31,8 +32,8 @@
                     <td class="rank">{{number_format($squad->skill)}}</td>
                 </tr>
                 <tr>
-                    <td>Avg base strength</td>
-                    <td class="rank">{{number_format($squad->averageBaseScore)}}</td>
+                    <td>Reputation</td>
+                    <td class="rank">{{number_format($squad->reputation)}}</td>
                 </tr>
                 <tr>
                     <td>Wars</td>
@@ -84,7 +85,9 @@
                     <tr>
                         <td>{{Carbon\Carbon::parse($date)->toDateString()}}</td>
                         <td class="rank">{{ round($battle['skill_difference'] * 100) }}%</td>
-                        <td><a href="{{ route('squadhistory', ['id' => $battle['opponent']->id]) }}">{!! $battle['opponent']->renderName() !!}</a></td>
+                        <td>
+                            <a href="{{ route('squadhistory', ['id' => $battle['opponent']->id]) }}">{!! $battle['opponent']->renderName() !!}</a>
+                        </td>
                         <td class="text-{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}">{{\App\Battle::result($battle['score'], $battle['opponent_score'])}}</td>
                         <td class="rank">{{$battle['score']}}</td>
                         <td class="rank">{{$battle['opponent_score']}}</td>

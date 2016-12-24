@@ -139,7 +139,28 @@ class SquadController extends Controller
 
         $members = $squad->members()->orderBy('xp', 'desc')->get();
 
-        return view('squad_members', compact(['members', 'squad']));
+        $stats = [
+            'Donated' => 0,
+            'Received' => 0,
+            'HQ level' => 0,
+            'Rep invested' => 0,
+            'Base strength' => 0,
+            'Medals' => 0,
+            'Attacks won' => 0,
+            'Defenses won' => 0,
+        ];
+        foreach ($members as $member) {
+            $stats['Donated'] += $member->troopsDonated;
+            $stats['Received'] += $member->troopsReceived;
+            $stats['HQ level'] += $member->hqLevel;
+            $stats['Rep invested'] += $member->reputationInvested;
+            $stats['Base strength'] += $member->xp;
+            $stats['Medals'] += $member->score;
+            $stats['Attacks won'] += $member->attacksWon;
+            $stats['Defenses won'] += $member->defensesWon;
+        }
+
+        return view('squad_members', compact(['members', 'squad', 'stats']));
     }
 
     public function squadPredict(Request $request, $id, $opponentId = null)
