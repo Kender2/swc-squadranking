@@ -43,7 +43,7 @@ class CheckForReprocessing
             $total = Battle::count();
             $processed = Battle::whereNotNull('processed_at')->get()->count();
 
-            $progress = max($processed / $total, 1.0);
+            $progress = min($processed / $total, 1.0);
             $percentDone = round($progress * 100);
 
             $timestamp = File::lastModified($file);
