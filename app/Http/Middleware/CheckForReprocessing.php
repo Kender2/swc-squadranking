@@ -43,7 +43,7 @@ class CheckForReprocessing
             $total = Battle::count();
             $processed = Battle::whereNotNull('processed_at')->get()->count();
 
-            $progress = $processed / $total;
+            $progress = max($processed / $total, 1.0);
             $percentDone = round($progress * 100);
 
             $timestamp = File::lastModified($file);
@@ -58,7 +58,10 @@ class CheckForReprocessing
             } elseif ($hours === 1.0) {
                 $eta .= '1 hour and ';
             }
-            $eta .= $minutes . ' minutes';
+            $eta .= $minutes . ' minute';
+            if ($minutes !== 1.0) {
+                $eta .= 's';
+            }
 
             return new Response(view('reranking', compact(['percentDone', 'eta'])));
         }

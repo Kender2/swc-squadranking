@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Battle;
 use App\RankerInterface;
+use File;
 use Illuminate\Console\Command;
 
 class Rank extends Command
@@ -29,10 +30,14 @@ class Rank extends Command
      */
     public function handle(RankerInterface $ranker)
     {
-        touch(storage_path().'/framework/reprocessing');
+        $file = storage_path().'/framework/reprocessing';
+        if (!File::exists($file)) {
+            touch($file);
+        }
         $battles = Battle::where('processed_at', null)->orderBy('end_date')->get();
-        $total = count($battles);
-        $processed = 0;
+        $processed = Battle::whereNotNull('processed_at')->get()->count();
+        $total = $processed + count($battles);
+
         foreach ($battles as $battle) {
             $this->comment(round(++$processed / $total * 100) . '% Ranking battle: ' . $battle->id);
             $ranker->rank($battle);
