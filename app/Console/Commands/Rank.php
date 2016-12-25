@@ -29,11 +29,15 @@ class Rank extends Command
      */
     public function handle(RankerInterface $ranker)
     {
+        touch(storage_path().'/framework/reprocessing');
         $battles = Battle::where('processed_at', null)->orderBy('end_date')->get();
+        $total = count($battles);
+        $processed = 0;
         foreach ($battles as $battle) {
-            $this->comment('Ranking battle: ' . $battle->id);
+            $this->comment(round(++$processed / $total * 100) . '% Ranking battle: ' . $battle->id);
             $ranker->rank($battle);
         }
+        unlink(storage_path().'/framework/reprocessing');
     }
 
     /*
