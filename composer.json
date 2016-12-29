@@ -15,7 +15,9 @@
         "ramsey/uuid": "^3.4",
         "doctrine/dbal": "^2.5",
         "ipunkt/laravel-analytics": "^1.2",
-        "cpliakas/git-wrapper": "^1.7"
+        "cpliakas/git-wrapper": "^1.7",
+        "kyslik/column-sortable": "~5.0",
+        "roave/security-advisories": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
