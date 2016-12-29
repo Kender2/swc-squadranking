@@ -38,16 +38,16 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th>Name</th>
-                    <th class="rank hidden-xs">Donated</th>
-                    <th class="rank hidden-xs">Received</th>
-                    <th class="rank hidden-xs hidden-sm">HQ</th>
-                    <th class="rank hidden-xs hidden-sm">Rep invested</th>
-                    <th class="rank">Base strength</th>
-                    <th class="rank">Medals</th>
-                    <th class="rank">Att. won</th>
-                    <th class="rank">Def. won</th>
-                    <th class="hidden-xs hidden-sm">Joined</th>
+                    <th>@sortablelink('name', 'Name')</th>
+                    <th class="rank hidden-xs">@sortablelink('troopsDonated', 'Donated')</th>
+                    <th class="rank hidden-xs">@sortablelink('troopsReceived', 'Received')</th>
+                    <th class="rank hidden-xs hidden-sm">@sortablelink('hqLevel', 'HQ')</th>
+                    <th class="rank hidden-xs hidden-sm">@sortablelink('reputationInvested', 'Rep invested')</th>
+                    <th class="rank">@sortablelink('xp', 'Base strength')</th>
+                    <th class="rank">@sortablelink('score', 'Medals')</th>
+                    <th class="rank">@sortablelink('attacksWon', 'Att. won')</th>
+                    <th class="rank">@sortablelink('defensesWon', 'Def. won')</th>
+                    <th class="hidden-xs hidden-sm">@sortablelink('joinDate', 'Joined')</th>
                 </tr>
                 </thead>
                 <tbody>

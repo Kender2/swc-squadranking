@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 
 /**
  * App\Commander
@@ -48,7 +49,20 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Commander extends Model
 {
-    use StatisticsTrait;
+    use StatisticsTrait, Sortable;
+
+    public $sortable = [
+        'name',
+        'joinDate',
+        'troopsDonated',
+        'troopsReceived',
+        'hqLevel',
+        'reputationInvested',
+        'xp',
+        'score',
+        'attacksWon',
+        'defensesWon',
+    ];
 
     public $incrementing = false;
     public $timestamps = false;

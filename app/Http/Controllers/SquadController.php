@@ -137,7 +137,7 @@ class SquadController extends Controller
     {
         $squad = Squad::findOrFail($id);
 
-        $members = $squad->members()->orderBy('xp', 'desc')->get();
+        $members = $squad->members()->sortable(['xp' => 'desc'])->get();
 
         $stats = [
             'Donated' => 0,
