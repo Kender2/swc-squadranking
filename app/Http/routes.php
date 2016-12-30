@@ -25,8 +25,7 @@ Route::get('squad/{id}/vs/{opponent_id?}', 'SquadController@squadPredict')->name
 Route::get('squadview', 'SquadController@viewSquad')->name('squadview');
 Route::get('squadranking', 'RankingController@ranking')->name('squadranking');
 Route::any('ssquadsearch', 'SquadController@ssquadSearch')->name('ssquadsearch');
-Route::any('squadsearch', 'SquadController@squadSearch')->name('squadsearch');
-Route::any('commandersearch', 'SquadController@commanderSearch')->name('commandersearch');
+Route::any('search', 'SquadController@search')->name('search');
 
 Route::get('stats', 'StatsController@stats')->name('stats');
 

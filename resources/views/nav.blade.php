@@ -6,13 +6,11 @@
                   action="{{ action('SquadController@search') }}">
                 <div class="input-group col-xs-6 col-sm-10 col-lg-12">
 		    <div class="ddl-select input-group-btn">
-                    	<select id="searchtype" class="selectpicker form-control" data-style="btn-primary">
-                  	    <option value="" data-hidden="true" class="type-title">SEARCH</option>
+                    	<select id="searchtype" name="searchtype" class="form-control" data-style="btn-primary" value="{{ request('searchtype') }}">
                   	    <option value="squad">Squad</option>
-                  	    <option value="player">Player</option>
+                  	    <option value="commander">Player</option>
 			</select>
                     </div>
-		    /* ^ http://www.bootply.com/gWOb4RcY86 */
               	    <input class="form-control input" type="search" name="q" value="{{ request('q') }}"
                            placeholder="Enter here">
                     <span class="input-group-btn">

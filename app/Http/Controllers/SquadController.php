@@ -83,28 +83,36 @@ class SquadController extends Controller
         return view('ssquadsearch', compact('results'));
     }
 
-    public function squadSearch(Request $request)
+    public function search(Request $request)
     {
         if ($request->has('q')) {
             $searchTerm = $request->input('q');
-            $results = Squad::whereDeleted(false)
-                ->where('name', 'LIKE', '%' . $searchTerm . '%')
-                ->orderByRaw('mu - (' . config('sod.sigma_multiplier') . '*sigma) desc')
-                ->simplePaginate(20);
-            if (count($results) === 1) {
-                return redirect()->route('squadhistory', [$results->first()]);
+            $searchType = 'squad';
+            if ($request->has('searchtype')) {
+                $searchType = $request->input('searchtype');
+            };
+
+            if ($searchType == 'squad' ) {
+                $results = Squad::whereDeleted(false)
+                         ->where('name', 'LIKE', '%' . $searchTerm . '%')
+                         ->orderByRaw('mu - (' . config('sod.sigma_multiplier') . '*sigma) desc')
+                         ->simplePaginate(20);
+                if (count($results) === 1) {
+                    return redirect()->route('squadhistory', [$results->first()]);
+                }
+                return view('squadsearch', compact('results'));
+            } elseif ($searchType == 'commander') {
+                $results = Commander::with('squad')
+                         ->where('name', 'LIKE', '%' . $searchTerm . '%')
+                         ->orderBy('name')
+                         ->simplePaginate(20);
+                if (count($results) === 1) {
+                    return redirect()->route('squadmembers', [$results->first()->squad->id]);
+                }
+                return view('commandersearch', compact('results'));
             }
         }
         return view('squadsearch', compact('results'));
-    }
-
-    public function commanderSearch(Request $request)
-    {
-        if ($request->has('sq')) {
-            $searchTerm = $request->input('sq');
-            $results = Commander::with('squad')->where('name', 'LIKE', '%' . $searchTerm . '%')->orderBy('name')->simplePaginate(20);
-        }
-        return view('commandersearch', compact('results'));
     }
 
     public function squadHistory($id)
