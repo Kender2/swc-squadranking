@@ -102,7 +102,7 @@ class SquadController extends Controller
     {
         if ($request->has('sq')) {
             $searchTerm = $request->input('sq');
-            $results = Commander::with('squad')->where('name', 'LIKE', '%' . $searchTerm . '%')->orderByRaw('name')->simplePaginate(100);
+            $results = Commander::with('squad')->where('name', 'LIKE', '%' . $searchTerm . '%')->orderBy('name')->simplePaginate(20);
         }
         return view('commandersearch', compact('results'));
     }
