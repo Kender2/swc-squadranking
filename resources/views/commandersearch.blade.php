@@ -11,18 +11,18 @@
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th>Name</th>
-			<th>Level</th>
-                        <th>Faction</th>
-                        <th>Squad</th>
+			<th>Name</th>
+			<th>HQ Level</th>
+			<th>Faction</th>
+			<th>Squad</th>
                     </tr>
                     </thead>
                     @foreach($results as $comm)
                         <tr class="bg-{{$comm->faction}}">
                             <td>{!! $comm->name !!}</td>
-                            <td>{!! $comm->hqLevel !!}</td>
+                            <td class="rank">{!! $comm->hqLevel !!}</td>
 			    <td class="text-{{$comm->faction}}">{{ucfirst($comm->faction)}}</td>
-                            <td><a href="squad/{{$comm->squad->id}}">{!! \App\Squad::colorName($comm->squad->name) !!}</a></td>
+                            <td><a href="{{ route('squadmembers', ['id' => $comm->squad->id]) }}">{!! \App\Squad::colorName($comm->squad->name) !!}</a></td>
                         </tr>
                     @endforeach
                 </table>
