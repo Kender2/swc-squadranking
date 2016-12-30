@@ -84,7 +84,7 @@ class Commander extends Model
      */
     public function squad()
     {
-        return $this->belongsTo('App\Squad', 'id');
+        return $this->belongsTo('App\Squad', 'squadId');
     }
 
     /**

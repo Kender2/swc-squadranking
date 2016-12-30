@@ -26,6 +26,7 @@ Route::get('squadview', 'SquadController@viewSquad')->name('squadview');
 Route::get('squadranking', 'RankingController@ranking')->name('squadranking');
 Route::any('ssquadsearch', 'SquadController@ssquadSearch')->name('ssquadsearch');
 Route::any('squadsearch', 'SquadController@squadSearch')->name('squadsearch');
+Route::any('commandersearch', 'SquadController@commanderSearch')->name('commandersearch');
 
 Route::get('stats', 'StatsController@stats')->name('stats');
 

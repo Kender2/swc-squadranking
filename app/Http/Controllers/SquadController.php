@@ -7,6 +7,7 @@ use App\GameClient;
 use App\Outcome;
 use App\RankerInterface;
 use App\Squad;
+use App\Commander;
 use Carbon\Carbon;
 use Cookie;
 use Illuminate\Http\Request;
@@ -95,6 +96,15 @@ class SquadController extends Controller
             }
         }
         return view('squadsearch', compact('results'));
+    }
+
+    public function commanderSearch(Request $request)
+    {
+        if ($request->has('sq')) {
+            $searchTerm = $request->input('sq');
+            $results = Commander::with('squad')->where('name', 'LIKE', '%' . $searchTerm . '%')->orderByRaw('name')->simplePaginate(100);
+        }
+        return view('commandersearch', compact('results'));
     }
 
     public function squadHistory($id)
