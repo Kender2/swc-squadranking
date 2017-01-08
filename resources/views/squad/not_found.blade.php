@@ -1,13 +1,13 @@
 @extends('web')
 
 @section('title')
-    SQUAD VIEW
+    SQUAD NOT FOUND
 @endsection
 
 @section('content')
-    <div>
+    <div class="row">
         <div class="col-sm-offset-1 col-sm-6">
-            <h2>Squad not found. It may have been deleted.</h2>
+            <h3>Squad not found. It may have been deleted.</h3>
         </div>
     </div>
 @endsection

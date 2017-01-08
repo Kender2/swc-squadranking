@@ -49,7 +49,7 @@ use Kyslik\ColumnSortable\Sortable;
  */
 class Commander extends Model
 {
-    use StatisticsTrait, Sortable;
+    use StatisticsTrait, Sortable, ColoredName;
 
     public $sortable = [
         'name',

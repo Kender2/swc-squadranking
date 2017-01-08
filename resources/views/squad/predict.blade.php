@@ -44,7 +44,7 @@
                     @foreach($results as $squad)
                         <tr class="bg-{{$squad->faction}}">
                             <td class="rank">{!! $squad->rank !!}</td>
-                            <td><a href="vs/{{$squad->id}}">{!! \App\Squad::colorName($squad->name) !!}</a></td>
+                            <td><a href="vs/{{$squad->id}}">{!! $squad->renderName() !!}</a></td>
                             <td class="text-{{$squad->faction}}">{{ucfirst($squad->faction)}}</td>
                         </tr>
                     @endforeach

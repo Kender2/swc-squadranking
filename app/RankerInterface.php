@@ -1,6 +1,8 @@
 <?php
 namespace App;
 
+use Moserware\Skills\Rating;
+
 interface RankerInterface
 {
     public function rank(Battle $battle);
@@ -18,7 +20,7 @@ interface RankerInterface
      * @param Squad $squad
      * @param Squad $opponent
      * @param int $outcome
-     * @return array
+     * @return Rating[]
      */
     public function calculateSkillRatings(Squad $squad, Squad $opponent, $outcome);
 }

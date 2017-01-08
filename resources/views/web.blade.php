@@ -8,6 +8,7 @@
     <title>@yield('title')</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css">
 
     {!! Analytics::render() !!}
 </head>
@@ -32,6 +33,7 @@
 
 <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
 @yield('scripts')
 </body>
 </html>

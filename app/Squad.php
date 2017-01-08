@@ -57,6 +57,7 @@ class Squad extends Model
     const DEFAULT_INITIAL_STANDARD_DEVIATION = self::DEFAULT_INITIAL_MEAN / 3;
     use DispatchesJobs;
     use StatisticsTrait;
+    use ColoredName;
 
     /**
      * @var bool
@@ -155,42 +156,6 @@ class Squad extends Model
             return $this->queue();
         }
         return false;
-    }
-
-    /**
-     * @return string
-     */
-    public function renderName()
-    {
-        return static::colorName($this->name);
-    }
-
-    /**
-     * @return string
-     */
-    public function renderNamePlain()
-    {
-        return static::plainName($this->name);
-    }
-
-    /**
-     * @param $name
-     * @return string
-     */
-    public static function colorName($name)
-    {
-        $safe_name = htmlentities(urldecode($name));
-        return preg_replace('/\[([0-9A-Fa-f]{6})\]/', '<span style="color: #$1">', $safe_name) . '</span>';
-    }
-
-    /**
-     * @param $name
-     * @return string
-     */
-    public static function plainName($name)
-    {
-        $safe_name = htmlentities(urldecode($name));
-        return preg_replace('/\[[0-9A-Fa-f]{6}\]/', '', $safe_name);
     }
 
     /**

@@ -7,12 +7,9 @@ use App\GameClient;
 use App\Outcome;
 use App\RankerInterface;
 use App\Squad;
-use App\Commander;
-use Carbon\Carbon;
 use Cookie;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Log;
 
 class SquadController extends Controller
 {
@@ -31,93 +28,13 @@ class SquadController extends Controller
         $this->ranker = $ranker;
     }
 
-    public function viewSquad(Request $request)
-    {
-        if ($request->has('squadId')) {
-            $squadId = $request->input('squadId');
-            $squad = $this->client->guildGetPublic($squadId);
-            if ($squad === null) {
-                return view('squad_not_found');
-            }
-            $warRecord = [];
-            if (!empty($squad->warHistory)) {
-                foreach ($squad->warHistory as $battle) {
-                    $row = [];
-                    $row['endDate'] = Carbon::createFromTimestampUTC($battle->endDate);
-                    if ($battle->score > $battle->opponentScore) {
-                        $row['result'] = 'WIN';
-                    } elseif ($battle->score < $battle->opponentScore) {
-                        $row['result'] = 'LOSS';
-                    } else {
-                        $row['result'] = 'DRAW';
-                    }
-                    $row['score'] = $battle->score;
-                    $row['opponentScore'] = $battle->opponentScore;
-                    if (!$battle->opponentName) {
-                        $row['opponent'] = '<i>Unknown</i>';
-                    } else {
-                        $row['opponent'] = urldecode($battle->opponentName);
-                    }
-                    $row['opponentId'] = $battle->opponentGuildId;
-                    $warRecord[$battle->endDate] = $row;
-                }
-            }
-            ksort($warRecord);
-            $squadName = urldecode($squad->name);
-            $squad = \GuzzleHttp\json_encode($squad, JSON_PRETTY_PRINT);
-            return view('squad', compact('squadName', 'squad', 'warRecord'));
-        }
-        return redirect('/');
-    }
-
-    public function ssquadSearch(Request $request)
-    {
-        if ($request->has('name') && Str::length($request->input('name')) >= 3) {
-            $results = $this->client->guildSearchByName($request->input('name'));
-            foreach ($results as $result) {
-                if (Squad::firstOrNew(['id' => $result->_id])->queueIfNeeded()) {
-                    Log::info('Added squad ' . $result->_id . ' to queue from search.');
-                }
-            }
-        }
-        return view('ssquadsearch', compact('results'));
-    }
-
-    public function search(Request $request)
-    {
-        if ($request->has('q')) {
-            $searchTerm = $request->input('q');
-            $searchType = 'squad';
-            if ($request->has('searchtype')) {
-                $searchType = $request->input('searchtype');
-            };
-
-            if ($searchType == 'squad' ) {
-                $results = Squad::whereDeleted(false)
-                         ->where('name', 'LIKE', '%' . $searchTerm . '%')
-                         ->orderByRaw('mu - (' . config('sod.sigma_multiplier') . '*sigma) desc')
-                         ->simplePaginate(20);
-                if (count($results) === 1) {
-                    return redirect()->route('squadhistory', [$results->first()]);
-                }
-                return view('squadsearch', compact('results'));
-            } elseif ($searchType == 'commander') {
-                $results = Commander::with('squad')
-                         ->where('name', 'LIKE', '%' . $searchTerm . '%')
-                         ->orderBy('name')
-                         ->simplePaginate(20);
-                if (count($results) === 1) {
-                    return redirect()->route('squadmembers', [$results->first()->squad->id]);
-                }
-                return view('commandersearch', compact('results'));
-            }
-        }
-        return view('squadsearch', compact('results'));
-    }
-
     public function squadHistory($id)
     {
-        $squad = Squad::findOrFail($id);
+        try {
+            $squad = Squad::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return view('squad.not_found');
+        }
 
         $offensiveBattles = Battle::whereSquadId($squad->id)->get();
         $defensiveBattles = Battle::whereOpponentId($squad->id)->get();
@@ -148,7 +65,7 @@ class SquadController extends Controller
 
         krsort($battles);
 
-        return view('squad_history', compact(['battles', 'squad']));
+        return view('squad.history', compact(['battles', 'squad']));
     }
 
     public function squadMembers($id)
@@ -178,7 +95,7 @@ class SquadController extends Controller
             $stats['Defenses won'] += $member->defensesWon;
         }
 
-        return view('squad_members', compact(['members', 'squad', 'stats']));
+        return view('squad.members', compact(['members', 'squad', 'stats']));
     }
 
     public function squadPredict(Request $request, $id, $opponentId = null)
@@ -217,7 +134,7 @@ class SquadController extends Controller
             }
         }
 
-        return view('squad_predict', compact(['squad', 'opponent', 'results', 'predictions']));
+        return view('squad.predict', compact(['squad', 'opponent', 'results', 'predictions']));
     }
 
     /**

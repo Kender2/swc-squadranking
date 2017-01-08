@@ -22,10 +22,9 @@ Route::get('squad/{id}/history', 'SquadController@squadHistory')->name('squadhis
 Route::get('squad/{id}/members', 'SquadController@squadMembers')->name('squadmembers');
 Route::get('squad/{id}/vs/{opponent_id?}', 'SquadController@squadPredict')->name('squadpredict');
 
-Route::get('squadview', 'SquadController@viewSquad')->name('squadview');
 Route::get('squadranking', 'RankingController@ranking')->name('squadranking');
-Route::any('ssquadsearch', 'SquadController@ssquadSearch')->name('ssquadsearch');
-Route::any('search', 'SquadController@search')->name('search');
+
+Route::any('search', 'SearchController@search')->name('search');
 
 Route::get('stats', 'StatsController@stats')->name('stats');
 

@@ -52,7 +52,7 @@
                 </thead>
                 <tbody>
                 @foreach($members as $member)
-                    <tr>
+                    <tr{!! request('hl') === $member->playerId ? ' class="success"' : '' !!}>
                         @if ($member->isOwner)
                             <td class="rank"><span class="glyphicon glyphicon-king" title="Owner"></span></td>
                         @elseif($member->isOfficer)
@@ -60,7 +60,7 @@
                         @else
                             <td class="rank"></td>
                         @endif
-                        <td>{{$member->name}}</td>
+                        <td>{!! $member->renderName() !!}</td>
                         <td class="rank hidden-xs">{{number_format($member->troopsDonated)}}</td>
                         <td class="rank hidden-xs">{{number_format($member->troopsReceived)}}</td>
                         <td class="rank hidden-xs hidden-sm">{{number_format($member->hqLevel)}}</td>

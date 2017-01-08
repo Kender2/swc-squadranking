@@ -35,3 +35,12 @@ body { padding-top: 70px; }
 ul.nav > li > a {
     padding: 3px 15px;
 }
+
+.bootstrap-select>button.dropdown-toggle {
+    padding-left: 4px;
+    padding-right: 16px;
+}
+
+.bootstrap-select.btn-group .dropdown-toggle span.caret {
+    right: auto;
+}
