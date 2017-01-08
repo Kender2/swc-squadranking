@@ -19,6 +19,9 @@ class SearchController extends Controller
                     ->where('name', 'LIKE', '%' . $searchTerm . '%')
                     ->orderByRaw('mu - (' . config('sod.sigma_multiplier') . '*sigma) desc')
                     ->simplePaginate(20);
+                if ($request->wantsJson()) {
+                    return $results;
+                }
                 if (count($results) === 1) {
                     return redirect()->route('squadhistory', [$results->first()]);
                 }
@@ -28,6 +31,9 @@ class SearchController extends Controller
                     ->where('name', 'LIKE', '%' . $searchTerm . '%')
                     ->orderBy('name')
                     ->simplePaginate(20);
+                if ($request->wantsJson()) {
+                    return $results;
+                }
                 if (count($results) === 1) {
                     $commander = $results->first();
                     return redirect()->route('squadmembers', ['id' => $commander->squad->id, 'hl' => $commander->playerId]);

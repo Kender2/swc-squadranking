@@ -28,7 +28,7 @@ class SquadController extends Controller
         $this->ranker = $ranker;
     }
 
-    public function squadHistory($id)
+    public function squadHistory(Request $request, $id)
     {
         try {
             $squad = Squad::findOrFail($id);
@@ -65,14 +65,22 @@ class SquadController extends Controller
 
         krsort($battles);
 
+        if ($request->wantsJson()) {
+            return $battles;
+        }
+
         return view('squad.history', compact(['battles', 'squad']));
     }
 
-    public function squadMembers($id)
+    public function squadMembers(Request $request, $id)
     {
         $squad = Squad::findOrFail($id);
 
         $members = $squad->members()->sortable(['xp' => 'desc'])->get();
+
+        if ($request->wantsJson()) {
+            return $members;
+        }
 
         $stats = [
             'Donated' => 0,
