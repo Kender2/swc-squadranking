@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return redirect('http://sonsofdeathswc.wix.com/sons');
+    return redirect('http://squadsofdeath.wix.com/squadsofdeath');
 });
 
 Route::get('/test', 'TestController@test');
