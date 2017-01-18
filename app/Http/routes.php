@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return redirect('http://squadsofdeath.wix.com/squadsofdeath');
+    return redirect(config('sod.main_page_url'));
 });
 
 Route::get('/test', 'TestController@test');
