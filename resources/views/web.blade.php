@@ -14,6 +14,7 @@
 </head>
 <body>
 <div class="container">
+    @include('search.searchform')
     <div class="title">
         @hasSection ('heading')
         @yield('heading')

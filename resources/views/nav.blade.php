@@ -1,8 +1,15 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="{{ route('squadranking') }}">Squad ranking</a>
-            @include('search.searchform')
-        </div>
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li>
+                <div class="navbar-brand">
+                    <a class="navbar-link" href="{{ route('squadranking') }}"><span
+                                class="glyphicon glyphicon-home"> </span></a>
+                </div>
+            </li>
+            <li><a class="navbar-link" href="{{ config('sod.main_page_url') }}">Check the new SoD site with Elite Squad
+                    War Schedule
+                </a></li>
+        </ul>
     </div>
 </nav>

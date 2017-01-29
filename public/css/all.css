@@ -2,7 +2,9 @@
     text-align: right;
 }
 
-body { padding-top: 70px; }
+body {
+    padding-top: 40px;
+}
 
 .bg-rebel {
     background-color: #2e4053;

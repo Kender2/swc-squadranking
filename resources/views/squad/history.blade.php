@@ -16,7 +16,7 @@
 
     </div>
     <div class="row">
-        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-8 col-xs-offset-1 col-md-offset-0">
             <table class="table table-bordered table-condensed table-hover bg-{{$squad->faction}}">
                 <caption class="text-info">Squad war stats</caption>
                 <tr>
