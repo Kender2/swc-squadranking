@@ -82,7 +82,8 @@
     @endif
     <div class="row">
         <div class="col-lg-12">
-            <small>*Note: <em>Actual results may vary from predictions. No rights can be derived from data on this
+            <small>*Notes: <em>Matches ending in a 45-45 tie do not affect skillpoints. Actual results may vary from
+                    predictions. No rights can be derived from data on this
                     page.</em></small>
         </div>
     </div>

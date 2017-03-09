@@ -145,6 +145,32 @@ class SquadController extends Controller
         return view('squad.predict', compact(['squad', 'opponent', 'results', 'predictions']));
     }
 
+
+    /**
+     * @param Squad $squad
+     * @param Squad $opponent
+     *
+     * @return array
+     */
+    protected function winPrediction(Squad $squad, Squad $opponent)
+    {
+        return [
+          [
+            'text' => 'I predict that ' . $squad->renderName() . ' will beat ' . $opponent->renderName() . ' with this result:',
+            'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Win),
+          ],
+          [
+            'text' => 'But if ' . $opponent->renderName() . ' beats ' . $squad->renderName() . ' the result will be:',
+            'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Lose),
+          ],
+          [
+            'text' => 'And in case of a non 45-45 tie the results will be:',
+            'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Draw),
+          ],
+        ];
+    }
+
+
     /**
      * @param Squad $squad
      * @param Squad $opponent
@@ -178,28 +204,25 @@ class SquadController extends Controller
         return $data;
     }
 
+
     /**
      * @param Squad $squad
-     * @param Squad $opponent
-     * @return array
+     * @param int   $outcome
+     * @param float $newSkill
+     *
+     * @return int
      */
-    protected function winPrediction(Squad $squad, Squad $opponent)
+    protected function calculateNewSquadRank(Squad $squad, $outcome, $newSkill)
     {
-        return [
-            [
-                'text' => 'I predict that ' . $squad->renderName() . ' will beat ' . $opponent->renderName() . ' with this result:',
-                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Win),
-            ],
-            [
-                'text' => 'But if ' . $opponent->renderName() . ' beats ' . $squad->renderName() . ' the result will be:',
-                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Lose),
-            ],
-            [
-                'text' => 'And in case of a tie the results will be:',
-                'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Draw),
-            ],
-        ];
+        $winsToGo = config('sod.win_threshold') - $squad->wins - max($outcome, 0);
+        if ($winsToGo > 0) {
+            $newSquadRank = $squad::formatUnranked($winsToGo, $newSkill);
+        } else {
+            $newSquadRank = $squad::calculateRankFromSkill($newSkill);
+        }
+        return $newSquadRank;
     }
+
 
     /**
      * @param Squad $squad
@@ -217,12 +240,13 @@ class SquadController extends Controller
                 'text' => 'But if ' . $squad->renderName() . ' beats ' . $opponent->renderName() . ' the result will be:',
                 'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Win),
             ],
-            [
-                'text' => 'And in case of a tie the results will be:',
+          [
+            'text'     => 'And in case of a non 45-45 tie the results will be:',
                 'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Draw),
             ],
         ];
     }
+
 
     /**
      * @param Squad $squad
@@ -245,22 +269,5 @@ class SquadController extends Controller
                 'data' => $this->createOutcomeTableData($squad, $opponent, Outcome::Draw),
             ],
         ];
-    }
-
-    /**
-     * @param Squad $squad
-     * @param int $outcome
-     * @param float $newSkill
-     * @return int
-     */
-    protected function calculateNewSquadRank(Squad $squad, $outcome, $newSkill)
-    {
-        $winsToGo = config('sod.win_threshold') - $squad->wins - max($outcome, 0);
-        if ($winsToGo > 0) {
-            $newSquadRank = $squad::formatUnranked($winsToGo, $newSkill);
-        } else {
-            $newSquadRank = $squad::calculateRankFromSkill($newSkill);
-        }
-        return $newSquadRank;
     }
 }
