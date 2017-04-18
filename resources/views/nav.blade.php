@@ -7,7 +7,7 @@
                                 class="glyphicon glyphicon-home"> </span></a>
                 </div>
             </li>
-            <li><a class="navbar-link" href="{{ config('sod.main_page_url') }}">Elite Squad War Schedule</a></li>
+            @include('search.searchform')
         </ul>
     </div>
 </nav>
