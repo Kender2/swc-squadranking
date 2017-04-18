@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\GameClient;
-use App\Player;
-use App\Squad;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class TestController extends Controller

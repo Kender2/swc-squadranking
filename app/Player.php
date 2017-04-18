@@ -7,13 +7,13 @@ use Ramsey\Uuid\Uuid;
 
 class Player
 {
+    const SESSION_TIMEOUT_MINUTES = 60;
     protected $playerId;
     protected $secret;
     protected $lastLogin;
     protected $authKey;
     protected $deviceToken;
     protected $loggedIn;
-    const SESSION_TIMEOUT_MINUTES = 60;
 
     /**
      * Player constructor.
