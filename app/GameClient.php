@@ -13,6 +13,8 @@ use App\Commands\Guild\GetPublicArgs;
 use App\Commands\Guild\GetPublicCommand;
 use App\Commands\Guild\SearchByNameArgs;
 use App\Commands\Guild\SearchByNameCommand;
+use App\Commands\Player\Battle\ReplayGetArgs;
+use App\Commands\Player\Battle\ReplayGetCommand;
 use App\Commands\Player\Identity\SwitchArgs;
 use App\Commands\Player\Identity\SwitchCommand;
 use App\Commands\Player\LoginArgs;
@@ -127,6 +129,20 @@ class GameClient
         $args = new SwitchArgs($this->player, $identityIndex);
         $command = new SwitchCommand($args);
         return $this->runCommand($command)->result;
+    }
+
+    /**
+     * Get a battle replay.
+     * @param string $battleId
+     * @param string $participantId
+     * @return mixed
+     * @throws \App\Exceptions\CommandException
+     */
+    public function getBattleReplay($battleId, $participantId)
+    {
+        $args = new ReplayGetArgs($this->player, $battleId, $participantId);
+        $command = new ReplayGetCommand($args);
+        return $this->runCommand($command)->getResult();
     }
 
     /**
