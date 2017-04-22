@@ -8,8 +8,8 @@ use Log;
 
 class ClientRequest
 {
-    private $client;
     const LOG_MAX_LENGTH = 500;
+    private $client;
 
     /**
      * ClientRequest constructor.
@@ -57,7 +57,7 @@ class ClientRequest
             'DGVersion' => 'OpenGL ES 2.0',
             'DGMemory' => '208 MB',
             'DGShaderLevel' => '30',
-            'CAppVersion' => '4.6.2.9183',
+            'CAppVersion' => '4.9.0.9641',
             'X-Unity-Version' => '5.1.4p1',
             'User-Agent' => 'Dalvik/1.6.0 (Linux; U; Android 4.2.2; SM-T110 Build/JDQ39)',
             'Content-Type' => 'application/x-www-form-urlencoded',
