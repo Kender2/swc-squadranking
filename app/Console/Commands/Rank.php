@@ -38,10 +38,13 @@ class Rank extends Command
         $processed = Battle::whereNotNull('processed_at')->get()->count();
         $total = $processed + count($battles);
 
+        $bar = $this->output->createProgressBar(count($battles));
         foreach ($battles as $battle) {
             $this->comment(round(++$processed / $total * 100) . '% Ranking battle: ' . $battle->id);
             $ranker->rank($battle);
+            $bar->advance();
         }
+        $bar->finish();
         unlink(storage_path().'/framework/reprocessing');
     }
 

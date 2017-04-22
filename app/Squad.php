@@ -80,6 +80,54 @@ class Squad extends Model
     /**
      * @return string
      */
+    public static function lastUpdate()
+    {
+        return Squad::orderBy('updated_at', 'desc')
+            ->first(['updated_at'])
+            ->updated_at
+            ->diffForHumans();
+    }
+
+    /**
+     * @param array $factions
+     * @return array
+     */
+    public static function getStats(array $factions = ['empire', 'rebel'])
+    {
+        $columns = [
+            'Amount' => 'count(1)',
+            'Avg wins' => 'avg(wins)',
+            'Avg draws' => 'avg(draws)',
+            'Avg losses' => 'avg(losses)',
+            'Avg uplinks taken' => 'avg(uplinks_captured)',
+            'Avg uplinks saved' => 'avg(uplinks_saved)',
+            'Avg reputation' => 'avg(reputation)',
+            'Avg medals' => 'avg(medals)',
+        ];
+        $stats = self::getStatsForFactions($factions, $columns);
+        $stats['All'] = self::getTotalsForStats($stats);
+
+        return $stats;
+    }
+
+    /**
+     * Adjust all active squads sigma for aging.
+     *
+     * @param float $adjustment
+     */
+    public static function applyAging($adjustment)
+    {
+        Log::info('Start adjusting all squads sigma for aging.');
+        $squads = static::whereDeleted(false)->get();
+        foreach ($squads as $squad) {
+            $squad->increment('sigma', $adjustment);
+        }
+        Log::info('Done adjusting all squads sigma for aging.');
+    }
+
+    /**
+     * @return string
+     */
     public function getRankAttribute()
     {
         if ($this->wins >= config('sod.win_threshold')) {
@@ -102,6 +150,17 @@ class Squad extends Model
     }
 
     /**
+     * @param int $winsToGo
+     * @param float $skill
+     * @return string
+     */
+    public static function formatUnranked($winsToGo, $skill)
+    {
+        $plural = $winsToGo !== 1 ? 's' : '';
+        return '<span title="Needs ' . $winsToGo . ' more win' . $plural . ' to rank. Skill ' . number_format($skill) . '.">Unranked</span>';
+    }
+
+    /**
      * @return int
      */
     public function getWarsAttribute()
@@ -115,6 +174,17 @@ class Squad extends Model
     public function getSkillAttribute()
     {
         return Ranker::calculateScore($this->mu, $this->sigma);
+    }
+
+    /**
+     * @return bool True if squad was added to the queue.
+     */
+    public function queueIfNeeded()
+    {
+        if ($this->needsFetching()) {
+            return $this->queue();
+        }
+        return false;
     }
 
     /**
@@ -148,25 +218,11 @@ class Squad extends Model
     }
 
     /**
-     * @return bool True if squad was added to the queue.
-     */
-    public function queueIfNeeded()
-    {
-        if ($this->needsFetching()) {
-            return $this->queue();
-        }
-        return false;
-    }
-
-    /**
      * @return string
      */
-    public static function lastUpdate()
+    public function lastBattleDate()
     {
-        return Squad::orderBy('updated_at', 'desc')
-            ->first(['updated_at'])
-            ->updated_at
-            ->diffForHumans();
+        return Battle::where('opponent_id', $this->id)->orWhere('squad_id', $this->id)->max('end_date');
     }
 
     /**
@@ -222,39 +278,6 @@ class Squad extends Model
         $related = $this->getRelation('averageBaseScore');
 
         return $related ? $related->aggregate : 0;
-    }
-
-    /**
-     * @param array $factions
-     * @return array
-     */
-    public static function getStats(array $factions = ['empire', 'rebel'])
-    {
-        $columns = [
-            'Amount' => 'count(1)',
-            'Avg wins' => 'avg(wins)',
-            'Avg draws' => 'avg(draws)',
-            'Avg losses' => 'avg(losses)',
-            'Avg uplinks taken' => 'avg(uplinks_captured)',
-            'Avg uplinks saved' => 'avg(uplinks_saved)',
-            'Avg reputation' => 'avg(reputation)',
-            'Avg medals' => 'avg(medals)',
-        ];
-        $stats = self::getStatsForFactions($factions, $columns);
-        $stats['All'] = self::getTotalsForStats($stats);
-
-        return $stats;
-    }
-
-    /**
-     * @param int $winsToGo
-     * @param float $skill
-     * @return string
-     */
-    public static function formatUnranked($winsToGo, $skill)
-    {
-        $plural = $winsToGo !== 1 ? 's' : '';
-        return '<span title="Needs ' . $winsToGo . ' more win' . $plural . ' to rank. Skill ' . number_format($skill) . '.">Unranked</span>';
     }
 
 }

@@ -7,4 +7,5 @@ return [
     'sigma_multiplier' => 3,
     'main_page_url' => 'http://squadsofdeath.wixsite.com/squadsofdeath',
     'request_delay' => 2,
+    'sigma_aging' => 0.01,
 ];

@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\Rank::class,
         Commands\Refresh::class,
         Commands\GrabData::class,
+        Commands\Ager::class,
     ];
 
     /**
@@ -26,6 +27,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('sod:grab-data')->hourly();
+        // Disabled until transition to new format is done.
+//        $schedule->command('sod:grab-data')->hourly();
+        $schedule->call('\App\Squad::applyAging', [config('sod.sigma_aging')])->daily();
+
     }
 }
