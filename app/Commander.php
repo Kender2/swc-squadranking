@@ -46,6 +46,7 @@ use Kyslik\ColumnSortable\Sortable;
  * @method static \Illuminate\Database\Query\Builder|\App\Commander whereFaction($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Commander wherePlanet($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Query\Builder|\App\Commander sortable($defaultSortParameters = null)
  */
 class Commander extends Model
 {
@@ -79,13 +80,6 @@ class Commander extends Model
         'lastUpdated'
     ];
 
-    /**
-     * Get the squad that the player belongs to.
-     */
-    public function squad()
-    {
-        return $this->belongsTo('App\Squad', 'squadId');
-    }
 
     /**
      * @param array $factions
@@ -110,6 +104,7 @@ class Commander extends Model
         return $stats;
     }
 
+
     /**
      * @param array $factions
      * @return array
@@ -132,6 +127,15 @@ class Commander extends Model
         $stats['All'] = self::getTotalsForStats($stats);
 
         return $stats;
+    }
+
+
+    /**
+     * Get the squad that the player belongs to.
+     */
+    public function squad()
+    {
+        return $this->belongsTo('App\Squad', 'squadId');
     }
 
 }

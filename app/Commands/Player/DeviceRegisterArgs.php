@@ -16,6 +16,6 @@ class DeviceRegisterArgs extends Args
     public function __construct(Player $player)
     {
         parent::__construct($player);
-        $this->deviceToken = $player->getDeviceToken();
+        $this->deviceToken = $player->deviceToken;
     }
 }

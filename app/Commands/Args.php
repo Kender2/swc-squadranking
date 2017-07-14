@@ -13,7 +13,7 @@ class Args implements ArgsInterface
      */
     public function __construct(Player $player)
     {
-        $this->playerId = $player->getPlayerId();
+        $this->playerId = $player->playerId;
     }
 
 

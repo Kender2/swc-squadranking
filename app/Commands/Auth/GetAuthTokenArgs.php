@@ -16,7 +16,7 @@ class GetAuthTokenArgs extends Args
     public function __construct(Player $player)
     {
         parent::__construct($player);
-        $this->requestToken = static::generateRequestToken($player->getSecret(), $player->getPlayerId());
+        $this->requestToken = static::generateRequestToken($player->secret, $player->playerId);
     }
 
     private static function generateRequestToken($secret, $playerId)

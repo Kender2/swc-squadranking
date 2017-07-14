@@ -1,31 +1,50 @@
 <?php
 namespace App;
 
-
-use Cache;
+use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class Player
+/**
+ * App\Player
+ *
+ * @mixin \Eloquent
+ * @property string $playerId
+ * @property string $secret
+ * @property string $deviceToken
+ * @property string $authKey
+ * @property \Carbon\Carbon $lastLoginTime
+ * @property bool $banned
+ * @property bool $reserved
+ * @property int $reserved_at
+ * @method static \Illuminate\Database\Query\Builder|\App\Player wherePlayerId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Player whereSecret($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Player whereDeviceToken($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Player whereAuthKey($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Player whereLastLoginTime($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Player whereBanned($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Player whereReserved($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Player whereReservedAt($value)
+ */
+class Player extends Model
 {
     const SESSION_TIMEOUT_MINUTES = 60;
-    protected $playerId;
-    protected $secret;
-    protected $lastLogin;
-    protected $authKey;
-    protected $deviceToken;
+
+    public $incrementing = false;
+
+    public $timestamps = false;
+
+    protected $primaryKey = 'playerId';
+
+    protected $guarded = [];
+
+    protected $dates = [
+        'lastLoginTime',
+    ];
+
     protected $loggedIn;
 
-    /**
-     * Player constructor.
-     */
-    public function __construct()
-    {
-        $this->playerId = Cache::get('playerId');
-        $this->secret = Cache::get('secret');
-        $this->deviceToken = Cache::get('deviceToken');
-        $this->lastLogin = Cache::get('lastLogin', 0);
-        $this->authKey = Cache::get('authKey', '');
-    }
+
+    //const SESSION_TIMEOUT_MINUTES = 60;
 
     public function createNew($playerId, $secret)
     {
@@ -33,59 +52,28 @@ class Player
         $this->secret = $secret;
         $this->deviceToken = Uuid::uuid4()->toString();
 
-        Cache::forever('playerId', $this->playerId);
-        Cache::forever('secret', $this->secret);
-        Cache::forever('deviceToken', $this->deviceToken);
-
-        $this->setLastLogin(0);
-        $this->setAuthKey();
         return $this;
     }
 
-
     /**
-     * @return mixed
+     * @param int $lastLoginTime
+     *
+     * @return $this
      */
-    public function getPlayerId()
+    public function setLastLogin($lastLoginTime)
     {
-        return $this->playerId;
+        $this->lastLoginTime = $lastLoginTime;
+        //Cache::put('lastLogin', $lastLogin, self::SESSION_TIMEOUT_MINUTES);
+        $this->loggedIn = ($lastLoginTime > 0);
+        return $this;
     }
 
     /**
-     * @return mixed
-     */
-    public function getSecret()
-    {
-        return $this->secret;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDeviceToken()
-    {
-        return $this->deviceToken;
-    }
-
-
-    /**
-     * @return int
+     * @return \Carbon\Carbon
      */
     public function getLastLogin()
     {
-        return $this->lastLogin;
-    }
-
-    /**
-     * @param int $lastLogin
-     * @return $this
-     */
-    public function setLastLogin($lastLogin)
-    {
-        $this->lastLogin = $lastLogin;
-        Cache::put('lastLogin', $lastLogin, self::SESSION_TIMEOUT_MINUTES);
-        $this->loggedIn = ($lastLogin > 0);
-        return $this;
+        return $this->lastLoginTime;
     }
 
     /**
@@ -96,16 +84,6 @@ class Player
         return $this->authKey;
     }
 
-    /**
-     * @param mixed $authKey
-     * @return $this
-     */
-    public function setAuthKey($authKey = '')
-    {
-        $this->authKey = $authKey;
-        Cache::put('authKey', $authKey, self::SESSION_TIMEOUT_MINUTES);
-        return $this;
-    }
 
     public function isLoggedIn()
     {
@@ -116,6 +94,18 @@ class Player
     {
         $this->loggedIn = false;
         $this->setAuthKey();
+    }
+
+    /**
+     * @param mixed $authKey
+     *
+     * @return $this
+     */
+    public function setAuthKey($authKey = '')
+    {
+        $this->authKey = $authKey;
+        //Cache::put('authKey', $authKey, self::SESSION_TIMEOUT_MINUTES);
+        return $this;
     }
 
 }

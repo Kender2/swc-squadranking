@@ -1,4 +1,5 @@
 <?php
+
 namespace App;
 
 use App\Exceptions\ResponseException;
@@ -32,11 +33,13 @@ class ClientRequest
             'headers' => $this->defaultHeaders(),
             'body' => 'batch=' . urlencode($jsonBody),
         ]);
+
         $responseBody = $response->getBody();
         $responseObject = new GameResponse($responseBody);
         if (!$responseObject) {
             throw new ResponseException($response);
         }
+
         Log::info('Received response: ' . $responseObject->getStatus());
         Log::debug('RAW res: ' . Str::limit($responseBody, self::LOG_MAX_LENGTH));
 
